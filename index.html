@@ -292,18 +292,34 @@
   .link-col a b{color:#e8eef4}
 
   /* ---------- REVIEWS ---------- */
-  .rating-hero{display:flex;flex-wrap:wrap;align-items:center;gap:22px;margin-top:8px}
-  .rating-big{font-family:"Barlow Condensed",sans-serif;font-size:88px;font-weight:700;line-height:1}
-  .rating-hero .stars{font-size:30px}
-  .rating-hero p{color:var(--muted);margin:4px 0 0;font-size:17px}
-  .review-cards{display:grid;gap:18px;margin-top:40px}
-  @media(min-width:900px){.review-cards{grid-template-columns:repeat(3,1fr)}}
-  .review{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:26px}
-  .review .stars{font-size:16px}
-  .review blockquote{margin:14px 0 0;font-size:17px;color:#dde6ee}
-  .review .who{margin-top:16px;color:var(--muted);font-size:14px;font-weight:600;letter-spacing:.06em;text-transform:uppercase}
-  .placeholder-note{margin-top:22px;color:var(--muted2);font-size:14px;font-style:italic}
+  .google-proof{display:flex;flex-direction:column;align-items:center;text-align:center}
+  .rating-big{font-family:"Barlow Condensed",sans-serif;font-size:96px;font-weight:700;line-height:1}
+  .proof-stars{font-size:34px;margin-top:10px}
+  .proof-line{color:var(--muted);font-size:19px;margin:14px 0 28px}
+  .testimonial-card{margin-top:52px;width:100%;max-width:860px;background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:44px 48px 36px;text-align:left;position:relative}
+  .testimonial-mark{font-family:"Barlow Condensed",sans-serif;font-size:88px;line-height:.6;color:var(--amber);font-weight:700;display:block;margin-bottom:22px}
+  .testimonial-card blockquote{margin:0;padding:0}
+  .testimonial-card blockquote p{font-size:21px;line-height:1.62;color:#eef3f7;margin:0;font-style:italic}
+  .testimonial-card blockquote p + p{margin-top:18px}
+  .testimonial-attrib{display:flex;align-items:center;gap:16px;margin-top:32px;padding-top:24px;border-top:1px solid var(--line)}
+  .testimonial-avatar{flex:none;width:52px;height:52px;border-radius:50%;background:var(--amber);color:#181006;font-family:"Barlow Condensed",sans-serif;font-size:26px;font-weight:700;display:flex;align-items:center;justify-content:center;line-height:1}
+  .testimonial-name{font-weight:700;font-size:18px;color:#fff;line-height:1.2}
+  .testimonial-sub{color:var(--muted);font-size:15px;margin-top:3px;line-height:1.35}
+  @media(max-width:640px){.testimonial-card{padding:34px 24px 28px}.testimonial-mark{font-size:72px;margin-bottom:18px}.testimonial-card blockquote p{font-size:19.5px;line-height:1.6}}
+  .review-card{margin-top:28px;width:100%;max-width:860px;background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:36px 48px 32px;text-align:left}
+  .review-stars{color:var(--amber);letter-spacing:3px;font-size:25px;line-height:1}
+  .review-card blockquote{margin:20px 0 0;padding:0}
+  .review-card blockquote p{font-size:20px;line-height:1.62;color:#eef3f7;margin:0}
+  @media(max-width:640px){.review-card{padding:30px 24px 26px}.review-card blockquote p{font-size:19px;line-height:1.6}}
 
+  /* ---------- CLOSING CTA BAND (every view, above footer) ---------- */
+  .cta-band{position:relative;overflow:hidden;padding:0;min-height:400px;display:flex;align-items:center;justify-content:center;text-align:center}
+  .cta-band>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 32%}
+  .cta-band::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,14,19,.52) 0%,rgba(10,14,19,.68) 100%)}
+  .cta-band-inner{position:relative;z-index:2;padding:76px 0}
+  .cta-band h2{color:#fff;text-shadow:0 4px 30px rgba(0,0,0,.55)}
+  .cta-band p{color:#e8eef4;font-size:20px;font-weight:500;margin:16px 0 28px;text-shadow:0 2px 14px rgba(0,0,0,.6)}
+  @media(max-width:640px){.cta-band{min-height:350px}.cta-band-inner{padding:56px 0}}
 
   /* ---------- CATEGORY PAGES (hash routing) ---------- */
   [data-page]:not(.page-on){display:none !important}
@@ -1047,35 +1063,80 @@
   </div>
 </section>
 
-<!-- 13 · REVIEWS -->
+<!-- 13 · REVIEWS — real Google rating (4.5 · 10 reviews) -->
 <section class="alt" id="reviews" data-page="home">
-  <div class="wrap">
+  <div class="wrap google-proof">
     <p class="kicker">Reviews</p>
-    <div class="rating-hero">
-      <div class="rating-big">4.5</div>
-      <div>
-        <div class="stars" aria-label="4.5 out of 5 stars">★★★★<span class="star-half">★</span></div>
-        <p>Average rating on Google — from students, owners and intro-flight guests.</p>
+    <div class="rating-big">4.5</div>
+    <div class="stars proof-stars" aria-label="Rated 4.5 out of 5 stars">★★★★<span class="star-half">★</span></div>
+    <p class="proof-line">Rated 4.5 on Google — based on 10 reviews</p>
+    <a class="btn btn-amber" href="https://www.google.com/maps/search/?api=1&query=Blue+Skies+Gyros+468+FM+3049+Blum+TX" target="_blank" rel="noopener">Read Reviews on Google</a>
+    <article class="testimonial-card" aria-label="Testimonial from Amir">
+      <span class="testimonial-mark" aria-hidden="true">&ldquo;</span>
+      <blockquote>
+        <p>This place is like Hotel California — you can check out anytime you like, but you can never leave!</p>
+        <p>And honestly, Craig&rsquo;s passion for flying gyroplanes is what brought this community together in the heart of Texas. Once gyroplanes get under your skin, there&rsquo;s no escape!</p>
+      </blockquote>
+      <div class="testimonial-attrib">
+        <span class="testimonial-avatar" aria-hidden="true">A</span>
+        <div>
+          <div class="testimonial-name">— Amir</div>
+          <div class="testimonial-sub">Gyroplane owner · Fainting Goat Airport (87TX)</div>
+        </div>
       </div>
-    </div>
-    <div class="review-cards">
-      <article class="review">
-        <div class="stars">★★★★★</div>
-        <blockquote>“Review card layout — a real Google review drops in here on the live site, with the flyer's own words.”</blockquote>
-        <p class="who">Student pilot · Google review</p>
-      </article>
-      <article class="review">
-        <div class="stars">★★★★★</div>
-        <blockquote>“Second review slot — training and intro-flight reviews sit side by side, all visible, nothing hidden behind tabs.”</blockquote>
-        <p class="who">Intro flight guest · Google review</p>
-      </article>
-      <article class="review">
-        <div class="stars">★★★★★</div>
-        <blockquote>“Third review slot — maintenance customers get a voice too, right next to the service booking form.”</blockquote>
-        <p class="who">Gyro owner · Google review</p>
-      </article>
-    </div>
-    <p class="placeholder-note">Mockup note: review text above is layout placeholder — the live site pulls Craig's real Google reviews verbatim.</p>
+    </article>
+    <article class="review-card" aria-label="Google review from Darryl Buckingham">
+      <div class="review-stars" aria-label="Rated 5 out of 5 stars">★★★★★</div>
+      <blockquote>
+        <p>Friendly staff, very helpful, willingness to answer questions and address concerns. Was very helpful and concerned with finding the best, safest parts for my machine. They are rebuilding my machiene, and training me and my father to pilot the aircraft. I feel completely confident we are in good hands. Highly recommend consulting with Blue Skies if you are even entertaining the idea of piloting small aircraft, powered parachutes, gyro copters (not sure if I have the right term for that one lol) or anything else you may be intrested in.</p>
+      </blockquote>
+      <div class="testimonial-attrib">
+        <span class="testimonial-avatar" aria-hidden="true">D</span>
+        <div>
+          <div class="testimonial-name">Darryl Buckingham</div>
+          <div class="testimonial-sub">Local Guide · Google review · 7 years ago</div>
+        </div>
+      </div>
+    </article>
+    <article class="review-card" aria-label="Google review from Rob Mars">
+      <div class="review-stars" aria-label="Rated 5 out of 5 stars">★★★★★</div>
+      <blockquote>
+        <p>Craig is always friendly, knowledgable and helpful. Cant go wrong with him. Absolutely honest to the core</p>
+      </blockquote>
+      <div class="testimonial-attrib">
+        <span class="testimonial-avatar" aria-hidden="true">R</span>
+        <div>
+          <div class="testimonial-name">Rob Mars</div>
+          <div class="testimonial-sub">Google review · 5 years ago</div>
+        </div>
+      </div>
+    </article>
+    <article class="review-card" aria-label="Google review from scott valdez">
+      <div class="review-stars" aria-label="Rated 5 out of 5 stars">★★★★★</div>
+      <blockquote>
+        <p>Craig is great. Knowledgeable, flight instructor, builder</p>
+      </blockquote>
+      <div class="testimonial-attrib">
+        <span class="testimonial-avatar" aria-hidden="true">S</span>
+        <div>
+          <div class="testimonial-name">scott valdez</div>
+          <div class="testimonial-sub">Local Guide · Google review · 7 years ago</div>
+        </div>
+      </div>
+    </article>
+    <article class="review-card" aria-label="Google review from Robert Daffin">
+      <div class="review-stars" aria-label="Rated 5 out of 5 stars">★★★★★</div>
+      <blockquote>
+        <p>Absolutely fantastic people to work with! Trains and sells gyros and powered parachutes.</p>
+      </blockquote>
+      <div class="testimonial-attrib">
+        <span class="testimonial-avatar" aria-hidden="true">R</span>
+        <div>
+          <div class="testimonial-name">Robert Daffin</div>
+          <div class="testimonial-sub">Local Guide · Google review · 8 years ago</div>
+        </div>
+      </div>
+    </article>
   </div>
 </section>
 
@@ -1123,6 +1184,16 @@
   </div>
 </section>
 
+<!-- CLOSING CTA BAND — bottom of every view, above the shared footer -->
+<section class="cta-band" aria-label="Book an intro flight">
+  <img loading="lazy" decoding="async" src="assets/asset-013.webp" alt="Two smiling pilots in the white gyroplane at Fainting Goat Airport" />
+  <div class="wrap cta-band-inner">
+    <h2>Ready to fly?</h2>
+    <p>Book your $110 intro flight at Fainting Goat Airport, Blum.</p>
+    <a class="btn btn-amber" href="tel:+18175173283">Call Craig · (817) 517-3283</a>
+  </div>
+</section>
+
 <!-- 14 · CONTACT FOOTER -->
 <footer id="contact">
   <div class="wrap">
@@ -1162,6 +1233,19 @@
 </footer>
 
 <script>
+  /* Page switches always land at the top — never restore a previous
+     scroll position for an in-site (#/page) navigation. */
+  if ('scrollRestoration' in window.history) {
+    try { window.history.scrollRestoration = 'manual'; } catch (e) {}
+  }
+  function scrollTopNow(){
+    var root = document.documentElement;
+    var prev = root.style.scrollBehavior;
+    root.style.scrollBehavior = 'auto';
+    window.scrollTo(0, 0);
+    root.style.scrollBehavior = prev;
+  }
+
   var header = document.getElementById('siteHeader');
   function onScroll(){ header.classList.toggle('scrolled', window.scrollY > 40); }
   window.addEventListener('scroll', onScroll, { passive: true });
@@ -1240,10 +1324,40 @@
     var drops = document.querySelectorAll('.navdrop.open');
     for (var d = 0; d < drops.length; d++) drops[d].classList.remove('open');
     document.title = PAGE_TITLES[h];
-    try { window.scrollTo({ top: 0, behavior: 'instant' }); } catch (e) { window.scrollTo(0, 0); }
+    scrollTopNow();
+    /* Repeat after layout settles, in case the browser applies its own
+       scroll handling for the hash change after this handler runs. */
+    if (window.requestAnimationFrame) {
+      window.requestAnimationFrame(function(){ scrollTopNow(); });
+    }
   }
   window.addEventListener('hashchange', routePage);
   routePage();
+
+  /* All in-site links are page routes (#/…). Intercept their clicks:
+     the browser's default fragment jump is a *smooth* scroll (the page
+     sets scroll-behavior:smooth) that overrides the router's instant
+     scroll-to-top and strands the user mid-page. Instead, push the new
+     hash with no scroll at all and let routePage() land at the top.
+     A tap on the current page's link just re-routes (top again).
+     The Glass Drop menu's own handler still closes it on tap. */
+  document.addEventListener('click', function(e){
+    var a = e.target && e.target.closest ? e.target.closest('a[href^="#/"]') : null;
+    if (!a) return;
+    var href = a.getAttribute('href');
+    e.preventDefault();
+    if (href === window.location.hash) {
+      routePage();
+      return;
+    }
+    try {
+      window.history.pushState(null, '', href);
+      routePage();
+    } catch (err) {
+      window.location.hash = href; /* hashchange routes + scrolls */
+    }
+  });
+  window.addEventListener('popstate', routePage);
 
   /* Desktop nav dropdowns (click support alongside hover) */
   var dropBtns = document.querySelectorAll('.navdrop-btn');
