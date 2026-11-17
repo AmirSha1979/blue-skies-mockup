@@ -216,10 +216,35 @@
   /* ---------- SPLIT (facility / craig / stay) ---------- */
   .split-grid{display:grid;gap:44px;align-items:center}
   @media(min-width:960px){.split-grid{grid-template-columns:1.05fr 1fr}}
+  /* Meet Craig: media column is much taller (film + photo) — top-align so
+     the text column starts at the section's top padding, not centered. */
+  #craig .split-grid{align-items:start}
   .split-photo{border-radius:var(--radius);overflow:hidden;position:relative;margin:0}
   .split-photo img{width:100%;height:100%;object-fit:cover;aspect-ratio:4/3}
   .split-photo figcaption{position:absolute;left:16px;bottom:16px;background:rgba(10,14,19,.82);border-radius:10px;padding:10px 16px;font-size:14px;font-weight:600}
   .split-photo figcaption span{color:var(--accent2)}
+  /* Meet Craig shop photo — caption sits BELOW the photo (story-cap style)
+     so nothing covers the men's hands and what they're holding */
+  .split-photo.cap-below{overflow:visible}
+  .split-photo.cap-below img{height:auto;border-radius:var(--radius)}
+  .split-photo.cap-below figcaption{position:static;background:none;border-radius:0;padding:0}
+
+  /* ---------- CRAIG STORY — inline film in the portrait's place (About) ---------- */
+  .story-fig{margin:0}
+  .story-frame{border-radius:var(--radius);overflow:hidden;position:relative;background:#000}
+  .story-frame video{width:100%;aspect-ratio:9/16;object-fit:cover;display:block;cursor:pointer}
+  .story-hint{position:absolute;right:14px;bottom:14px;z-index:2;background:rgba(10,14,19,.85);border:1px solid rgba(56,189,248,.55);color:#eaf6fd;border-radius:999px;padding:7px 14px;font-size:13.5px;font-weight:600;pointer-events:none}
+  .story-cap{margin-top:12px}
+  .story-cap .story-title{display:block;font-size:17px;font-weight:700;color:#fff}
+  .story-cap .story-sub{display:block;margin-top:3px;font-size:14px;color:var(--muted)}
+  .story-cap .story-sub a{color:var(--accent2);font-weight:600;text-decoration:none}
+  .story-cap .story-sub a:hover,.story-cap .story-sub a:focus-visible{text-decoration:underline}
+  /* ---------- MEET CRAIG — intro-flight CTA card (bottom of text column) ---------- */
+  #craig .craig-cta{margin-top:26px;background:linear-gradient(135deg,rgba(56,189,248,.16),rgba(56,189,248,.05));border:1px solid rgba(56,189,248,.5);border-radius:var(--radius);padding:24px 26px}
+  #craig .craig-cta h3{font-family:"Barlow Condensed",sans-serif;font-size:32px;font-weight:700;text-transform:uppercase;line-height:1;margin:0;color:#fff}
+  #craig .craig-cta p{color:#d3e7f2;font-size:16.5px;margin:8px 0 0}
+  #craig .craig-cta .btn{margin-top:16px;min-height:48px;padding:12px 24px;font-size:16px;background:var(--accent);color:#08222f}
+  #craig .craig-cta .btn:hover{background:var(--accent2)}
   .stats{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:34px}
   .stat{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:20px}
   .stat b{font-family:"Barlow Condensed",sans-serif;font-size:42px;font-weight:700;display:block;line-height:1;color:#fff}
@@ -294,6 +319,22 @@
   .gallery figcaption{position:absolute;left:0;right:0;bottom:0;padding:26px 14px 12px;background:linear-gradient(transparent,rgba(0,0,0,.78));font-size:14px;font-weight:600;z-index:1}
   .gallery video{width:100%;height:100%;aspect-ratio:4/3;object-fit:cover;display:block;background:#000}
   .gallery .gallery-video figcaption{bottom:42px;padding:20px 14px 8px;pointer-events:none}
+  /* Intro film — the whole surface is the play/pause control, with a
+     centered play overlay and the same hover feedback as the photos */
+  .gallery .gallery-video{cursor:pointer}
+  .gallery .gallery-video video{transition:transform .6s ease}
+  .gv-play{position:absolute;top:50%;left:50%;transform:translate(-50%,-58%);z-index:2;width:74px;height:74px;border-radius:50%;border:1px solid rgba(255,255,255,.5);background:rgba(10,14,19,.62);backdrop-filter:blur(3px);color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0;transition:opacity .25s ease,background .25s ease,transform .25s ease,visibility 0s}
+  .gv-play svg{width:30px;height:30px;margin-left:4px;fill:currentColor}
+  .gv-play:hover,.gv-play:focus-visible{background:rgba(10,14,19,.88);border-color:#fff}
+  .gv-play:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .gallery-video.playing .gv-play{opacity:0;visibility:hidden;pointer-events:none;transition:opacity .25s ease,background .25s ease,transform .25s ease,visibility 0s linear .25s}
+  @media(hover:hover) and (pointer:fine){
+    .gallery .gallery-video:hover video{transform:scale(1.04)}
+    .gallery .gallery-video:hover .gv-play{transform:translate(-50%,-58%) scale(1.07)}
+  }
+  @media(hover:none){
+    .gallery .gallery-video video{transform:none !important}
+  }
   /* Photo figures (not the intro film) open the lightbox — zoom cursor is the hint */
   .gallery figure:not(.gallery-video){cursor:zoom-in}
   .gallery figure:not(.gallery-video):focus-visible{outline:2px solid var(--accent);outline-offset:2px}
@@ -693,11 +734,63 @@
   </div>
 </div>
 
-<!-- 4 · FACILITY -->
+<!-- 4 · MEET CRAIG — full story from the About Us page -->
+<section id="craig" data-page="about">
+  <div class="wrap split-grid">
+    <div>
+      <p class="kicker">Meet Craig</p>
+      <h2>A farmer who<br>learned to fly.</h2>
+      <p class="body">Craig McPherson is a <strong>fifth-generation Texas dairy farmer and rancher</strong>. He and his wife Cathie live on a family-owned farm in Blum, TX. Craig dreamed of flying since he was a child, but the time and expense of a general aviation license kept it out of reach — until he spotted an article in a farming magazine about powered parachutes (PPCs).</p>
+      <p class="body">He visited an instructor in Oklahoma, and even though it was too windy to fly that day, he was hooked. He came home and bought a small, used PPC. <strong>That was in 1994.</strong> Over the years he worked his way up to the top-of-the-line Airwolf 912 and integrated flying into farming and ranching.</p>
+      <p class="body">Craig enjoys sharing his love of flying so much that he founded Blue Skies Gyros and became a dealer for Powrachute, and later AutoGyro. Becoming a Certified Flight Instructor has been his most enjoyable accomplishment — <strong>over 3,000 hours instructing students in gyros and over 2,000 in PPCs</strong>. His students have included seven-time PRCA World Champion Ty Murray; Ty's wife, singer/songwriter Jewel; NASCAR driver Carl Edwards; and country singer Blake Shelton have also flown with Craig.</p>
+      <blockquote class="big">“I love witnessing the excitement and pure joy people express the first time I take them up. I also love watching my students progress into capable and safe pilots. Being a CFI and pilot has been such a blessing in my life and has given me such amazing opportunities.”<cite>— Craig McPherson</cite></blockquote>
+      <p class="body">Led by Craig, our team brings over 27 years of aviation experience to help you achieve your flying dreams. We are passionate about gyroplanes and dedicated to providing the highest quality instruction and service — our friendly and knowledgeable staff is here to support you every step of the way, from your first flight to owning your own aircraft.</p>
+      <div class="stats">
+        <div class="stat"><b>5,000<em>+</em></b><span>Hours flying &amp; instructing</span></div>
+        <div class="stat"><b>3,000<em>+</em></b><span>Hours instructing in gyros</span></div>
+        <div class="stat"><b>2,000<em>+</em></b><span>Hours instructing in PPCs</span></div>
+        <div class="stat"><b>1994</b><span>Flying since — 27+ years' experience</span></div>
+      </div>
+      <ul class="checklist" style="margin-top:26px">
+        <li><span><b>Certified Flight Instructor</b> — gyro &amp; PPC</span></li>
+        <li><span><b>Light Sport Repairman</b> with Maintenance Rating (LSRM)</span></li>
+        <li><span><b>Authorized dealer</b> — AutoGyro &amp; powered parachutes (Powrachute)</span></li>
+      </ul>
+      <div class="craig-cta">
+        <h3>Ready to meet Craig?</h3>
+        <p>Take a $110 intro flight at Fainting Goat Airport.</p>
+        <a class="btn" href="#/contact" data-nav="contact">Book your intro flight →</a>
+      </div>
+    </div>
+    <div>
+      <figure class="story-fig">
+        <div class="story-frame">
+          <video id="craigStoryVideo" muted loop playsinline preload="metadata" poster="assets/a011.jpg" tabindex="0" aria-label="One Man. One Passion — The Craig Story: a short film about Craig McPherson, filmed by AutoGyro USA. Tap to turn the sound on.">
+            <source src="assets/a012.mp4" type="video/mp4" />
+          </video>
+          <span class="story-hint" id="craigStoryHint" aria-hidden="true">🔇 Tap for sound</span>
+        </div>
+        <figcaption class="story-cap">
+          <span class="story-title">One Man. One Passion — The Craig Story</span>
+          <span class="story-sub">Filmed by AutoGyro USA · <a href="https://www.instagram.com/reel/DecUg4jpKwC/" target="_blank" rel="noopener">Watch on Instagram ↗</a></span>
+        </figcaption>
+      </figure>
+      <figure class="split-photo cap-below" style="margin-top:64px">
+        <img loading="lazy" decoding="async" src="assets/a010.webp" alt="Craig McPherson (left) with a member of the Blue Skies Gyros team in the shop at Fainting Goat Airport" style="aspect-ratio:3/2.34;object-position:top" />
+        <figcaption class="story-cap">
+          <span class="story-title">Craig &amp; the team</span>
+          <span class="story-sub">“We treat every customer like family. Your safety and enjoyment are our top priorities.”</span>
+        </figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- 5 · FACILITY -->
 <section class="alt" id="facility" data-page="about">
   <div class="wrap split-grid">
     <figure class="split-photo">
-      <img loading="lazy" decoding="async" src="assets/a011.webp" alt="A red AutoGyro Calidus and a green gyroplane on the grass at Fainting Goat Airport, pilots preparing to fly" />
+      <img loading="lazy" decoding="async" src="assets/a013.webp" alt="A red AutoGyro Calidus and a green gyroplane on the grass at Fainting Goat Airport, pilots preparing to fly" />
       <figcaption>Fainting Goat Airport (87TX) <span>· Blum, Texas</span></figcaption>
     </figure>
     <div>
@@ -715,45 +808,9 @@
   </div>
 </section>
 
-<!-- 5 · MEET CRAIG — full story from the About Us page -->
-<section id="craig" data-page="about">
-  <div class="wrap split-grid">
-    <div>
-      <p class="kicker">Meet Craig</p>
-      <h2>A farmer who<br>learned to fly.</h2>
-      <p class="body">Craig McPherson is a <strong>fifth-generation Texas dairy farmer and rancher</strong>. He and his wife Cathie live on a family-owned farm in Blum, TX. Craig dreamed of flying since he was a child, but the time and expense of a general aviation license kept it out of reach — until he spotted an article in a farming magazine about powered parachutes (PPCs).</p>
-      <p class="body">He visited an instructor in Oklahoma, and even though it was too windy to fly that day, he was hooked. He came home and bought a small, used PPC. <strong>That was in 1994.</strong> Over the years he worked his way up to the top-of-the-line Airwolf 912 and integrated flying into farming and ranching.</p>
-      <p class="body">Craig enjoys sharing his love of flying so much that he founded Blue Skies Gyros and became a dealer for Powrachute, and later AutoGyro. Becoming a Certified Flight Instructor has been his most enjoyable accomplishment — <strong>over 3,000 hours instructing students in gyros and over 2,000 in PPCs</strong>. His students have included seven-time PRCA World Champion Ty Murray; Ty's wife, singer/songwriter Jewel; NASCAR driver Carl Edwards; and country singer Blake Shelton have also flown with Craig.</p>
-      <blockquote class="big">“I love witnessing the excitement and pure joy people express the first time I take them up. I also love watching my students progress into capable and safe pilots. Being a CFI and pilot has been such a blessing in my life and has given me such amazing opportunities.”<cite>— Craig McPherson</cite></blockquote>
-      <p class="body">Led by Craig, our team brings over 27 years of aviation experience to help you achieve your flying dreams. We are passionate about gyroplanes and dedicated to providing the highest quality instruction and service — our friendly and knowledgeable staff is here to support you every step of the way, from your first flight to owning your own aircraft.</p>
-      <div class="stats">
-        <div class="stat"><b>5,000<em>+</em></b><span>Hours flying &amp; instructing</span></div>
-        <div class="stat"><b>3,000<em>+</em></b><span>Hours instructing in gyros</span></div>
-        <div class="stat"><b>2,000<em>+</em></b><span>Hours instructing in PPCs</span></div>
-        <div class="stat"><b>1994</b><span>Flying since — 27+ years' experience</span></div>
-      </div>
-    </div>
-    <div>
-      <figure class="split-photo">
-        <img loading="lazy" decoding="async" src="assets/a010.webp" alt="Craig McPherson (left) with a member of the Blue Skies Gyros team in the shop at Fainting Goat Airport" style="aspect-ratio:3/3.4" />
-        <figcaption>Craig &amp; the team <span>· “We treat every customer like family. Your safety and enjoyment are our top priorities.”</span></figcaption>
-      </figure>
-      <figure class="split-photo" style="margin-top:14px">
-        <img loading="lazy" decoding="async" src="assets/a012.webp" alt="Portrait of Craig McPherson, founder of Blue Skies Gyros, wearing a Blue Skies cap" style="aspect-ratio:4/3" />
-        <figcaption>Craig McPherson <span>· Founder &amp; CFI</span></figcaption>
-      </figure>
-      <ul class="checklist" style="margin-top:26px">
-        <li><span><b>Certified Flight Instructor</b> — gyro &amp; PPC</span></li>
-        <li><span><b>Light Sport Repairman</b> with Maintenance Rating (LSRM)</span></li>
-        <li><span><b>Authorized dealer</b> — AutoGyro &amp; powered parachutes (Powrachute)</span></li>
-      </ul>
-    </div>
-  </div>
-</section>
-
 <!-- TRAINING — page hero -->
 <div class="page-hero" data-page="training">
-  <img class="ph-bg" loading="lazy" decoding="async" src="assets/a013.webp" alt="" />
+  <img class="ph-bg" loading="lazy" decoding="async" src="assets/a014.webp" alt="" />
   <div class="wrap page-hero-inner">
     <p class="kicker">Training</p>
     <h2>Learn to fly<br>with Craig.</h2>
@@ -813,8 +870,8 @@
           <div class="faq-item"><h4>When should I take the knowledge exam?</h4><p>It's recommended after your solo cross-country and before your CFI signs off — but start studying from the very first lesson.</p></div>
         </div>
         <div style="margin-top:28px;display:grid;grid-template-columns:1fr 1fr;gap:14px">
-          <img loading="lazy" decoding="async" src="assets/a014.webp" alt="Flight training at Blue Skies Gyros — student and instructor with a gyroplane" style="border-radius:14px;width:100%;aspect-ratio:4/3;object-fit:cover" />
-          <img loading="lazy" decoding="async" src="assets/a015.webp" alt="Gyroplane flight training over the Texas countryside near Blum" style="border-radius:14px;width:100%;aspect-ratio:4/3;object-fit:cover" />
+          <img loading="lazy" decoding="async" src="assets/a015.webp" alt="Flight training at Blue Skies Gyros — student and instructor with a gyroplane" style="border-radius:14px;width:100%;aspect-ratio:4/3;object-fit:cover" />
+          <img loading="lazy" decoding="async" src="assets/a016.webp" alt="Gyroplane flight training over the Texas countryside near Blum" style="border-radius:14px;width:100%;aspect-ratio:4/3;object-fit:cover" />
         </div>
       </div>
     </div>
@@ -823,7 +880,7 @@
 
 <!-- SALES · NEW AIRCRAFT — page hero -->
 <div class="page-hero" data-page="sales-autogyro">
-  <img class="ph-bg" loading="lazy" decoding="async" src="assets/a016.webp" alt="" />
+  <img class="ph-bg" loading="lazy" decoding="async" src="assets/a017.webp" alt="" />
   <div class="wrap page-hero-inner">
     <p class="kicker">Sales — New Aircraft</p>
     <h2>The AutoGyro<br>range.</h2>
@@ -839,7 +896,7 @@
 
     <div class="cards">
       <article class="model">
-        <div class="model-img"><img loading="lazy" decoding="async" src="assets/a017.webp" alt="AutoGyro Cavalon — enclosed side-by-side gyroplane" /></div>
+        <div class="model-img"><img loading="lazy" decoding="async" src="assets/a018.webp" alt="AutoGyro Cavalon — enclosed side-by-side gyroplane" /></div>
         <div class="model-body">
           <h3>Cavalon</h3>
           <div class="spec-list">
@@ -856,7 +913,7 @@
       </article>
 
       <article class="model">
-        <div class="model-img"><img loading="lazy" decoding="async" src="assets/a018.webp" alt="AutoGyro Calidus — enclosed tandem gyroplane" /></div>
+        <div class="model-img"><img loading="lazy" decoding="async" src="assets/a019.webp" alt="AutoGyro Calidus — enclosed tandem gyroplane" /></div>
         <div class="model-body">
           <h3>Calidus</h3>
           <div class="spec-list">
@@ -873,7 +930,7 @@
       </article>
 
       <article class="model">
-        <div class="model-img"><img loading="lazy" decoding="async" src="assets/a019.webp" alt="AutoGyro MTO Sport — open-cockpit tandem gyroplane" /></div>
+        <div class="model-img"><img loading="lazy" decoding="async" src="assets/a020.webp" alt="AutoGyro MTO Sport — open-cockpit tandem gyroplane" /></div>
         <div class="model-body">
           <h3>MTO Sport <span style="font-size:19px;color:var(--muted)">(2019 / Classic)</span></h3>
           <div class="spec-list">
@@ -915,7 +972,7 @@
 
 <!-- SALES · GYROPLANE INFO — page hero -->
 <div class="page-hero" data-page="sales-info">
-  <img class="ph-bg" loading="lazy" decoding="async" src="assets/a020.webp" alt="" />
+  <img class="ph-bg" loading="lazy" decoding="async" src="assets/a021.webp" alt="" />
   <div class="wrap page-hero-inner">
     <p class="kicker">Sales — Gyroplane Info</p>
     <h2>Know before<br>you buy.</h2>
@@ -948,13 +1005,13 @@
     <h3 class="subhead" style="margin-top:48px">iFly EFB — plan &amp; navigate</h3>
     <p class="body" style="max-width:760px"><strong>iFly EFB</strong> — an excellent, intuitive alternative to ForeFlight: the complete flight planning and navigation solution for Android, Apple, and Windows devices, offering advanced features pilots want in an easy-to-use application. <strong>AutoGyro USA</strong> is the official U.S. representative for AutoGyro GmbH, serving the United States, Mexico, and South America, backed by the most established gyroplane dealer and instructor network in the U.S., providing local access to training, sales, and support.</p>
     <p class="body" style="max-width:760px;margin-top:14px"><strong style="color:#fff">Get iFly EFB:</strong> <a href="https://apps.apple.com/us/app/ifly-efb/id655202847" target="_blank" rel="noopener" style="color:var(--accent2);font-weight:700;text-decoration:none">App Store →</a> &nbsp;·&nbsp; <a href="https://play.google.com/store/apps/details?id=iFly.GPS" target="_blank" rel="noopener" style="color:var(--accent2);font-weight:700;text-decoration:none">Google Play →</a> &nbsp;·&nbsp; <a href="https://www.iflyefb.com/" target="_blank" rel="noopener" style="color:var(--accent2);font-weight:700;text-decoration:none">Windows / Web →</a></p>
-    <div class="partners" style="margin-top:28px;max-width:440px"><a class="partner" href="https://www.iflyefb.com/" target="_blank" rel="noopener" aria-label="iFly EFB"><img loading="lazy" decoding="async" src="assets/a021.webp" alt="iFly EFB logo" /></a></div>
+    <div class="partners" style="margin-top:28px;max-width:440px"><a class="partner" href="https://www.iflyefb.com/" target="_blank" rel="noopener" aria-label="iFly EFB"><img loading="lazy" decoding="async" src="assets/a022.webp" alt="iFly EFB logo" /></a></div>
   </div>
 </section>
 
 <!-- SERVICES — page hero -->
 <div class="page-hero" data-page="services">
-  <img class="ph-bg" loading="lazy" decoding="async" src="assets/a022.webp" alt="" />
+  <img class="ph-bg" loading="lazy" decoding="async" src="assets/a023.webp" alt="" />
   <div class="wrap page-hero-inner">
     <p class="kicker">Services</p>
     <h2>We keep gyros<br>flying.</h2>
@@ -980,7 +1037,7 @@
         </div>
       </article>
       <article class="card">
-        <div class="card-img"><img loading="lazy" decoding="async" src="assets/a023.webp" alt="Aircraft storage — gyroplanes hangared at Fainting Goat Airport" /></div>
+        <div class="card-img"><img loading="lazy" decoding="async" src="assets/a024.webp" alt="Aircraft storage — gyroplanes hangared at Fainting Goat Airport" /></div>
         <div class="card-body">
           <h3><small>Aircraft storage</small>Hangar it here</h3>
           <p>Need to store your aircraft? We have hangar storage at the field and can provide short and long term storage options — fly in, and your gyro stays safe and secure.</p>
@@ -1033,7 +1090,7 @@
         <div class="spec"><b>Builder assist</b><span>$3,000–$5,000 · 2–4 weeks</span></div>
         <div class="spec"><b>Hangar storage</b><span>Short &amp; long term</span></div>
       </div>
-      <div class="maint-img"><img loading="lazy" decoding="async" src="assets/a024.webp" alt="Gyroplane in the shop at Blue Skies Gyros during maintenance" /></div>
+      <div class="maint-img"><img loading="lazy" decoding="async" src="assets/a025.webp" alt="Gyroplane in the shop at Blue Skies Gyros during maintenance" /></div>
     </div>
 
     <form id="serviceForm" novalidate>
@@ -1068,7 +1125,7 @@
 
 <!-- ACCOMMODATIONS — page hero -->
 <div class="page-hero" data-page="stay">
-  <img class="ph-bg" loading="lazy" decoding="async" src="assets/a025.webp" alt="" />
+  <img class="ph-bg" loading="lazy" decoding="async" src="assets/a026.webp" alt="" />
   <div class="wrap page-hero-inner">
     <p class="kicker">More — Accommodations</p>
     <h2>Sleep at<br>the airport.</h2>
@@ -1092,17 +1149,17 @@
       <p class="body">Call <a href="tel:+18175173283" style="color:var(--accent2);font-weight:700">(817) 517-3283</a> to book your stay with your training.</p>
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
-      <img loading="lazy" decoding="async" src="assets/a026.webp" alt="Bunkhouse accommodation at Blue Skies Gyros, Blum TX" style="border-radius:14px;width:100%;aspect-ratio:3/4;object-fit:cover" />
-      <img loading="lazy" decoding="async" src="assets/a027.webp" alt="Furnished apartment bedroom at Blue Skies Gyros" style="border-radius:14px;width:100%;aspect-ratio:3/4;object-fit:cover" />
-      <img loading="lazy" decoding="async" src="assets/a025.webp" alt="Kitchenette and living area of the on-site apartment" style="border-radius:14px;width:100%;aspect-ratio:3/4;object-fit:cover" />
-      <img loading="lazy" decoding="async" src="assets/a028.webp" alt="Second bedroom of the on-site apartment at Fainting Goat Airport" style="border-radius:14px;width:100%;aspect-ratio:3/4;object-fit:cover" />
+      <img loading="lazy" decoding="async" src="assets/a027.webp" alt="Bunkhouse accommodation at Blue Skies Gyros, Blum TX" style="border-radius:14px;width:100%;aspect-ratio:3/4;object-fit:cover" />
+      <img loading="lazy" decoding="async" src="assets/a028.webp" alt="Furnished apartment bedroom at Blue Skies Gyros" style="border-radius:14px;width:100%;aspect-ratio:3/4;object-fit:cover" />
+      <img loading="lazy" decoding="async" src="assets/a026.webp" alt="Kitchenette and living area of the on-site apartment" style="border-radius:14px;width:100%;aspect-ratio:3/4;object-fit:cover" />
+      <img loading="lazy" decoding="async" src="assets/a029.webp" alt="Second bedroom of the on-site apartment at Fainting Goat Airport" style="border-radius:14px;width:100%;aspect-ratio:3/4;object-fit:cover" />
     </div>
   </div>
 </section>
 
 <!-- FINANCING — page hero -->
 <div class="page-hero" data-page="financing">
-  <img class="ph-bg" loading="lazy" decoding="async" src="assets/a029.webp" alt="" />
+  <img class="ph-bg" loading="lazy" decoding="async" src="assets/a030.webp" alt="" />
   <div class="wrap page-hero-inner">
     <p class="kicker">More — Financing</p>
     <h2>Own your<br>gyro.</h2>
@@ -1131,7 +1188,7 @@
 
 <!-- GALLERY — page hero -->
 <div class="page-hero" data-page="gallery">
-  <img class="ph-bg" loading="lazy" decoding="async" src="assets/a030.webp" alt="" />
+  <img class="ph-bg" loading="lazy" decoding="async" src="assets/a031.webp" alt="" />
   <div class="wrap page-hero-inner">
     <p class="kicker">More — Gallery</p>
     <h2>From the<br>field.</h2>
@@ -1145,51 +1202,51 @@
     <h2>Craig in Action</h2>
     <div class="ig-grid">
       <a class="ig-card" href="https://www.instagram.com/reel/Dfu9dFrTBlN/" target="_blank" rel="noopener" aria-label="Watch on Instagram: David's First Flight at Craig's Farm — Nov 14, 2026">
-        <span class="ig-thumb"><img loading="lazy" decoding="async" src="assets/a031.jpg" alt="David's first AutoGyro flight with Craig McPherson at Fainting Goat Airport" /><span class="ig-src" aria-hidden="true"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><defs><linearGradient id="igGrad1" x1="0" y1="24" x2="24" y2="0" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#FFD521"/><stop offset=".28" stop-color="#FA7E1E"/><stop offset=".52" stop-color="#D62976"/><stop offset=".76" stop-color="#962FBF"/><stop offset="1" stop-color="#4F5BD5"/></linearGradient></defs><rect x=".6" y=".6" width="22.8" height="22.8" rx="6.4" fill="url(#igGrad1)"/><rect x="3.7" y="3.7" width="16.6" height="16.6" rx="4.7" fill="none" stroke="#fff" stroke-width="1.8"/><circle cx="12" cy="12" r="3.9" fill="none" stroke="#fff" stroke-width="1.8"/><circle cx="17.2" cy="6.8" r="1.25" fill="#fff"/></svg></span><span class="ig-play" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span></span>
+        <span class="ig-thumb"><img loading="lazy" decoding="async" src="assets/a032.jpg" alt="David's first AutoGyro flight with Craig McPherson at Fainting Goat Airport" /><span class="ig-src" aria-hidden="true"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><defs><linearGradient id="igGrad1" x1="0" y1="24" x2="24" y2="0" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#FFD521"/><stop offset=".28" stop-color="#FA7E1E"/><stop offset=".52" stop-color="#D62976"/><stop offset=".76" stop-color="#962FBF"/><stop offset="1" stop-color="#4F5BD5"/></linearGradient></defs><rect x=".6" y=".6" width="22.8" height="22.8" rx="6.4" fill="url(#igGrad1)"/><rect x="3.7" y="3.7" width="16.6" height="16.6" rx="4.7" fill="none" stroke="#fff" stroke-width="1.8"/><circle cx="12" cy="12" r="3.9" fill="none" stroke="#fff" stroke-width="1.8"/><circle cx="17.2" cy="6.8" r="1.25" fill="#fff"/></svg></span><span class="ig-play" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span></span>
         <span class="ig-body"><span class="ig-title">David's First Flight at Craig's Farm</span><span class="ig-meta"><span class="ig-date">Nov 14, 2026</span><span class="ig-watch">Watch on Instagram →</span></span></span>
       </a>
       <a class="ig-card" href="https://www.instagram.com/reel/Dfr5UX5TKCO/" target="_blank" rel="noopener" aria-label="Watch on Instagram: Can a Gyroplane Take Off Like a Helicopter? — Nov 13, 2026">
-        <span class="ig-thumb"><img loading="lazy" decoding="async" src="assets/a032.jpg" alt="Gyroplane takeoff demonstration at Craig's field in Blum, Texas" /><span class="ig-src" aria-hidden="true"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><defs><linearGradient id="igGrad2" x1="0" y1="24" x2="24" y2="0" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#FFD521"/><stop offset=".28" stop-color="#FA7E1E"/><stop offset=".52" stop-color="#D62976"/><stop offset=".76" stop-color="#962FBF"/><stop offset="1" stop-color="#4F5BD5"/></linearGradient></defs><rect x=".6" y=".6" width="22.8" height="22.8" rx="6.4" fill="url(#igGrad2)"/><rect x="3.7" y="3.7" width="16.6" height="16.6" rx="4.7" fill="none" stroke="#fff" stroke-width="1.8"/><circle cx="12" cy="12" r="3.9" fill="none" stroke="#fff" stroke-width="1.8"/><circle cx="17.2" cy="6.8" r="1.25" fill="#fff"/></svg></span><span class="ig-play" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span></span>
+        <span class="ig-thumb"><img loading="lazy" decoding="async" src="assets/a033.jpg" alt="Gyroplane takeoff demonstration at Craig's field in Blum, Texas" /><span class="ig-src" aria-hidden="true"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><defs><linearGradient id="igGrad2" x1="0" y1="24" x2="24" y2="0" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#FFD521"/><stop offset=".28" stop-color="#FA7E1E"/><stop offset=".52" stop-color="#D62976"/><stop offset=".76" stop-color="#962FBF"/><stop offset="1" stop-color="#4F5BD5"/></linearGradient></defs><rect x=".6" y=".6" width="22.8" height="22.8" rx="6.4" fill="url(#igGrad2)"/><rect x="3.7" y="3.7" width="16.6" height="16.6" rx="4.7" fill="none" stroke="#fff" stroke-width="1.8"/><circle cx="12" cy="12" r="3.9" fill="none" stroke="#fff" stroke-width="1.8"/><circle cx="17.2" cy="6.8" r="1.25" fill="#fff"/></svg></span><span class="ig-play" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span></span>
         <span class="ig-body"><span class="ig-title">Can a Gyroplane Take Off Like a Helicopter?</span><span class="ig-meta"><span class="ig-date">Nov 13, 2026</span><span class="ig-watch">Watch on Instagram →</span></span></span>
       </a>
       <a class="ig-card" href="https://www.instagram.com/reel/DfmiinthbY0/" target="_blank" rel="noopener" aria-label="Watch on Instagram: Some Flights Are Just Too Good to End — Nov 11, 2026">
-        <span class="ig-thumb"><img loading="lazy" decoding="async" src="assets/a033.jpg" alt="Gyroplane flying over the Texas countryside near Blum" /><span class="ig-src" aria-hidden="true"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><defs><linearGradient id="igGrad3" x1="0" y1="24" x2="24" y2="0" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#FFD521"/><stop offset=".28" stop-color="#FA7E1E"/><stop offset=".52" stop-color="#D62976"/><stop offset=".76" stop-color="#962FBF"/><stop offset="1" stop-color="#4F5BD5"/></linearGradient></defs><rect x=".6" y=".6" width="22.8" height="22.8" rx="6.4" fill="url(#igGrad3)"/><rect x="3.7" y="3.7" width="16.6" height="16.6" rx="4.7" fill="none" stroke="#fff" stroke-width="1.8"/><circle cx="12" cy="12" r="3.9" fill="none" stroke="#fff" stroke-width="1.8"/><circle cx="17.2" cy="6.8" r="1.25" fill="#fff"/></svg></span><span class="ig-play" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span></span>
+        <span class="ig-thumb"><img loading="lazy" decoding="async" src="assets/a034.jpg" alt="Gyroplane flying over the Texas countryside near Blum" /><span class="ig-src" aria-hidden="true"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><defs><linearGradient id="igGrad3" x1="0" y1="24" x2="24" y2="0" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#FFD521"/><stop offset=".28" stop-color="#FA7E1E"/><stop offset=".52" stop-color="#D62976"/><stop offset=".76" stop-color="#962FBF"/><stop offset="1" stop-color="#4F5BD5"/></linearGradient></defs><rect x=".6" y=".6" width="22.8" height="22.8" rx="6.4" fill="url(#igGrad3)"/><rect x="3.7" y="3.7" width="16.6" height="16.6" rx="4.7" fill="none" stroke="#fff" stroke-width="1.8"/><circle cx="12" cy="12" r="3.9" fill="none" stroke="#fff" stroke-width="1.8"/><circle cx="17.2" cy="6.8" r="1.25" fill="#fff"/></svg></span><span class="ig-play" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span></span>
         <span class="ig-body"><span class="ig-title">Some Flights Are Just Too Good to End</span><span class="ig-meta"><span class="ig-date">Nov 11, 2026</span><span class="ig-watch">Watch on Instagram →</span></span></span>
       </a>
       <a class="ig-card" href="https://www.instagram.com/reel/DfhcXUHBXBP/" target="_blank" rel="noopener" aria-label="Watch on Instagram: We'll Let the Video Do the Talking — Nov 9, 2026">
-        <span class="ig-thumb"><img loading="lazy" decoding="async" src="assets/a034.jpg" alt="Gyroplane in flight at Fainting Goat Airport, Blum, Texas" /><span class="ig-src" aria-hidden="true"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><defs><linearGradient id="igGrad4" x1="0" y1="24" x2="24" y2="0" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#FFD521"/><stop offset=".28" stop-color="#FA7E1E"/><stop offset=".52" stop-color="#D62976"/><stop offset=".76" stop-color="#962FBF"/><stop offset="1" stop-color="#4F5BD5"/></linearGradient></defs><rect x=".6" y=".6" width="22.8" height="22.8" rx="6.4" fill="url(#igGrad4)"/><rect x="3.7" y="3.7" width="16.6" height="16.6" rx="4.7" fill="none" stroke="#fff" stroke-width="1.8"/><circle cx="12" cy="12" r="3.9" fill="none" stroke="#fff" stroke-width="1.8"/><circle cx="17.2" cy="6.8" r="1.25" fill="#fff"/></svg></span><span class="ig-play" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span></span>
+        <span class="ig-thumb"><img loading="lazy" decoding="async" src="assets/a035.jpg" alt="Gyroplane in flight at Fainting Goat Airport, Blum, Texas" /><span class="ig-src" aria-hidden="true"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><defs><linearGradient id="igGrad4" x1="0" y1="24" x2="24" y2="0" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#FFD521"/><stop offset=".28" stop-color="#FA7E1E"/><stop offset=".52" stop-color="#D62976"/><stop offset=".76" stop-color="#962FBF"/><stop offset="1" stop-color="#4F5BD5"/></linearGradient></defs><rect x=".6" y=".6" width="22.8" height="22.8" rx="6.4" fill="url(#igGrad4)"/><rect x="3.7" y="3.7" width="16.6" height="16.6" rx="4.7" fill="none" stroke="#fff" stroke-width="1.8"/><circle cx="12" cy="12" r="3.9" fill="none" stroke="#fff" stroke-width="1.8"/><circle cx="17.2" cy="6.8" r="1.25" fill="#fff"/></svg></span><span class="ig-play" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span></span>
         <span class="ig-body"><span class="ig-title">We'll Let the Video Do the Talking</span><span class="ig-meta"><span class="ig-date">Nov 9, 2026</span><span class="ig-watch">Watch on Instagram →</span></span></span>
       </a>
       <a class="ig-card" href="https://www.instagram.com/reel/DfaF-JBhCsT/" target="_blank" rel="noopener" aria-label="Watch on Instagram: Sunset Landing at Blum — Nov 6, 2026">
-        <span class="ig-thumb"><img loading="lazy" decoding="async" src="assets/a035.jpg" alt="Gyroplane landing at sunset at Fainting Goat Airport" /><span class="ig-src" aria-hidden="true"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><defs><linearGradient id="igGrad5" x1="0" y1="24" x2="24" y2="0" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#FFD521"/><stop offset=".28" stop-color="#FA7E1E"/><stop offset=".52" stop-color="#D62976"/><stop offset=".76" stop-color="#962FBF"/><stop offset="1" stop-color="#4F5BD5"/></linearGradient></defs><rect x=".6" y=".6" width="22.8" height="22.8" rx="6.4" fill="url(#igGrad5)"/><rect x="3.7" y="3.7" width="16.6" height="16.6" rx="4.7" fill="none" stroke="#fff" stroke-width="1.8"/><circle cx="12" cy="12" r="3.9" fill="none" stroke="#fff" stroke-width="1.8"/><circle cx="17.2" cy="6.8" r="1.25" fill="#fff"/></svg></span><span class="ig-play" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span></span>
+        <span class="ig-thumb"><img loading="lazy" decoding="async" src="assets/a036.jpg" alt="Gyroplane landing at sunset at Fainting Goat Airport" /><span class="ig-src" aria-hidden="true"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><defs><linearGradient id="igGrad5" x1="0" y1="24" x2="24" y2="0" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#FFD521"/><stop offset=".28" stop-color="#FA7E1E"/><stop offset=".52" stop-color="#D62976"/><stop offset=".76" stop-color="#962FBF"/><stop offset="1" stop-color="#4F5BD5"/></linearGradient></defs><rect x=".6" y=".6" width="22.8" height="22.8" rx="6.4" fill="url(#igGrad5)"/><rect x="3.7" y="3.7" width="16.6" height="16.6" rx="4.7" fill="none" stroke="#fff" stroke-width="1.8"/><circle cx="12" cy="12" r="3.9" fill="none" stroke="#fff" stroke-width="1.8"/><circle cx="17.2" cy="6.8" r="1.25" fill="#fff"/></svg></span><span class="ig-play" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span></span>
         <span class="ig-body"><span class="ig-title">Sunset Landing at Blum</span><span class="ig-meta"><span class="ig-date">Nov 6, 2026</span><span class="ig-watch">Watch on Instagram →</span></span></span>
       </a>
       <a class="ig-card" href="https://www.instagram.com/reel/DfS94WXxN9H/" target="_blank" rel="noopener" aria-label="Watch on Instagram: Texas Countryside from Above — Nov 3, 2026">
-        <span class="ig-thumb"><img loading="lazy" decoding="async" src="assets/a036.jpg" alt="Aerial view of the Texas countryside from a gyroplane" /><span class="ig-src" aria-hidden="true"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><defs><linearGradient id="igGrad6" x1="0" y1="24" x2="24" y2="0" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#FFD521"/><stop offset=".28" stop-color="#FA7E1E"/><stop offset=".52" stop-color="#D62976"/><stop offset=".76" stop-color="#962FBF"/><stop offset="1" stop-color="#4F5BD5"/></linearGradient></defs><rect x=".6" y=".6" width="22.8" height="22.8" rx="6.4" fill="url(#igGrad6)"/><rect x="3.7" y="3.7" width="16.6" height="16.6" rx="4.7" fill="none" stroke="#fff" stroke-width="1.8"/><circle cx="12" cy="12" r="3.9" fill="none" stroke="#fff" stroke-width="1.8"/><circle cx="17.2" cy="6.8" r="1.25" fill="#fff"/></svg></span><span class="ig-play" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span></span>
+        <span class="ig-thumb"><img loading="lazy" decoding="async" src="assets/a037.jpg" alt="Aerial view of the Texas countryside from a gyroplane" /><span class="ig-src" aria-hidden="true"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><defs><linearGradient id="igGrad6" x1="0" y1="24" x2="24" y2="0" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#FFD521"/><stop offset=".28" stop-color="#FA7E1E"/><stop offset=".52" stop-color="#D62976"/><stop offset=".76" stop-color="#962FBF"/><stop offset="1" stop-color="#4F5BD5"/></linearGradient></defs><rect x=".6" y=".6" width="22.8" height="22.8" rx="6.4" fill="url(#igGrad6)"/><rect x="3.7" y="3.7" width="16.6" height="16.6" rx="4.7" fill="none" stroke="#fff" stroke-width="1.8"/><circle cx="12" cy="12" r="3.9" fill="none" stroke="#fff" stroke-width="1.8"/><circle cx="17.2" cy="6.8" r="1.25" fill="#fff"/></svg></span><span class="ig-play" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span></span>
         <span class="ig-body"><span class="ig-title">Texas Countryside from Above</span><span class="ig-meta"><span class="ig-date">Nov 3, 2026</span><span class="ig-watch">Watch on Instagram →</span></span></span>
       </a>
       <a class="ig-card" href="https://www.instagram.com/reel/DfIrda4Rv_R/" target="_blank" rel="noopener" aria-label="Watch on Instagram: A Little Adrenaline, a Whole Lot of Freedom — Oct 30, 2026">
-        <span class="ig-thumb"><img loading="lazy" decoding="async" src="assets/a037.jpg" alt="Gyroplane flying over Texas farmland near Blum" /><span class="ig-src" aria-hidden="true"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><defs><linearGradient id="igGrad7" x1="0" y1="24" x2="24" y2="0" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#FFD521"/><stop offset=".28" stop-color="#FA7E1E"/><stop offset=".52" stop-color="#D62976"/><stop offset=".76" stop-color="#962FBF"/><stop offset="1" stop-color="#4F5BD5"/></linearGradient></defs><rect x=".6" y=".6" width="22.8" height="22.8" rx="6.4" fill="url(#igGrad7)"/><rect x="3.7" y="3.7" width="16.6" height="16.6" rx="4.7" fill="none" stroke="#fff" stroke-width="1.8"/><circle cx="12" cy="12" r="3.9" fill="none" stroke="#fff" stroke-width="1.8"/><circle cx="17.2" cy="6.8" r="1.25" fill="#fff"/></svg></span><span class="ig-play" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span></span>
+        <span class="ig-thumb"><img loading="lazy" decoding="async" src="assets/a038.jpg" alt="Gyroplane flying over Texas farmland near Blum" /><span class="ig-src" aria-hidden="true"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><defs><linearGradient id="igGrad7" x1="0" y1="24" x2="24" y2="0" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#FFD521"/><stop offset=".28" stop-color="#FA7E1E"/><stop offset=".52" stop-color="#D62976"/><stop offset=".76" stop-color="#962FBF"/><stop offset="1" stop-color="#4F5BD5"/></linearGradient></defs><rect x=".6" y=".6" width="22.8" height="22.8" rx="6.4" fill="url(#igGrad7)"/><rect x="3.7" y="3.7" width="16.6" height="16.6" rx="4.7" fill="none" stroke="#fff" stroke-width="1.8"/><circle cx="12" cy="12" r="3.9" fill="none" stroke="#fff" stroke-width="1.8"/><circle cx="17.2" cy="6.8" r="1.25" fill="#fff"/></svg></span><span class="ig-play" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span></span>
         <span class="ig-body"><span class="ig-title">A Little Adrenaline, a Whole Lot of Freedom</span><span class="ig-meta"><span class="ig-date">Oct 30, 2026</span><span class="ig-watch">Watch on Instagram →</span></span></span>
       </a>
       <a class="ig-card" href="https://www.instagram.com/reel/DfCmOGYRgGX/" target="_blank" rel="noopener" aria-label="Watch on Instagram: Who Says You Need a Runway? — Oct 28, 2026">
-        <span class="ig-thumb"><img loading="lazy" decoding="async" src="assets/a038.jpg" alt="Gyroplane taking off from the grass at Fainting Goat Airport" /><span class="ig-src" aria-hidden="true"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><defs><linearGradient id="igGrad8" x1="0" y1="24" x2="24" y2="0" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#FFD521"/><stop offset=".28" stop-color="#FA7E1E"/><stop offset=".52" stop-color="#D62976"/><stop offset=".76" stop-color="#962FBF"/><stop offset="1" stop-color="#4F5BD5"/></linearGradient></defs><rect x=".6" y=".6" width="22.8" height="22.8" rx="6.4" fill="url(#igGrad8)"/><rect x="3.7" y="3.7" width="16.6" height="16.6" rx="4.7" fill="none" stroke="#fff" stroke-width="1.8"/><circle cx="12" cy="12" r="3.9" fill="none" stroke="#fff" stroke-width="1.8"/><circle cx="17.2" cy="6.8" r="1.25" fill="#fff"/></svg></span><span class="ig-play" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span></span>
+        <span class="ig-thumb"><img loading="lazy" decoding="async" src="assets/a039.jpg" alt="Gyroplane taking off from the grass at Fainting Goat Airport" /><span class="ig-src" aria-hidden="true"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><defs><linearGradient id="igGrad8" x1="0" y1="24" x2="24" y2="0" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#FFD521"/><stop offset=".28" stop-color="#FA7E1E"/><stop offset=".52" stop-color="#D62976"/><stop offset=".76" stop-color="#962FBF"/><stop offset="1" stop-color="#4F5BD5"/></linearGradient></defs><rect x=".6" y=".6" width="22.8" height="22.8" rx="6.4" fill="url(#igGrad8)"/><rect x="3.7" y="3.7" width="16.6" height="16.6" rx="4.7" fill="none" stroke="#fff" stroke-width="1.8"/><circle cx="12" cy="12" r="3.9" fill="none" stroke="#fff" stroke-width="1.8"/><circle cx="17.2" cy="6.8" r="1.25" fill="#fff"/></svg></span><span class="ig-play" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span></span>
         <span class="ig-body"><span class="ig-title">Who Says You Need a Runway?</span><span class="ig-meta"><span class="ig-date">Oct 28, 2026</span><span class="ig-watch">Watch on Instagram →</span></span></span>
       </a>
       <a class="ig-card" href="https://www.instagram.com/reel/De1uL3MRfnY/" target="_blank" rel="noopener" aria-label="Watch on Instagram: Simply Enjoying the Ride — Oct 23, 2026">
-        <span class="ig-thumb"><img loading="lazy" decoding="async" src="assets/a039.jpg" alt="Pilot enjoying a gyroplane flight over the Texas countryside" /><span class="ig-src" aria-hidden="true"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><defs><linearGradient id="igGrad9" x1="0" y1="24" x2="24" y2="0" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#FFD521"/><stop offset=".28" stop-color="#FA7E1E"/><stop offset=".52" stop-color="#D62976"/><stop offset=".76" stop-color="#962FBF"/><stop offset="1" stop-color="#4F5BD5"/></linearGradient></defs><rect x=".6" y=".6" width="22.8" height="22.8" rx="6.4" fill="url(#igGrad9)"/><rect x="3.7" y="3.7" width="16.6" height="16.6" rx="4.7" fill="none" stroke="#fff" stroke-width="1.8"/><circle cx="12" cy="12" r="3.9" fill="none" stroke="#fff" stroke-width="1.8"/><circle cx="17.2" cy="6.8" r="1.25" fill="#fff"/></svg></span><span class="ig-play" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span></span>
+        <span class="ig-thumb"><img loading="lazy" decoding="async" src="assets/a040.jpg" alt="Pilot enjoying a gyroplane flight over the Texas countryside" /><span class="ig-src" aria-hidden="true"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><defs><linearGradient id="igGrad9" x1="0" y1="24" x2="24" y2="0" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#FFD521"/><stop offset=".28" stop-color="#FA7E1E"/><stop offset=".52" stop-color="#D62976"/><stop offset=".76" stop-color="#962FBF"/><stop offset="1" stop-color="#4F5BD5"/></linearGradient></defs><rect x=".6" y=".6" width="22.8" height="22.8" rx="6.4" fill="url(#igGrad9)"/><rect x="3.7" y="3.7" width="16.6" height="16.6" rx="4.7" fill="none" stroke="#fff" stroke-width="1.8"/><circle cx="12" cy="12" r="3.9" fill="none" stroke="#fff" stroke-width="1.8"/><circle cx="17.2" cy="6.8" r="1.25" fill="#fff"/></svg></span><span class="ig-play" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span></span>
         <span class="ig-body"><span class="ig-title">Simply Enjoying the Ride</span><span class="ig-meta"><span class="ig-date">Oct 23, 2026</span><span class="ig-watch">Watch on Instagram →</span></span></span>
       </a>
       <a class="ig-card" href="https://www.instagram.com/reel/DerjjU7xhsr/" target="_blank" rel="noopener" aria-label="Watch on Instagram: What Makes Flying a Gyroplane So Much Fun? — Oct 19, 2026">
-        <span class="ig-thumb"><img loading="lazy" decoding="async" src="assets/a040.jpg" alt="Gyroplane in flight at Craig's place in Blum, Texas" /><span class="ig-src" aria-hidden="true"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><defs><linearGradient id="igGrad10" x1="0" y1="24" x2="24" y2="0" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#FFD521"/><stop offset=".28" stop-color="#FA7E1E"/><stop offset=".52" stop-color="#D62976"/><stop offset=".76" stop-color="#962FBF"/><stop offset="1" stop-color="#4F5BD5"/></linearGradient></defs><rect x=".6" y=".6" width="22.8" height="22.8" rx="6.4" fill="url(#igGrad10)"/><rect x="3.7" y="3.7" width="16.6" height="16.6" rx="4.7" fill="none" stroke="#fff" stroke-width="1.8"/><circle cx="12" cy="12" r="3.9" fill="none" stroke="#fff" stroke-width="1.8"/><circle cx="17.2" cy="6.8" r="1.25" fill="#fff"/></svg></span><span class="ig-play" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span></span>
+        <span class="ig-thumb"><img loading="lazy" decoding="async" src="assets/a041.jpg" alt="Gyroplane in flight at Craig's place in Blum, Texas" /><span class="ig-src" aria-hidden="true"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><defs><linearGradient id="igGrad10" x1="0" y1="24" x2="24" y2="0" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#FFD521"/><stop offset=".28" stop-color="#FA7E1E"/><stop offset=".52" stop-color="#D62976"/><stop offset=".76" stop-color="#962FBF"/><stop offset="1" stop-color="#4F5BD5"/></linearGradient></defs><rect x=".6" y=".6" width="22.8" height="22.8" rx="6.4" fill="url(#igGrad10)"/><rect x="3.7" y="3.7" width="16.6" height="16.6" rx="4.7" fill="none" stroke="#fff" stroke-width="1.8"/><circle cx="12" cy="12" r="3.9" fill="none" stroke="#fff" stroke-width="1.8"/><circle cx="17.2" cy="6.8" r="1.25" fill="#fff"/></svg></span><span class="ig-play" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span></span>
         <span class="ig-body"><span class="ig-title">What Makes Flying a Gyroplane So Much Fun?</span><span class="ig-meta"><span class="ig-date">Oct 19, 2026</span><span class="ig-watch">Watch on Instagram →</span></span></span>
       </a>
       <a class="ig-card" href="https://www.instagram.com/reel/DepGhEqRzbf/" target="_blank" rel="noopener" aria-label="Watch on Instagram: Your First Flight Is One Phone Call Away — Oct 18, 2026">
-        <span class="ig-thumb"><img loading="lazy" decoding="async" src="assets/a041.jpg" alt="Craig McPherson with a gyroplane at Fainting Goat Airport" /><span class="ig-src" aria-hidden="true"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><defs><linearGradient id="igGrad11" x1="0" y1="24" x2="24" y2="0" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#FFD521"/><stop offset=".28" stop-color="#FA7E1E"/><stop offset=".52" stop-color="#D62976"/><stop offset=".76" stop-color="#962FBF"/><stop offset="1" stop-color="#4F5BD5"/></linearGradient></defs><rect x=".6" y=".6" width="22.8" height="22.8" rx="6.4" fill="url(#igGrad11)"/><rect x="3.7" y="3.7" width="16.6" height="16.6" rx="4.7" fill="none" stroke="#fff" stroke-width="1.8"/><circle cx="12" cy="12" r="3.9" fill="none" stroke="#fff" stroke-width="1.8"/><circle cx="17.2" cy="6.8" r="1.25" fill="#fff"/></svg></span><span class="ig-play" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span></span>
+        <span class="ig-thumb"><img loading="lazy" decoding="async" src="assets/a042.jpg" alt="Craig McPherson with a gyroplane at Fainting Goat Airport" /><span class="ig-src" aria-hidden="true"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><defs><linearGradient id="igGrad11" x1="0" y1="24" x2="24" y2="0" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#FFD521"/><stop offset=".28" stop-color="#FA7E1E"/><stop offset=".52" stop-color="#D62976"/><stop offset=".76" stop-color="#962FBF"/><stop offset="1" stop-color="#4F5BD5"/></linearGradient></defs><rect x=".6" y=".6" width="22.8" height="22.8" rx="6.4" fill="url(#igGrad11)"/><rect x="3.7" y="3.7" width="16.6" height="16.6" rx="4.7" fill="none" stroke="#fff" stroke-width="1.8"/><circle cx="12" cy="12" r="3.9" fill="none" stroke="#fff" stroke-width="1.8"/><circle cx="17.2" cy="6.8" r="1.25" fill="#fff"/></svg></span><span class="ig-play" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span></span>
         <span class="ig-body"><span class="ig-title">Your First Flight Is One Phone Call Away</span><span class="ig-meta"><span class="ig-date">Oct 18, 2026</span><span class="ig-watch">Watch on Instagram →</span></span></span>
       </a>
       <a class="ig-card" href="https://www.instagram.com/reel/DecUg4jpKwC/" target="_blank" rel="noopener" aria-label="Watch on Instagram: One Man. One Passion. — The Craig Story — Oct 13, 2026">
-        <span class="ig-thumb"><img loading="lazy" decoding="async" src="assets/a042.jpg" alt="Craig McPherson, founder of Blue Skies Gyros, at Fainting Goat Airport" /><span class="ig-src" aria-hidden="true"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><defs><linearGradient id="igGrad12" x1="0" y1="24" x2="24" y2="0" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#FFD521"/><stop offset=".28" stop-color="#FA7E1E"/><stop offset=".52" stop-color="#D62976"/><stop offset=".76" stop-color="#962FBF"/><stop offset="1" stop-color="#4F5BD5"/></linearGradient></defs><rect x=".6" y=".6" width="22.8" height="22.8" rx="6.4" fill="url(#igGrad12)"/><rect x="3.7" y="3.7" width="16.6" height="16.6" rx="4.7" fill="none" stroke="#fff" stroke-width="1.8"/><circle cx="12" cy="12" r="3.9" fill="none" stroke="#fff" stroke-width="1.8"/><circle cx="17.2" cy="6.8" r="1.25" fill="#fff"/></svg></span><span class="ig-play" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span></span>
+        <span class="ig-thumb"><img loading="lazy" decoding="async" src="assets/a043.jpg" alt="Craig McPherson, founder of Blue Skies Gyros, at Fainting Goat Airport" /><span class="ig-src" aria-hidden="true"><svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><defs><linearGradient id="igGrad12" x1="0" y1="24" x2="24" y2="0" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#FFD521"/><stop offset=".28" stop-color="#FA7E1E"/><stop offset=".52" stop-color="#D62976"/><stop offset=".76" stop-color="#962FBF"/><stop offset="1" stop-color="#4F5BD5"/></linearGradient></defs><rect x=".6" y=".6" width="22.8" height="22.8" rx="6.4" fill="url(#igGrad12)"/><rect x="3.7" y="3.7" width="16.6" height="16.6" rx="4.7" fill="none" stroke="#fff" stroke-width="1.8"/><circle cx="12" cy="12" r="3.9" fill="none" stroke="#fff" stroke-width="1.8"/><circle cx="17.2" cy="6.8" r="1.25" fill="#fff"/></svg></span><span class="ig-play" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span></span>
         <span class="ig-body"><span class="ig-title">One Man. One Passion. — The Craig Story</span><span class="ig-meta"><span class="ig-date">Oct 13, 2026</span><span class="ig-watch">Watch on Instagram →</span></span></span>
       </a>
     </div>
@@ -1197,15 +1254,15 @@
     <div class="yt-feature">
       <h3 class="yt-subhead">Watch the full films <span>on YouTube</span></h3>
       <a class="yt-card" href="https://www.youtube.com/watch?v=OGOW6FAu5SQ" target="_blank" rel="noopener" aria-label="Watch on YouTube: David's First AutoGyro Flight with Craig McPherson — Nov 15, 2026">
-        <span class="yt-thumb"><img loading="lazy" decoding="async" src="assets/a043.jpg" alt="David seated in a blue AutoGyro gyroplane with Craig McPherson standing beside him before his first flight" /><span class="yt-src" aria-hidden="true"><svg viewBox="0 0 28 20" width="26" height="19" aria-hidden="true"><path fill="#FF0033" d="M27.4 3.1c-.3-1.2-1.3-2.2-2.5-2.5C22.7 0 14 0 14 0S5.3 0 3.1.6C1.9.9.9 1.9.6 3.1C0 5.3 0 10 0 10s0 4.7.6 6.9c.3 1.2 1.3 2.2 2.5 2.5C5.3 20 14 20 14 20s8.7 0 10.9-.6c1.2-.3 2.2-1.3 2.5-2.5C28 14.7 28 10 28 10s0-4.7-.6-6.9z"/><path fill="#fff" d="M11.2 14.3V5.7L18.5 10l-7.3 4.3z"/></svg></span><span class="yt-play" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span></span>
-        <span class="yt-body"><span class="yt-title">David's First AutoGyro Flight with Craig McPherson</span><p class="yt-desc">Craig took David on his very first Gyro flight. Together they flew with other gyros, explored the Texas countryside, practiced maneuvers and passed over beautiful rivers and waterways. It's the freedom, scenery and camaraderie all wrapped into one unforgettable first flight - and that famous GYRO SMILE.</p><span class="yt-brand"><img loading="eager" decoding="async" fetchpriority="high" width="256" height="114" src="assets/a044.webp" alt="AutoGyro logo" /></span><span class="ig-meta"><span class="ig-date">Nov 15, 2026</span><span class="ig-watch">Watch on YouTube →</span></span></span>
+        <span class="yt-thumb"><img loading="lazy" decoding="async" src="assets/a044.jpg" alt="David seated in a blue AutoGyro gyroplane with Craig McPherson standing beside him before his first flight" /><span class="yt-src" aria-hidden="true"><svg viewBox="0 0 28 20" width="26" height="19" aria-hidden="true"><path fill="#FF0033" d="M27.4 3.1c-.3-1.2-1.3-2.2-2.5-2.5C22.7 0 14 0 14 0S5.3 0 3.1.6C1.9.9.9 1.9.6 3.1C0 5.3 0 10 0 10s0 4.7.6 6.9c.3 1.2 1.3 2.2 2.5 2.5C5.3 20 14 20 14 20s8.7 0 10.9-.6c1.2-.3 2.2-1.3 2.5-2.5C28 14.7 28 10 28 10s0-4.7-.6-6.9z"/><path fill="#fff" d="M11.2 14.3V5.7L18.5 10l-7.3 4.3z"/></svg></span><span class="yt-play" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span></span>
+        <span class="yt-body"><span class="yt-title">David's First AutoGyro Flight with Craig McPherson</span><p class="yt-desc">Craig took David on his very first Gyro flight. Together they flew with other gyros, explored the Texas countryside, practiced maneuvers and passed over beautiful rivers and waterways. It's the freedom, scenery and camaraderie all wrapped into one unforgettable first flight - and that famous GYRO SMILE.</p><span class="yt-brand"><img loading="eager" decoding="async" fetchpriority="high" width="256" height="114" src="assets/a045.webp" alt="AutoGyro logo" /></span><span class="ig-meta"><span class="ig-date">Nov 15, 2026</span><span class="ig-watch">Watch on YouTube →</span></span></span>
       </a>
       <div class="yt-card">
         <a class="yt-stretch" href="https://www.youtube.com/watch?v=29RRss4qFeI" target="_blank" rel="noopener" aria-label="Watch on YouTube: GYRO gang takes over hillsboro — Nov 11, 2026"></a>
-        <span class="yt-thumb"><img loading="lazy" decoding="async" src="assets/a045.jpg" alt="Gyro Gang gyroplanes in formation flight at the Hillsboro Municipal Airport fly-in, Texas" /><span class="yt-src" aria-hidden="true"><svg viewBox="0 0 28 20" width="26" height="19" aria-hidden="true"><path fill="#FF0033" d="M27.4 3.1c-.3-1.2-1.3-2.2-2.5-2.5C22.7 0 14 0 14 0S5.3 0 3.1.6C1.9.9.9 1.9.6 3.1C0 5.3 0 10 0 10s0 4.7.6 6.9c.3 1.2 1.3 2.2 2.5 2.5C5.3 20 14 20 14 20s8.7 0 10.9-.6c1.2-.3 2.2-1.3 2.5-2.5C28 14.7 28 10 28 10s0-4.7-.6-6.9z"/><path fill="#fff" d="M11.2 14.3V5.7L18.5 10l-7.3 4.3z"/></svg></span><span class="yt-play" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span></span>
+        <span class="yt-thumb"><img loading="lazy" decoding="async" src="assets/a046.jpg" alt="Gyro Gang gyroplanes in formation flight at the Hillsboro Municipal Airport fly-in, Texas" /><span class="yt-src" aria-hidden="true"><svg viewBox="0 0 28 20" width="26" height="19" aria-hidden="true"><path fill="#FF0033" d="M27.4 3.1c-.3-1.2-1.3-2.2-2.5-2.5C22.7 0 14 0 14 0S5.3 0 3.1.6C1.9.9.9 1.9.6 3.1C0 5.3 0 10 0 10s0 4.7.6 6.9c.3 1.2 1.3 2.2 2.5 2.5C5.3 20 14 20 14 20s8.7 0 10.9-.6c1.2-.3 2.2-1.3 2.5-2.5C28 14.7 28 10 28 10s0-4.7-.6-6.9z"/><path fill="#fff" d="M11.2 14.3V5.7L18.5 10l-7.3 4.3z"/></svg></span><span class="yt-play" aria-hidden="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span></span>
         <span class="yt-body"><span class="yt-title">GYRO gang takes over hillsboro</span><p class="yt-desc" style="white-space:pre-line">Formation flying with the Gyro Gang at the Hillsboro Municipal Airport fly-in (KINJ), Hillsboro, Texas — a 7-mile formation lap, low approaches and staggered landings.
 
-Stacy leading in the air, Tim leading on the ground and on the radio.</p><a class="yt-brand yt-brand-link" href="https://gyrocarepro.app" target="_blank" rel="noopener"><img loading="eager" decoding="async" fetchpriority="high" width="450" height="287" src="assets/a046.webp" alt="GyroCare Pro logo" /><span class="yt-brand-word">GyroCare <em>Pro</em></span></a><span class="ig-meta"><span class="ig-date">Nov 11, 2026</span><span class="ig-watch">Watch on YouTube →</span></span></span>
+Stacy leading in the air, Tim leading on the ground and on the radio.</p><a class="yt-brand yt-brand-link" href="https://gyrocarepro.app" target="_blank" rel="noopener"><img loading="eager" decoding="async" fetchpriority="high" width="450" height="287" src="assets/a047.webp" alt="GyroCare Pro logo" /><span class="yt-brand-word">GyroCare <em>Pro</em></span></a><span class="ig-meta"><span class="ig-date">Nov 11, 2026</span><span class="ig-watch">Watch on YouTube →</span></span></span>
       </div>
     </div>
   </div>
@@ -1218,23 +1275,23 @@ Stacy leading in the air, Tim leading on the ground and on the radio.</p><a clas
     <h2>Life at 87TX</h2>
     <p class="section-lede">Straight from the Blue Skies Gyros gallery — the field, the machines and the people who fly them.</p>
     <div class="gallery">
-      <figure class="gallery-video"><video controls playsinline preload="metadata" poster="assets/a047.jpg" aria-label="Blue Skies Gyros intro video — gyroplanes at Fainting Goat Airport"><source src="assets/a048.webm" type="video/webm" /><source src="assets/a049.mp4" type="video/mp4" /></video><figcaption>Our intro film — flying at 87TX</figcaption></figure>
-      <figure tabindex="0" role="button" aria-label="Enlarge photo"><img loading="lazy" decoding="async" src="assets/a011.webp" alt="Red AutoGyro Calidus and green gyroplane on the grass at Fainting Goat Airport" /><figcaption>Calidus &amp; MTO on the grass at 87TX</figcaption></figure>
-      <figure tabindex="0" role="button" aria-label="Enlarge photo"><img loading="lazy" decoding="async" src="assets/a050.webp" alt="Red gyroplane with two helmeted pilots on the field, a powered parachute flying overhead" /><figcaption>Ready to fly — PPC overhead</figcaption></figure>
-      <figure tabindex="0" role="button" aria-label="Enlarge photo"><img loading="lazy" decoding="async" src="assets/a016.webp" alt="Gyroplanes flying and parked at Blue Skies Gyros, Blum Texas" /><figcaption>From the Blue Skies gallery</figcaption></figure>
-      <figure tabindex="0" role="button" aria-label="Enlarge photo"><img loading="lazy" decoding="async" src="assets/a029.webp" alt="Gyroplane at Fainting Goat Airport" /><figcaption>From the Blue Skies gallery</figcaption></figure>
-      <figure tabindex="0" role="button" aria-label="Enlarge photo"><img loading="lazy" decoding="async" src="assets/a024.webp" alt="Gyroplane in the shop at Blue Skies Gyros" /><figcaption>In the shop</figcaption></figure>
-      <figure tabindex="0" role="button" aria-label="Enlarge photo"><img loading="lazy" decoding="async" src="assets/a030.webp" alt="Gyroplanes at Blue Skies Gyros, Texas" /><figcaption>From the Blue Skies gallery</figcaption></figure>
-      <figure tabindex="0" role="button" aria-label="Enlarge photo"><img loading="lazy" decoding="async" src="assets/a051.webp" alt="Pilot and gyroplane at Fainting Goat Airport" /><figcaption>From the Blue Skies gallery</figcaption></figure>
-      <figure tabindex="0" role="button" aria-label="Enlarge photo"><img loading="lazy" decoding="async" src="assets/a020.webp" alt="Gyroplane flying over the Texas countryside" /><figcaption>Over the farm country</figcaption></figure>
-      <figure tabindex="0" role="button" aria-label="Enlarge photo"><img loading="lazy" decoding="async" src="assets/a052.webp" alt="Gyroplane detail at Blue Skies Gyros" /><figcaption>From the Blue Skies gallery</figcaption></figure>
+      <figure class="gallery-video"><video id="galleryIntroVideo" controls playsinline preload="metadata" poster="assets/a048.jpg" aria-label="Blue Skies Gyros intro video — gyroplanes at Fainting Goat Airport. Click to play or pause."><source src="assets/a049.mp4" type="video/mp4" /><source src="assets/a050.webm" type="video/webm" /></video><button type="button" class="gv-play" id="galleryIntroPlay" aria-label="Play the intro film — flying at 87TX"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 5.14v13.72c0 .8.87 1.3 1.56.88l10.5-6.86a1.03 1.03 0 0 0 0-1.76L9.56 4.26A1.03 1.03 0 0 0 8 5.14z"/></svg></button><figcaption>Our intro film — flying at 87TX</figcaption></figure>
+      <figure tabindex="0" role="button" aria-label="Enlarge photo"><img loading="lazy" decoding="async" src="assets/a013.webp" alt="Red AutoGyro Calidus and green gyroplane on the grass at Fainting Goat Airport" /><figcaption>Calidus &amp; MTO on the grass at 87TX</figcaption></figure>
+      <figure tabindex="0" role="button" aria-label="Enlarge photo"><img loading="lazy" decoding="async" src="assets/a051.webp" alt="Red gyroplane with two helmeted pilots on the field, a powered parachute flying overhead" /><figcaption>Ready to fly — PPC overhead</figcaption></figure>
+      <figure tabindex="0" role="button" aria-label="Enlarge photo"><img loading="lazy" decoding="async" src="assets/a017.webp" alt="Gyroplanes flying and parked at Blue Skies Gyros, Blum Texas" /><figcaption>From the Blue Skies gallery</figcaption></figure>
+      <figure tabindex="0" role="button" aria-label="Enlarge photo"><img loading="lazy" decoding="async" src="assets/a030.webp" alt="Gyroplane at Fainting Goat Airport" /><figcaption>From the Blue Skies gallery</figcaption></figure>
+      <figure tabindex="0" role="button" aria-label="Enlarge photo"><img loading="lazy" decoding="async" src="assets/a025.webp" alt="Gyroplane in the shop at Blue Skies Gyros" /><figcaption>In the shop</figcaption></figure>
+      <figure tabindex="0" role="button" aria-label="Enlarge photo"><img loading="lazy" decoding="async" src="assets/a031.webp" alt="Gyroplanes at Blue Skies Gyros, Texas" /><figcaption>From the Blue Skies gallery</figcaption></figure>
+      <figure tabindex="0" role="button" aria-label="Enlarge photo"><img loading="lazy" decoding="async" src="assets/a052.webp" alt="Pilot and gyroplane at Fainting Goat Airport" /><figcaption>From the Blue Skies gallery</figcaption></figure>
+      <figure tabindex="0" role="button" aria-label="Enlarge photo"><img loading="lazy" decoding="async" src="assets/a021.webp" alt="Gyroplane flying over the Texas countryside" /><figcaption>Over the farm country</figcaption></figure>
+      <figure tabindex="0" role="button" aria-label="Enlarge photo"><img loading="lazy" decoding="async" src="assets/a053.webp" alt="Gyroplane detail at Blue Skies Gyros" /><figcaption>From the Blue Skies gallery</figcaption></figure>
     </div>
   </div>
 </section>
 
 <!-- LINKS — page hero -->
 <div class="page-hero" data-page="links">
-  <img class="ph-bg" loading="lazy" decoding="async" src="assets/a051.webp" alt="" />
+  <img class="ph-bg" loading="lazy" decoding="async" src="assets/a052.webp" alt="" />
   <div class="wrap page-hero-inner">
     <p class="kicker">More — Partners</p>
     <h2>Partners &amp;<br>pilot links.</h2>
@@ -1247,8 +1304,8 @@ Stacy leading in the air, Tim leading on the ground and on the radio.</p><a clas
     <p class="kicker">Premium partners</p>
     <h2>Who we fly with</h2>
     <div class="partners">
-      <a class="partner" href="https://autogyrousa.com/" target="_blank" rel="noopener" aria-label="AutoGyro USA"><img loading="lazy" decoding="async" src="assets/a044.webp" alt="AutoGyro logo" /></a>
-      <a class="partner" href="https://www.iflyefb.com/" target="_blank" rel="noopener" aria-label="iFly EFB"><img loading="lazy" decoding="async" src="assets/a021.webp" alt="iFly EFB logo" /></a>
+      <a class="partner" href="https://autogyrousa.com/" target="_blank" rel="noopener" aria-label="AutoGyro USA"><img loading="lazy" decoding="async" src="assets/a045.webp" alt="AutoGyro logo" /></a>
+      <a class="partner" href="https://www.iflyefb.com/" target="_blank" rel="noopener" aria-label="iFly EFB"><img loading="lazy" decoding="async" src="assets/a022.webp" alt="iFly EFB logo" /></a>
     </div>
     <div class="link-cols">
       <div class="link-col">
@@ -1356,7 +1413,7 @@ Stacy leading in the air, Tim leading on the ground and on the radio.</p><a clas
 
 <!-- CONTACT — page hero -->
 <div class="page-hero" data-page="contact">
-  <img class="ph-bg" loading="lazy" decoding="async" src="assets/a050.webp" alt="" />
+  <img class="ph-bg" loading="lazy" decoding="async" src="assets/a051.webp" alt="" />
   <div class="wrap page-hero-inner">
     <p class="kicker">Contact</p>
     <h2>Talk to<br>Craig.</h2>
@@ -1392,7 +1449,7 @@ Stacy leading in the air, Tim leading on the ground and on the radio.</p><a clas
       </div>
     </div>
     <figure class="foot-map">
-      <img loading="lazy" decoding="async" src="assets/a053.webp" alt="Sectional chart showing Fainting Goat Airport (87TX) near Blum, Texas" />
+      <img loading="lazy" decoding="async" src="assets/a054.webp" alt="Sectional chart showing Fainting Goat Airport (87TX) near Blum, Texas" />
       <figcaption>Find us on the chart — Fainting Goat (87TX), just south of Blum on the Brazos River.</figcaption>
     </figure>
   </div>
@@ -1400,7 +1457,7 @@ Stacy leading in the air, Tim leading on the ground and on the radio.</p><a clas
 
 <!-- CLOSING CTA BAND — bottom of every view, above the shared footer -->
 <section class="cta-band" aria-label="Book an intro flight">
-  <img loading="lazy" decoding="async" src="assets/a016.webp" alt="Two smiling pilots in the white gyroplane at Fainting Goat Airport" />
+  <img loading="lazy" decoding="async" src="assets/a017.webp" alt="Two smiling pilots in the white gyroplane at Fainting Goat Airport" />
   <div class="wrap cta-band-inner">
     <h2>Ready to fly?</h2>
     <p>Book your $110 intro flight at Fainting Goat Airport, Blum.</p>
@@ -1437,7 +1494,7 @@ Stacy leading in the air, Tim leading on the ground and on the radio.</p><a clas
       </div>
     </div>
     <figure class="foot-map">
-      <img loading="lazy" decoding="async" src="assets/a053.webp" alt="Sectional chart showing Fainting Goat Airport (87TX) near Blum, Texas" />
+      <img loading="lazy" decoding="async" src="assets/a054.webp" alt="Sectional chart showing Fainting Goat Airport (87TX) near Blum, Texas" />
       <figcaption>Find us on the chart — Fainting Goat (87TX), just south of Blum on the Brazos River.</figcaption>
     </figure>
     <div class="foot-bottom">
@@ -1765,6 +1822,58 @@ Stacy leading in the air, Tim leading on the ground and on the radio.</p><a clas
     openLbFromFigure(fig);
   });
 
+  /* ---------- Gallery intro film — click-to-play/pause (delegated) ----------
+     The lightbox above deliberately skips the .gallery-video figure,
+     so the film gets its own behavior here: ONE delegated document-level
+     click handler (the pattern that works in the preview frame) toggles
+     play/pause for clicks anywhere on the figure — the poster surface
+     or the centered play overlay — EXCEPT the native control bar along
+     the bottom of the video, which keeps its own play / seek / volume /
+     fullscreen handling. The overlay's visibility is synced from the
+     video's real play / pause / ended events (capture phase, since
+     media events do not bubble), so it also stays correct when the
+     native controls are what started or stopped playback. */
+  function gvToggle(){
+    var v = document.getElementById('galleryIntroVideo');
+    if (!v) return;
+    if (v.paused || v.ended) {
+      var p = v.play();
+      if (p && p.catch) p.catch(function(){});
+    } else {
+      v.pause();
+    }
+  }
+  document.addEventListener('click', function(e){
+    var t = e.target;
+    if (!t || !t.closest) return;
+    var fig = t.closest('#gallery .gallery-video');
+    if (!fig) return;
+    var v = document.getElementById('galleryIntroVideo');
+    if (!v) return;
+    if (t === v) {
+      /* Clicks on the video itself: the bottom strip is the native
+         control bar — leave those clicks to the browser. */
+      var r = v.getBoundingClientRect();
+      if (r.height && e.clientY > r.bottom - Math.min(54, r.height * 0.22)) return;
+      /* Chrome's media controls ALSO toggle play/pause as the click's
+         default action on the video surface — suppress it, or the two
+         toggles cancel out and the film looks stuck. */
+      e.preventDefault();
+    }
+    gvToggle();
+  });
+  function gvSync(e){
+    var v = e.target;
+    if (!v || v.id !== 'galleryIntroVideo' || !v.closest) return;
+    var fig = v.closest('.gallery-video');
+    if (!fig) return;
+    if (e.type === 'play') fig.classList.add('playing');
+    else fig.classList.remove('playing');
+  }
+  document.addEventListener('play', gvSync, true);
+  document.addEventListener('pause', gvSync, true);
+  document.addEventListener('ended', gvSync, true);
+
   /* Document-level keys: Escape / arrows step or close while open;
      Enter / Space opens a focused gallery photo while closed. */
   document.addEventListener('keydown', function(e){
@@ -1805,6 +1914,53 @@ Stacy leading in the air, Tim leading on the ground and on the radio.</p><a clas
       showLightbox(dx < 0 ? lbIndex + 1 : lbIndex - 1);
     }
   }, { passive: true });
+
+  /* ---------- CRAIG STORY (About) — muted scroll-autoplay, tap for sound ----------
+     Plays when >=40% of the film is on screen, pauses when it scrolls
+     away. The tap is wired through ONE delegated document-level click
+     handler: per-element listeners bound at load silently fail in the
+     preview frame. First tap unmutes and restarts from the beginning;
+     tapping again mutes. */
+  var storyVideo = document.getElementById('craigStoryVideo');
+  var storyHint = document.getElementById('craigStoryHint');
+  if (storyVideo) {
+    function storyPlay(){
+      var p = storyVideo.play();
+      if (p && p.catch) p.catch(function(){});
+    }
+    if ('IntersectionObserver' in window) {
+      var storyObs = new IntersectionObserver(function(entries){
+        for (var i = 0; i < entries.length; i++) {
+          if (entries[i].intersectionRatio >= 0.4) storyPlay();
+          else storyVideo.pause();
+        }
+      }, { threshold: [0, 0.4, 0.65] });
+      storyObs.observe(storyVideo);
+    }
+    function storyToggleSound(){
+      if (storyVideo.muted) {
+        storyVideo.muted = false;
+        storyVideo.currentTime = 0;
+        storyPlay();
+        if (storyHint) storyHint.textContent = '🔊 Sound on';
+      } else {
+        storyVideo.muted = true;
+        if (storyHint) storyHint.textContent = '🔇 Tap for sound';
+      }
+    }
+    document.addEventListener('click', function(e){
+      var t = e.target;
+      if (!t || !t.closest) return;
+      if (t.closest('#craigStoryVideo') || t.closest('.story-frame')) storyToggleSound();
+    });
+    document.addEventListener('keydown', function(e){
+      if ((e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') &&
+          document.activeElement === storyVideo) {
+        e.preventDefault();
+        storyToggleSound();
+      }
+    });
+  }
 </script>
 </body>
 </html>
