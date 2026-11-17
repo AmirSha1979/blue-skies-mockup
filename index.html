@@ -19,9 +19,15 @@
     --text:#f2f5f8;
     --muted:#a7b4c2;
     --muted2:#7e8fa1;
-    --amber:#ff8a2a;
-    --amber2:#ffb25e;
-    --sky:#7ec3e8;
+    --amber:#38bdf8;
+    --amber2:#7dd3fc;
+    --gold:#fbbf24;
+    --sky:#38bdf8;
+    --accent:#38bdf8;
+    --accent2:#7dd3fc;
+    --cta:#38bdf8;
+    --cta-hover:#7dd3fc;
+    --cta-text:#082f49;
     --radius:18px;
   }
   *{box-sizing:border-box}
@@ -39,13 +45,13 @@
   .brand{display:flex;align-items:center;gap:13px;flex:none;white-space:nowrap;font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:37px;letter-spacing:.06em;text-transform:uppercase;text-decoration:none;line-height:1}
   .brand-logo{width:72px;height:72px;flex:none;object-fit:cover;border-radius:14px;border:1px solid rgba(255,255,255,.20);background:#000}
   .brand-text{display:block;line-height:1;white-space:nowrap}
-  .brand .accent{color:var(--amber)}
+  .brand .accent{color:var(--accent)}
   .brand small{display:block;font-size:15px;letter-spacing:.30em;color:var(--muted);font-weight:600;margin-top:5px;white-space:nowrap}
   .navlinks{display:none;gap:9px;flex-wrap:nowrap;align-items:center;min-width:0}
   .navlinks a{text-decoration:none;font-weight:600;font-size:15px;letter-spacing:.04em;text-transform:uppercase;color:#dbe5ee;padding:10px 1px;white-space:nowrap;flex:none}
-  .navlinks a:hover{color:var(--amber2)}
-  .navcall{background:var(--amber);color:#16100a !important;text-decoration:none;font-weight:700;padding:13px 15px;border-radius:999px;font-size:16.5px;white-space:nowrap;min-height:50px;display:inline-flex;align-items:center;flex:none}
-  .navcall:hover{background:var(--amber2)}
+  .navlinks a:hover{color:var(--accent2)}
+  .navcall{background:var(--cta);color:var(--cta-text) !important;text-decoration:none;font-weight:700;padding:13px 15px;border-radius:999px;font-size:16.5px;white-space:nowrap;min-height:50px;display:inline-flex;align-items:center;flex:none}
+  .navcall:hover{background:var(--cta-hover)}
   @media(min-width:1020px){.navlinks{display:flex}}
   @media(min-width:1020px) and (max-width:1279px){
     .nav{gap:14px}
@@ -91,8 +97,8 @@
   .gm-sub a:active,.gm-sub a:hover{color:#fff}
   .gm-foot{flex:none;padding:18px 28px calc(26px + env(safe-area-inset-bottom));border-top:1px solid rgba(255,255,255,.12);background:rgba(9,14,20,.35);opacity:0;transform:translateY(12px);transition:opacity .5s ease .34s,transform .55s ease .34s}
   .glass-menu.open .gm-foot{opacity:1;transform:translateY(0)}
-  .gm-cta{display:flex;align-items:center;justify-content:center;width:100%;min-height:58px;padding:15px 22px;border-radius:999px;background:#1f7ac0;color:#fff;font-weight:700;font-size:18px;text-decoration:none}
-  .gm-cta:active{background:#2b8bd4}
+  .gm-cta{display:flex;align-items:center;justify-content:center;width:100%;min-height:58px;padding:15px 22px;border-radius:999px;background:var(--cta);color:var(--cta-text);font-weight:700;font-size:18px;text-decoration:none}
+  .gm-cta:hover,.gm-cta:active{background:var(--cta-hover)}
   .gm-call{display:block;text-align:center;margin-top:14px;color:var(--muted);font-size:16px;text-decoration:none}
   .gm-call b{color:#fff}
   #gyro-info{scroll-margin-top:96px}
@@ -117,7 +123,7 @@
     .brand-logo{width:44px;height:44px}
     .brand small{font-size:8.5px;letter-spacing:.18em}
   }
-  .star-half{background:linear-gradient(90deg,var(--amber) 50%,#4a5866 50%);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .star-half{background:linear-gradient(90deg,var(--gold) 50%,#4a5866 50%);-webkit-background-clip:text;background-clip:text;color:transparent}
   .banner-strip{margin:0;border-radius:var(--radius);overflow:hidden;border:1px solid var(--line);position:relative;isolation:isolate;background:#16283d}
   .banner-strip img{width:100%;height:300px;object-fit:cover;filter:grayscale(1) contrast(1.07) brightness(.84) blur(1.5px);transform:scale(1.04)}
   .banner-strip::before{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:#2f5d8a;mix-blend-mode:color;opacity:.9}
@@ -130,14 +136,14 @@
   .hero-bg video,.hero-bg img{width:100%;height:100%;object-fit:cover;object-position:center}
   .hero-shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,14,19,.42) 0%,rgba(10,14,19,0) 34%,rgba(10,14,19,.18) 58%,rgba(10,14,19,.88) 88%,var(--bg) 100%)}
   .hero-inner{position:relative;z-index:2;width:min(1240px,100% - 40px);margin:0 auto;padding:64px 0 56px}
-  .hero h1{font-family:"Barlow Condensed",sans-serif;font-weight:700;text-transform:uppercase;line-height:.92;margin:0;font-size:clamp(56px,11.5vw,148px);letter-spacing:.01em;text-shadow:0 4px 40px rgba(0,0,0,.45)}
-  .hero h1 .thin{color:var(--amber)}
+  .hero h1{font-family:"Barlow Condensed",sans-serif;font-weight:700;text-transform:uppercase;line-height:.92;margin:0;font-size:clamp(56px,11.5vw,148px);letter-spacing:.01em;-webkit-text-stroke:1px rgba(0,0,0,.55);paint-order:stroke fill;text-shadow:0 1px 6px rgba(0,0,0,.28),0 2px 22px rgba(0,0,0,.32),0 4px 44px rgba(0,0,0,.26)}
+  .hero h1 .thin{color:var(--accent)}
   .hero-tag{font-size:clamp(19px,2.6vw,27px);font-weight:500;color:#e8eef4;max-width:680px;margin:20px 0 0;text-shadow:0 2px 18px rgba(0,0,0,.6)}
   .hero-tag strong{color:#fff}
   .hero-ctas{display:flex;flex-wrap:wrap;gap:14px;margin-top:32px}
   .btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:56px;padding:15px 30px;border-radius:999px;font-weight:700;font-size:17px;text-decoration:none;border:1px solid transparent;cursor:pointer}
-  .btn-amber{background:var(--amber);color:#181006}
-  .btn-amber:hover{background:var(--amber2)}
+  .btn-amber{background:var(--cta);color:var(--cta-text)}
+  .btn-amber:hover{background:var(--cta-hover)}
   .btn-ghost{background:rgba(10,14,19,.5);border-color:rgba(255,255,255,.45);color:#fff;backdrop-filter:blur(6px)}
   .btn-ghost:hover{border-color:#fff}
   .hero-meta{margin-top:26px;color:var(--muted);font-size:15px;font-weight:500;letter-spacing:.04em}
@@ -149,6 +155,7 @@
   @media(max-width:640px){
     .hero{min-height:0;align-items:flex-start}
     .hero-inner{padding:104px 0 48px}
+    .hero h1{-webkit-text-stroke-width:.7px}
   }
   @media(max-width:380px){
     .hero-inner{padding-top:96px}
@@ -162,9 +169,9 @@
   .trust-item:nth-child(-n+4){border-bottom:1px solid var(--line)}
   .trust-item:last-child{grid-column:1/-1;border-bottom:none}
   .trust-num{font-family:"Barlow Condensed",sans-serif;font-size:38px;font-weight:700;line-height:1;color:#fff}
-  .trust-num em{font-style:normal;color:var(--amber)}
+  .trust-num em{font-style:normal;color:var(--accent)}
   .trust-lbl{font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-top:6px}
-  .stars{color:var(--amber);letter-spacing:2px;font-size:20px}
+  .stars{color:var(--gold);letter-spacing:2px;font-size:20px}
   @media(min-width:900px){
     .trust-grid{grid-template-columns:repeat(5,1fr)}
     .trust-item{border-bottom:none !important}
@@ -174,7 +181,7 @@
 
   /* ---------- SECTIONS ---------- */
   section{padding:96px 0}
-  .kicker{color:var(--amber);font-weight:700;letter-spacing:.28em;text-transform:uppercase;font-size:13px;margin:0 0 12px}
+  .kicker{color:var(--accent);font-weight:700;letter-spacing:.28em;text-transform:uppercase;font-size:13px;margin:0 0 12px}
   h2{font-family:"Barlow Condensed",sans-serif;font-weight:700;text-transform:uppercase;line-height:.98;font-size:clamp(42px,6vw,68px);margin:0}
   .section-lede{color:var(--muted);font-size:19px;max-width:720px;margin:16px 0 0}
   .alt{background:var(--bg2);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
@@ -187,16 +194,16 @@
   .card-img img{width:100%;height:100%;object-fit:cover;transition:transform .6s ease}
   .card:hover .card-img img{transform:scale(1.05)}
   .card-price{position:absolute;left:16px;bottom:16px;background:rgba(10,14,19,.85);backdrop-filter:blur(4px);border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:8px 16px;font-weight:700;font-size:15px}
-  .card-price span{color:var(--amber2)}
+  .card-price span{color:var(--accent2)}
   .card-body{padding:28px;display:flex;flex-direction:column;flex:1}
   .card h3{font-family:"Barlow Condensed",sans-serif;font-size:40px;font-weight:700;text-transform:uppercase;margin:0;line-height:1}
-  .card h3 small{display:block;font-size:15px;letter-spacing:.22em;color:var(--amber);font-weight:600;margin-bottom:6px}
+  .card h3 small{display:block;font-size:15px;letter-spacing:.22em;color:var(--accent);font-weight:600;margin-bottom:6px}
   .card p{color:var(--muted);margin:14px 0 0}
   .card ul{list-style:none;margin:18px 0 0;padding:18px 0 0;border-top:1px solid var(--line);display:grid;gap:10px}
   .card li{display:flex;gap:10px;color:#d7e0e9;font-size:16px}
-  .card li::before{content:"—";color:var(--amber);font-weight:700}
+  .card li::before{content:"—";color:var(--accent);font-weight:700}
   .card-link{margin-top:auto;padding-top:24px}
-  .card-link a{color:var(--amber2);font-weight:700;text-decoration:none;font-size:16px}
+  .card-link a{color:var(--accent2);font-weight:700;text-decoration:none;font-size:16px}
   .card-link a:hover{text-decoration:underline}
 
   /* ---------- SPLIT (facility / craig / stay) ---------- */
@@ -205,19 +212,19 @@
   .split-photo{border-radius:var(--radius);overflow:hidden;position:relative;margin:0}
   .split-photo img{width:100%;height:100%;object-fit:cover;aspect-ratio:4/3}
   .split-photo figcaption{position:absolute;left:16px;bottom:16px;background:rgba(10,14,19,.82);border-radius:10px;padding:10px 16px;font-size:14px;font-weight:600}
-  .split-photo figcaption span{color:var(--amber2)}
+  .split-photo figcaption span{color:var(--accent2)}
   .stats{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:34px}
   .stat{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:20px}
   .stat b{font-family:"Barlow Condensed",sans-serif;font-size:42px;font-weight:700;display:block;line-height:1;color:#fff}
-  .stat b em{font-style:normal;color:var(--amber)}
+  .stat b em{font-style:normal;color:var(--accent)}
   .stat span{color:var(--muted);font-size:14px;font-weight:600;letter-spacing:.1em;text-transform:uppercase}
   p.body{color:var(--muted);font-size:18px;margin:18px 0 0}
   p.body strong{color:#eef3f7}
-  blockquote.big{margin:26px 0 0;padding:4px 0 4px 22px;border-left:3px solid var(--amber);font-size:21px;line-height:1.45;color:#eef3f7;font-style:italic}
-  blockquote.big cite{display:block;margin-top:12px;font-style:normal;font-size:14px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--amber2)}
+  blockquote.big{margin:26px 0 0;padding:4px 0 4px 22px;border-left:3px solid var(--accent);font-size:21px;line-height:1.45;color:#eef3f7;font-style:italic}
+  blockquote.big cite{display:block;margin-top:12px;font-style:normal;font-size:14px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--accent2)}
   .checklist{list-style:none;margin:22px 0 0;padding:0;display:grid;gap:12px}
   .checklist li{display:flex;gap:12px;color:#d7e0e9;font-size:17px}
-  .checklist li::before{content:"✓";color:var(--amber);font-weight:700}
+  .checklist li::before{content:"✓";color:var(--accent);font-weight:700}
   .checklist b{color:#fff}
 
   /* ---------- PRICE / SPEC TABLES ---------- */
@@ -225,7 +232,7 @@
   @media(min-width:900px){.price-grid{grid-template-columns:repeat(3,1fr)}}
   .price-card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:30px;text-align:center}
   .price-card .amt{font-family:"Barlow Condensed",sans-serif;font-size:64px;font-weight:700;line-height:1;color:#fff}
-  .price-card .amt em{font-style:normal;color:var(--amber);font-size:30px}
+  .price-card .amt em{font-style:normal;color:var(--accent);font-size:30px}
   .price-card .per{color:var(--muted);font-weight:600;letter-spacing:.1em;text-transform:uppercase;font-size:14px;margin-top:8px}
   .two-col{display:grid;gap:44px;margin-top:48px}
   @media(min-width:960px){.two-col{grid-template-columns:1fr 1fr}}
@@ -266,10 +273,10 @@
   .field{margin-bottom:16px}
   input,select,textarea{width:100%;background:var(--bg);border:1px solid var(--line);border-radius:10px;color:var(--text);padding:13px 14px;font:inherit;font-size:16px;min-height:48px}
   textarea{min-height:96px;resize:vertical}
-  input:focus,select:focus,textarea:focus{outline:2px solid var(--amber);outline-offset:1px;border-color:transparent}
+  input:focus,select:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:1px;border-color:transparent}
   .form-row{display:grid;gap:16px}
   @media(min-width:560px){.form-row{grid-template-columns:1fr 1fr}}
-  .form-note{display:none;margin-top:16px;background:rgba(255,138,42,.12);border:1px solid rgba(255,138,42,.45);color:#ffd9b3;border-radius:10px;padding:13px 16px;font-size:15px}
+  .form-note{display:none;margin-top:16px;background:rgba(56,189,248,.12);border:1px solid rgba(56,189,248,.45);color:#bae6fd;border-radius:10px;padding:13px 16px;font-size:15px}
   .form-note.show{display:block}
 
   /* ---------- GALLERY ---------- */
@@ -288,26 +295,26 @@
   @media(min-width:900px){.link-cols{grid-template-columns:repeat(3,1fr)}}
   .link-col h4{font-family:"Barlow Condensed",sans-serif;font-size:24px;text-transform:uppercase;margin:0 0 12px}
   .link-col a{display:block;color:var(--muted);text-decoration:none;padding:7px 0;border-bottom:1px solid var(--line);font-size:16px}
-  .link-col a:hover{color:var(--amber2)}
+  .link-col a:hover{color:var(--accent2)}
   .link-col a b{color:#e8eef4}
 
   /* ---------- REVIEWS ---------- */
   .google-proof{display:flex;flex-direction:column;align-items:center;text-align:center}
-  .rating-big{font-family:"Barlow Condensed",sans-serif;font-size:96px;font-weight:700;line-height:1}
+  .rating-big{font-family:"Barlow Condensed",sans-serif;font-size:96px;font-weight:700;line-height:1;color:var(--accent)}
   .proof-stars{font-size:34px;margin-top:10px}
   .proof-line{color:var(--muted);font-size:19px;margin:14px 0 28px}
   .testimonial-card{margin-top:52px;width:100%;max-width:860px;background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:44px 48px 36px;text-align:left;position:relative}
-  .testimonial-mark{font-family:"Barlow Condensed",sans-serif;font-size:88px;line-height:.6;color:var(--amber);font-weight:700;display:block;margin-bottom:22px}
+  .testimonial-mark{font-family:"Barlow Condensed",sans-serif;font-size:88px;line-height:.6;color:var(--accent);font-weight:700;display:block;margin-bottom:22px}
   .testimonial-card blockquote{margin:0;padding:0}
   .testimonial-card blockquote p{font-size:21px;line-height:1.62;color:#eef3f7;margin:0;font-style:italic}
   .testimonial-card blockquote p + p{margin-top:18px}
   .testimonial-attrib{display:flex;align-items:center;gap:16px;margin-top:32px;padding-top:24px;border-top:1px solid var(--line)}
-  .testimonial-avatar{flex:none;width:52px;height:52px;border-radius:50%;background:var(--amber);color:#181006;font-family:"Barlow Condensed",sans-serif;font-size:26px;font-weight:700;display:flex;align-items:center;justify-content:center;line-height:1}
+  .testimonial-avatar{flex:none;width:52px;height:52px;border-radius:50%;background:var(--accent);color:#082f49;font-family:"Barlow Condensed",sans-serif;font-size:26px;font-weight:700;display:flex;align-items:center;justify-content:center;line-height:1}
   .testimonial-name{font-weight:700;font-size:18px;color:#fff;line-height:1.2}
   .testimonial-sub{color:var(--muted);font-size:15px;margin-top:3px;line-height:1.35}
   @media(max-width:640px){.testimonial-card{padding:34px 24px 28px}.testimonial-mark{font-size:72px;margin-bottom:18px}.testimonial-card blockquote p{font-size:19.5px;line-height:1.6}}
   .review-card{margin-top:28px;width:100%;max-width:860px;background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:36px 48px 32px;text-align:left}
-  .review-stars{color:var(--amber);letter-spacing:3px;font-size:25px;line-height:1}
+  .review-stars{color:var(--gold);letter-spacing:3px;font-size:25px;line-height:1}
   .review-card blockquote{margin:20px 0 0;padding:0}
   .review-card blockquote p{font-size:20px;line-height:1.62;color:#eef3f7;margin:0}
   @media(max-width:640px){.review-card{padding:30px 24px 26px}.review-card blockquote p{font-size:19px;line-height:1.6}}
@@ -327,7 +334,7 @@
   .page-hero img.ph-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
   .page-hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,14,19,.55) 0%,rgba(10,14,19,.22) 45%,rgba(10,14,19,.88) 100%)}
   .page-hero-inner{position:relative;z-index:2;padding:158px 0 54px}
-  .page-hero .kicker{color:var(--amber2)}
+  .page-hero .kicker{color:var(--accent2)}
   .page-hero h2{font-size:clamp(46px,7vw,84px);text-shadow:0 4px 30px rgba(0,0,0,.5)}
   .page-hero + section{padding-top:56px}
   @media(max-width:640px){.page-hero-inner{padding:126px 0 42px}}
@@ -336,39 +343,39 @@
   .navdrop{position:relative;flex:none}
   .navdrop-btn{background:none;border:none;cursor:pointer;font:inherit;font-weight:600;font-size:15px;letter-spacing:.04em;text-transform:uppercase;color:#dbe5ee;padding:10px 1px;display:inline-flex;align-items:center;gap:6px;white-space:nowrap;flex:none}
   @media(min-width:1020px) and (max-width:1279px){.navdrop-btn{font-size:14px;letter-spacing:.03em;padding:8px 0;gap:5px}}
-  .navdrop-btn:hover{color:var(--amber2)}
+  .navdrop-btn:hover{color:var(--accent2)}
   .navdrop-btn .chev{width:8px;height:8px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(45deg) translateY(-2px)}
   .navdrop-menu{position:absolute;top:calc(100% + 10px);left:50%;transform:translate(-50%,8px);min-width:230px;background:rgba(15,21,29,.97);border:1px solid var(--line);border-radius:14px;padding:8px;opacity:0;visibility:hidden;transition:opacity .25s ease,transform .25s ease,visibility .25s;box-shadow:0 24px 50px rgba(0,0,0,.5);z-index:60}
   .navdrop:hover .navdrop-menu,.navdrop:focus-within .navdrop-menu,.navdrop.open .navdrop-menu{opacity:1;visibility:visible;transform:translate(-50%,0)}
   .navdrop-menu a{display:block;padding:11px 14px;border-radius:9px;font-size:15px;letter-spacing:.04em;text-transform:none}
   .navdrop-menu a:hover{background:var(--panel2);color:#fff}
-  .navlinks a.active,.navdrop-btn.active{color:var(--amber)}
-  .gm-row.active{color:var(--amber2)}
-  .gm-sub a.active{color:var(--amber2)}
+  .navlinks a.active,.navdrop-btn.active{color:var(--accent)}
+  .gm-row.active{color:var(--accent2)}
+  .gm-sub a.active{color:var(--accent2)}
 
   /* ---------- EXPLORE TILES (home) ---------- */
   .tiles{display:grid;gap:16px;margin-top:44px}
   @media(min-width:700px){.tiles{grid-template-columns:1fr 1fr}}
   @media(min-width:1020px){.tiles{grid-template-columns:repeat(3,1fr)}}
   .tile{display:flex;flex-direction:column;gap:6px;background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:26px;text-decoration:none;transition:border-color .25s ease,background .25s ease}
-  .tile:hover{border-color:rgba(255,138,42,.55);background:var(--panel2)}
+  .tile:hover{border-color:rgba(56,189,248,.55);background:var(--panel2)}
   .tile h3{font-family:"Barlow Condensed",sans-serif;font-size:29px;font-weight:700;text-transform:uppercase;margin:0;line-height:1;color:#fff}
-  .tile h3 span{color:var(--amber)}
+  .tile h3 span{color:var(--accent)}
   .tile p{color:var(--muted);margin:0;font-size:16px}
-  .tile .go{margin-top:12px;color:var(--amber2);font-weight:700;font-size:15px}
+  .tile .go{margin-top:12px;color:var(--accent2);font-weight:700;font-size:15px}
 
   /* ---------- FOOTER ---------- */
   footer{padding:84px 0 40px}
   .foot-grid{display:grid;gap:36px;margin-top:36px}
   @media(min-width:900px){.foot-grid{grid-template-columns:1.2fr 1fr 1fr}}
-  .foot-phone{display:inline-block;font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:clamp(38px,5.6vw,56px);color:var(--amber);text-decoration:none;line-height:1.05}
-  .foot-phone:hover{color:var(--amber2)}
+  .foot-phone{display:inline-block;font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:clamp(38px,5.6vw,56px);color:var(--accent);text-decoration:none;line-height:1.05}
+  .foot-phone:hover{color:var(--accent2)}
   .foot-mail{display:inline-block;color:#e8eef4;font-size:20px;font-weight:600;text-decoration:none;margin-top:12px}
-  .foot-mail:hover{color:var(--amber2)}
-  .foot-block h4{color:var(--amber);font-weight:700;letter-spacing:.28em;text-transform:uppercase;font-size:13px;margin:0 0 12px}
+  .foot-mail:hover{color:var(--accent2)}
+  .foot-block h4{color:var(--accent);font-weight:700;letter-spacing:.28em;text-transform:uppercase;font-size:13px;margin:0 0 12px}
   .foot-block p{margin:0;color:var(--muted);font-size:16.5px}
   .foot-block p b{color:#fff}
-  .foot-block a{color:var(--amber2);font-weight:700;text-decoration:none}
+  .foot-block a{color:var(--accent2);font-weight:700;text-decoration:none}
   .foot-block a:hover{text-decoration:underline}
   .foot-logo{width:120px;margin-top:18px;border-radius:10px}
   .foot-ctas{display:flex;flex-wrap:wrap;gap:12px;margin-top:30px}
@@ -590,7 +597,7 @@
         <li><span><b>Private runway (87TX):</b> no traffic, just flying.</span></li>
         <li><span><b>Full-service shop:</b> expert maintenance and repairs.</span></li>
         <li><span><b>Hangar storage:</b> keep your gyro safe and secure.</span></li>
-        <li><span><b>Stay on site:</b> bunkhouse from $45/night and RV hookups — see <a href="#/stay" style="color:var(--amber2);font-weight:700">Stay With Us</a>.</span></li>
+        <li><span><b>Stay on site:</b> bunkhouse from $45/night and RV hookups — see <a href="#/stay" style="color:var(--accent2);font-weight:700">Stay With Us</a>.</span></li>
       </ul>
     </div>
   </div>
@@ -807,7 +814,7 @@
     </div>
     <h3 class="subhead" style="margin-top:48px">iFly EFB — plan &amp; navigate</h3>
     <p class="body" style="max-width:760px"><strong>iFly EFB</strong> — an excellent, intuitive alternative to ForeFlight: the complete flight planning and navigation solution for Android, Apple, and Windows devices, offering advanced features pilots want in an easy-to-use application. <strong>AutoGyro USA</strong> is the official U.S. representative for AutoGyro GmbH, serving the United States, Mexico, and South America, backed by the most established gyroplane dealer and instructor network in the U.S., providing local access to training, sales, and support.</p>
-    <p class="body" style="max-width:760px;margin-top:14px"><strong style="color:#fff">Get iFly EFB:</strong> <a href="https://apps.apple.com/us/app/ifly-efb/id655202847" target="_blank" rel="noopener" style="color:var(--amber2);font-weight:700;text-decoration:none">App Store →</a> &nbsp;·&nbsp; <a href="https://play.google.com/store/apps/details?id=iFly.GPS" target="_blank" rel="noopener" style="color:var(--amber2);font-weight:700;text-decoration:none">Google Play →</a> &nbsp;·&nbsp; <a href="https://www.iflyefb.com/" target="_blank" rel="noopener" style="color:var(--amber2);font-weight:700;text-decoration:none">Windows / Web →</a></p>
+    <p class="body" style="max-width:760px;margin-top:14px"><strong style="color:#fff">Get iFly EFB:</strong> <a href="https://apps.apple.com/us/app/ifly-efb/id655202847" target="_blank" rel="noopener" style="color:var(--accent2);font-weight:700;text-decoration:none">App Store →</a> &nbsp;·&nbsp; <a href="https://play.google.com/store/apps/details?id=iFly.GPS" target="_blank" rel="noopener" style="color:var(--accent2);font-weight:700;text-decoration:none">Google Play →</a> &nbsp;·&nbsp; <a href="https://www.iflyefb.com/" target="_blank" rel="noopener" style="color:var(--accent2);font-weight:700;text-decoration:none">Windows / Web →</a></p>
     <div class="partners" style="margin-top:28px;max-width:440px"><a class="partner" href="https://www.iflyefb.com/" target="_blank" rel="noopener" aria-label="iFly EFB"><img loading="lazy" decoding="async" src="assets/asset-018.webp" alt="iFly EFB logo" /></a></div>
   </div>
 </section>
@@ -949,7 +956,7 @@
         <li><span>One bedroom with a full bed and 2 twin beds</span></li>
         <li><span>RV parking with full hookups</span></li>
       </ul>
-      <p class="body">Call <a href="tel:+18175173283" style="color:var(--amber2);font-weight:700">(817) 517-3283</a> to book your stay with your training.</p>
+      <p class="body">Call <a href="tel:+18175173283" style="color:var(--accent2);font-weight:700">(817) 517-3283</a> to book your stay with your training.</p>
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
       <img loading="lazy" decoding="async" src="assets/asset-023.webp" alt="Bunkhouse accommodation at Blue Skies Gyros, Blum TX" style="border-radius:14px;width:100%;aspect-ratio:3/4;object-fit:cover" />
@@ -978,12 +985,12 @@
       <div class="fact">
         <h4>Financing</h4>
         <p>Interested in purchasing but need financing? LightStream Financing Company offers excellent rates on unsecured loans, with an online application process that's fast, easy, and painless.</p>
-        <p style="margin-top:14px"><a href="https://www.lightstream.com/" target="_blank" rel="noopener" style="color:var(--amber2);font-weight:700;text-decoration:none">Visit LightStream →</a></p>
+        <p style="margin-top:14px"><a href="https://www.lightstream.com/" target="_blank" rel="noopener" style="color:var(--accent2);font-weight:700;text-decoration:none">Visit LightStream →</a></p>
       </div>
       <div class="fact">
         <h4>Insurance</h4>
         <p>Are gyroplanes insurable? Absolutely! Rates vary with pilot experience, aircraft, and other factors. We recommend Denise Porter at Aviation West Insurance Brokers.</p>
-        <p style="margin-top:14px"><a href="tel:+18887279655" style="color:var(--amber2);font-weight:700;text-decoration:none">Call Denise · 1-(888) 727-9655</a> &nbsp;·&nbsp; <a href="http://www.aviationwest.com/" target="_blank" rel="noopener" style="color:var(--amber2);font-weight:700;text-decoration:none">Aviation West →</a></p>
+        <p style="margin-top:14px"><a href="tel:+18887279655" style="color:var(--accent2);font-weight:700;text-decoration:none">Call Denise · 1-(888) 727-9655</a> &nbsp;·&nbsp; <a href="http://www.aviationwest.com/" target="_blank" rel="noopener" style="color:var(--accent2);font-weight:700;text-decoration:none">Aviation West →</a></p>
       </div>
     </div>
   </div>
