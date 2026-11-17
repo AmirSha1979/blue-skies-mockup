@@ -35,21 +35,81 @@
   /* ---------- NAV ---------- */
   header{position:fixed;inset:0 0 auto 0;z-index:50;transition:background .3s,border-color .3s;border-bottom:1px solid transparent}
   header.scrolled{background:rgba(10,14,19,.92);backdrop-filter:blur(10px);border-bottom-color:var(--line)}
-  .nav{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 0}
-  .brand{font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:26px;letter-spacing:.06em;text-transform:uppercase;text-decoration:none;line-height:1}
-  .brand span{color:var(--amber)}
-  .brand small{display:block;font-size:11px;letter-spacing:.34em;color:var(--muted);font-weight:600;margin-top:3px}
-  .navlinks{display:none;gap:26px}
-  .navlinks a{text-decoration:none;font-weight:600;font-size:15px;letter-spacing:.08em;text-transform:uppercase;color:#dbe5ee;padding:10px 2px}
+  .nav{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:14px 0}
+  .brand{display:flex;align-items:center;gap:11px;flex:none;white-space:nowrap;font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:31px;letter-spacing:.06em;text-transform:uppercase;text-decoration:none;line-height:1}
+  .brand-logo{width:60px;height:60px;flex:none;object-fit:cover;border-radius:12px;border:1px solid rgba(255,255,255,.20);background:#000}
+  .brand-text{display:block;line-height:1;white-space:nowrap}
+  .brand .accent{color:var(--amber)}
+  .brand small{display:block;font-size:13px;letter-spacing:.30em;color:var(--muted);font-weight:600;margin-top:4px;white-space:nowrap}
+  .navlinks{display:none;gap:12px;flex-wrap:nowrap;align-items:center;min-width:0}
+  .navlinks a{text-decoration:none;font-weight:600;font-size:16px;letter-spacing:.05em;text-transform:uppercase;color:#dbe5ee;padding:10px 1px;white-space:nowrap;flex:none}
   .navlinks a:hover{color:var(--amber2)}
-  .navcall{background:var(--amber);color:#16100a !important;text-decoration:none;font-weight:700;padding:12px 20px;border-radius:999px;font-size:15px;white-space:nowrap;min-height:44px;display:inline-flex;align-items:center}
+  .navcall{background:var(--amber);color:#16100a !important;text-decoration:none;font-weight:700;padding:14px 17px;border-radius:999px;font-size:18px;white-space:nowrap;min-height:52px;display:inline-flex;align-items:center;flex:none}
   .navcall:hover{background:var(--amber2)}
   @media(min-width:1020px){.navlinks{display:flex}}
+  @media(min-width:1020px) and (max-width:1279px){
+    .nav{gap:12px}
+    .brand{font-size:24px;gap:9px}
+    .brand-logo{width:48px;height:48px;border-radius:10px}
+    .brand small{font-size:10.5px;letter-spacing:.22em}
+    .navlinks{gap:8px}
+    .navlinks a{font-size:14px;letter-spacing:.03em;padding:8px 0}
+    .navcall{font-size:15px;padding:11px 11px;min-height:46px}
+  }
+
+  /* ---------- GLASS DROP MENU (mobile, Option 2) ---------- */
+  .menu-btn{display:none;width:46px;height:46px;min-height:46px;border:1px solid rgba(255,255,255,.28);background:rgba(10,14,19,.45);backdrop-filter:blur(6px);border-radius:12px;cursor:pointer;padding:0;flex:none;align-items:center;justify-content:center}
+  .menu-btn .mb-lines{position:relative;display:block;width:22px;height:16px}
+  .menu-btn .mb-lines i{position:absolute;left:0;width:22px;height:2.5px;border-radius:2px;background:#fff;transition:transform .45s cubic-bezier(.22,.9,.28,1),opacity .3s,top .45s cubic-bezier(.22,.9,.28,1)}
+  .menu-btn .mb-lines i:nth-child(1){top:0}
+  .menu-btn .mb-lines i:nth-child(2){top:7px}
+  .menu-btn .mb-lines i:nth-child(3){top:14px}
+  body.menu-open .menu-btn .mb-lines i:nth-child(1){top:7px;transform:rotate(45deg)}
+  body.menu-open .menu-btn .mb-lines i:nth-child(2){opacity:0}
+  body.menu-open .menu-btn .mb-lines i:nth-child(3){top:7px;transform:rotate(-45deg)}
+  body.menu-open{overflow:hidden}
+  body.menu-open header{background:rgba(9,14,20,.78);backdrop-filter:blur(20px) saturate(1.25);-webkit-backdrop-filter:blur(20px) saturate(1.25);border-bottom-color:transparent}
+  .glass-menu{position:fixed;inset:0;z-index:60;display:flex;flex-direction:column;background:rgba(9,14,20,.78);backdrop-filter:blur(20px) saturate(1.25);-webkit-backdrop-filter:blur(20px) saturate(1.25);transform:translateY(-103%);visibility:hidden;transition:transform .65s cubic-bezier(.22,.9,.28,1),visibility 0s linear .65s}
+  .glass-menu.open{transform:translateY(0);visibility:visible;transition:transform .65s cubic-bezier(.22,.9,.28,1)}
+  .gm-scroll{flex:1;overflow-y:auto;padding:118px 28px 10px;-webkit-overflow-scrolling:touch}
+  .gm-list{list-style:none;margin:0;padding:0}
+  .gm-item{opacity:0;transform:translateY(16px);transition:opacity .5s ease,transform .55s cubic-bezier(.22,.9,.28,1)}
+  .glass-menu.open .gm-item{opacity:1;transform:translateY(0);transition-delay:var(--d,0s)}
+  .gm-row{display:flex;align-items:center;gap:14px;width:100%;padding:15px 2px;background:none;border:none;border-bottom:1px solid rgba(255,255,255,.09);color:#f2f5f8;font-family:"Barlow Condensed",sans-serif;font-size:30px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;text-decoration:none;cursor:pointer;text-align:left;min-height:56px}
+  .gm-row .tick{flex:none;width:17px;height:3px;border-radius:2px;background:var(--sky)}
+  .gm-row .chev{margin-left:auto;flex:none;width:11px;height:11px;border-right:2.5px solid var(--sky);border-bottom:2.5px solid var(--sky);transform:rotate(45deg);transition:transform .4s ease}
+  .gm-group.expanded .gm-row .chev{transform:rotate(225deg)}
+  .gm-sub{max-height:0;overflow:hidden;transition:max-height .45s ease}
+  .gm-group.expanded .gm-sub{max-height:220px}
+  .gm-sub a{display:block;padding:12px 2px 12px 33px;color:var(--muted);font-size:19px;font-weight:500;text-decoration:none;border-bottom:1px solid rgba(255,255,255,.06);min-height:48px}
+  .gm-sub a:active,.gm-sub a:hover{color:#fff}
+  .gm-foot{flex:none;padding:18px 28px calc(26px + env(safe-area-inset-bottom));border-top:1px solid rgba(255,255,255,.12);background:rgba(9,14,20,.35);opacity:0;transform:translateY(12px);transition:opacity .5s ease .34s,transform .55s ease .34s}
+  .glass-menu.open .gm-foot{opacity:1;transform:translateY(0)}
+  .gm-cta{display:flex;align-items:center;justify-content:center;width:100%;min-height:58px;padding:15px 22px;border-radius:999px;background:#1f7ac0;color:#fff;font-weight:700;font-size:18px;text-decoration:none}
+  .gm-cta:active{background:#2b8bd4}
+  .gm-call{display:block;text-align:center;margin-top:14px;color:var(--muted);font-size:16px;text-decoration:none}
+  .gm-call b{color:#fff}
+  #gyro-info{scroll-margin-top:96px}
+  @media(max-width:1019px){
+    .menu-btn{display:inline-flex}
+    .navcall{margin-left:auto}
+    header{z-index:80}
+  }
+  @media(max-width:860px){
+    .navcall{display:none}
+  }
+  @media(min-width:1020px){.glass-menu{display:none}}
   @media(max-width:640px){
-    .brand{font-size:18px;white-space:nowrap}
-    .brand small{font-size:8px;letter-spacing:.24em}
-    .navcall{padding:9px 12px;font-size:13px}
+    .brand{font-size:21px;white-space:nowrap;gap:10px}
+    .brand-logo{width:48px;height:48px;border-radius:10px}
+    .brand small{font-size:9px;letter-spacing:.24em}
+    .navcall{padding:11px 14px;font-size:15px}
     .nav{padding:10px 0;gap:10px}
+  }
+  @media(max-width:380px){
+    .brand{font-size:18px;gap:8px}
+    .brand-logo{width:42px;height:42px}
+    .brand small{font-size:8px}
   }
   .star-half{background:linear-gradient(90deg,var(--amber) 50%,#4a5866 50%);-webkit-background-clip:text;background-clip:text;color:transparent}
   .banner-strip{margin:0;border-radius:var(--radius);overflow:hidden;border:1px solid var(--line);position:relative;isolation:isolate;background:#16283d}
@@ -229,6 +289,43 @@
   .review .who{margin-top:16px;color:var(--muted);font-size:14px;font-weight:600;letter-spacing:.06em;text-transform:uppercase}
   .placeholder-note{margin-top:22px;color:var(--muted2);font-size:14px;font-style:italic}
 
+
+  /* ---------- CATEGORY PAGES (hash routing) ---------- */
+  [data-page]:not(.page-on){display:none !important}
+  .page-hero{position:relative;overflow:hidden;background:#16283d}
+  .page-hero img.ph-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+  .page-hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,14,19,.55) 0%,rgba(10,14,19,.22) 45%,rgba(10,14,19,.88) 100%)}
+  .page-hero-inner{position:relative;z-index:2;padding:158px 0 54px}
+  .page-hero .kicker{color:var(--amber2)}
+  .page-hero h2{font-size:clamp(46px,7vw,84px);text-shadow:0 4px 30px rgba(0,0,0,.5)}
+  .page-hero + section{padding-top:56px}
+  @media(max-width:640px){.page-hero-inner{padding:126px 0 42px}}
+
+  /* ---------- NAV DROPDOWNS (desktop) ---------- */
+  .navdrop{position:relative;flex:none}
+  .navdrop-btn{background:none;border:none;cursor:pointer;font:inherit;font-weight:600;font-size:16px;letter-spacing:.05em;text-transform:uppercase;color:#dbe5ee;padding:10px 1px;display:inline-flex;align-items:center;gap:7px;white-space:nowrap;flex:none}
+  @media(min-width:1020px) and (max-width:1279px){.navdrop-btn{font-size:14px;letter-spacing:.03em;padding:8px 0;gap:5px}}
+  .navdrop-btn:hover{color:var(--amber2)}
+  .navdrop-btn .chev{width:8px;height:8px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(45deg) translateY(-2px)}
+  .navdrop-menu{position:absolute;top:calc(100% + 10px);left:50%;transform:translate(-50%,8px);min-width:230px;background:rgba(15,21,29,.97);border:1px solid var(--line);border-radius:14px;padding:8px;opacity:0;visibility:hidden;transition:opacity .25s ease,transform .25s ease,visibility .25s;box-shadow:0 24px 50px rgba(0,0,0,.5);z-index:60}
+  .navdrop:hover .navdrop-menu,.navdrop:focus-within .navdrop-menu,.navdrop.open .navdrop-menu{opacity:1;visibility:visible;transform:translate(-50%,0)}
+  .navdrop-menu a{display:block;padding:11px 14px;border-radius:9px;font-size:15px;letter-spacing:.04em;text-transform:none}
+  .navdrop-menu a:hover{background:var(--panel2);color:#fff}
+  .navlinks a.active,.navdrop-btn.active{color:var(--amber)}
+  .gm-row.active{color:var(--amber2)}
+  .gm-sub a.active{color:var(--amber2)}
+
+  /* ---------- EXPLORE TILES (home) ---------- */
+  .tiles{display:grid;gap:16px;margin-top:44px}
+  @media(min-width:700px){.tiles{grid-template-columns:1fr 1fr}}
+  @media(min-width:1020px){.tiles{grid-template-columns:repeat(3,1fr)}}
+  .tile{display:flex;flex-direction:column;gap:6px;background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:26px;text-decoration:none;transition:border-color .25s ease,background .25s ease}
+  .tile:hover{border-color:rgba(255,138,42,.55);background:var(--panel2)}
+  .tile h3{font-family:"Barlow Condensed",sans-serif;font-size:29px;font-weight:700;text-transform:uppercase;margin:0;line-height:1;color:#fff}
+  .tile h3 span{color:var(--amber)}
+  .tile p{color:var(--muted);margin:0;font-size:16px}
+  .tile .go{margin-top:12px;color:var(--amber2);font-weight:700;font-size:15px}
+
   /* ---------- FOOTER ---------- */
   footer{padding:84px 0 40px}
   .foot-grid{display:grid;gap:36px;margin-top:36px}
@@ -259,24 +356,73 @@
 
 <header id="siteHeader">
   <div class="wrap nav">
-    <a class="brand" href="#top">Blue Skies <span>Gyros</span><small>Blum · Texas</small></a>
+    <a class="brand" href="#/"><img class="brand-logo" src="assets/asset-001.webp" alt="Fainting Goat Airport logo" /><span class="brand-text">Blue Skies <span class="accent">Gyros</span><small>Blum · Texas</small></span></a>
     <nav class="navlinks" aria-label="Main">
-      <a href="#training">Training</a>
-      <a href="#models">Models</a>
-      <a href="#services">Services</a>
-      <a href="#craig">Meet Craig</a>
-      <a href="#stay">Stay</a>
-      <a href="#contact">Contact</a>
+      <a href="#/" data-nav="home">Home</a>
+      <a href="#/about" data-nav="about">About Us</a>
+      <div class="navdrop">
+        <button class="navdrop-btn" type="button" data-nav="sales" aria-haspopup="true" aria-expanded="false">Sales <span class="chev"></span></button>
+        <div class="navdrop-menu">
+          <a href="#/sales-info" data-nav="sales-info">Information</a>
+          <a href="#/sales-autogyro" data-nav="sales-autogyro">Autogyro</a>
+        </div>
+      </div>
+      <a href="#/services" data-nav="services">Services</a>
+      <a href="#/training" data-nav="training">Training</a>
+      <a href="#/contact" data-nav="contact">Contact</a>
+      <div class="navdrop">
+        <button class="navdrop-btn" type="button" data-nav="more" aria-haspopup="true" aria-expanded="false">More <span class="chev"></span></button>
+        <div class="navdrop-menu">
+          <a href="#/gallery" data-nav="gallery">Gallery</a>
+          <a href="#/stay" data-nav="stay">Accommodations</a>
+          <a href="#/financing" data-nav="financing">Financing</a>
+          <a href="#/links" data-nav="links">Links</a>
+        </div>
+      </div>
     </nav>
     <a class="navcall" href="tel:+18175173283">☎ (817) 517-3283</a>
+    <button class="menu-btn" id="menuBtn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="glassMenu"><span class="mb-lines"><i></i><i></i><i></i></span></button>
   </div>
 </header>
 
+<!-- GLASS DROP MENU (mobile, Option 2) -->
+<div class="glass-menu" id="glassMenu" aria-hidden="true">
+  <div class="gm-scroll">
+    <ul class="gm-list">
+      <li class="gm-item" style="--d:.10s"><a class="gm-row gm-link" href="#/" data-nav="home"><span class="tick"></span>Home</a></li>
+      <li class="gm-item" style="--d:.17s"><a class="gm-row gm-link" href="#/about" data-nav="about"><span class="tick"></span>About Us</a></li>
+      <li class="gm-item gm-group" style="--d:.24s">
+        <button class="gm-row gm-toggle" type="button" aria-expanded="false"><span class="tick"></span>Sales<span class="chev"></span></button>
+        <div class="gm-sub">
+          <a class="gm-link" href="#/sales-info" data-nav="sales-info">Information</a>
+          <a class="gm-link" href="#/sales-autogyro" data-nav="sales-autogyro">Autogyro</a>
+        </div>
+      </li>
+      <li class="gm-item" style="--d:.31s"><a class="gm-row gm-link" href="#/services" data-nav="services"><span class="tick"></span>Services</a></li>
+      <li class="gm-item" style="--d:.38s"><a class="gm-row gm-link" href="#/training" data-nav="training"><span class="tick"></span>Training</a></li>
+      <li class="gm-item" style="--d:.45s"><a class="gm-row gm-link" href="#/contact" data-nav="contact"><span class="tick"></span>Contact</a></li>
+      <li class="gm-item gm-group" style="--d:.52s">
+        <button class="gm-row gm-toggle" type="button" aria-expanded="false"><span class="tick"></span>More<span class="chev"></span></button>
+        <div class="gm-sub">
+          <a class="gm-link" href="#/gallery" data-nav="gallery">Gallery</a>
+          <a class="gm-link" href="#/stay" data-nav="stay">Accommodations</a>
+          <a class="gm-link" href="#/financing" data-nav="financing">Financing</a>
+          <a class="gm-link" href="#/links" data-nav="links">Links</a>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <div class="gm-foot">
+    <a class="gm-cta gm-link" href="#/training">Book an Intro Flight — $110</a>
+    <a class="gm-call" href="tel:+18175173283">or call Craig · <b>(817) 517-3283</b></a>
+  </div>
+</div>
+
 <!-- 1 · HERO — the site's own intro video -->
-<section class="hero" id="top" style="padding:0">
+<section class="hero" id="top" style="padding:0" data-page="home">
   <div class="hero-bg">
-    <video autoplay muted loop playsinline poster="assets/asset-001.webp" aria-label="Blue Skies Gyros intro video — gyroplanes at Fainting Goat Airport">
-      <source src="assets/asset-002.webm" type="video/webm" />
+    <video autoplay muted loop playsinline poster="assets/asset-002.webp" aria-label="Blue Skies Gyros intro video — gyroplanes at Fainting Goat Airport">
+      <source src="assets/asset-003.webm" type="video/webm" />
     </video>
   </div>
   <div class="hero-shade"></div>
@@ -285,8 +431,8 @@
     <h1>Experience the<br><span class="thin">Freedom of Flight</span></h1>
     <p class="hero-tag">Texas' premier gyroplane training &amp; sales center with private airport access — train, buy and service your gyro with <strong>Craig McPherson</strong> at Fainting Goat Airport.</p>
     <div class="hero-ctas">
-      <a class="btn btn-amber" href="#training">Start Training — Intro Flight $110</a>
-      <a class="btn btn-ghost" href="#models">Buy a Gyro →</a>
+      <a class="btn btn-amber" href="#/training">Start Training — Intro Flight $110</a>
+      <a class="btn btn-ghost" href="#/sales-autogyro">Buy a Gyro →</a>
       <a class="btn btn-ghost" href="tel:+18175173283">Call Craig · (817) 517-3283</a>
     </div>
     <p class="hero-meta">Fainting Goat Airport (<b>87TX</b>) · Authorized <b>AutoGyro</b> &amp; powered parachute dealer · <b>27+ years</b> of aviation experience</p>
@@ -294,7 +440,7 @@
 </section>
 
 <!-- 2 · TRUST STRIP -->
-<div class="trust" aria-label="Credentials">
+<div class="trust" aria-label="Credentials" data-page="home">
   <div class="trust-grid">
     <div class="trust-item"><div class="trust-num">27<em>+</em></div><div class="trust-lbl">Years of aviation experience</div></div>
     <div class="trust-item"><div class="trust-num">5,000<em>+</em></div><div class="trust-lbl">Hours flying &amp; instructing</div></div>
@@ -304,12 +450,12 @@
   </div>
 </div>
 
-<div class="wrap" style="padding-top:48px">
-  <figure class="banner-strip"><img loading="lazy" decoding="async" src="assets/asset-003.webp" srcset="assets/asset-003.webp 1162w, assets/asset-004.webp 2324w" sizes="(min-width:1280px) 1240px, calc(100vw - 40px)" alt="A silver AutoGyro Cavalon gyroplane on the grass at Fainting Goat Airport" /></figure>
+<div class="wrap" style="padding-top:48px" data-page="home">
+  <figure class="banner-strip"><img loading="lazy" decoding="async" src="assets/asset-004.webp" srcset="assets/asset-004.webp 1162w, assets/asset-005.webp 2324w" sizes="(min-width:1280px) 1240px, calc(100vw - 40px)" alt="A silver AutoGyro Cavalon gyroplane on the grass at Fainting Goat Airport" /></figure>
 </div>
 
 <!-- 3 · OUR EXPERTISE — the site's own Build / Maintain / Train -->
-<section id="expertise">
+<section id="expertise" data-page="home">
   <div class="wrap">
     <p class="kicker">Our expertise</p>
     <h2>Build it. Fly it.<br>We keep it flying.</h2>
@@ -318,7 +464,7 @@
     <div class="cards">
       <article class="card" id="train-card">
         <div class="card-img">
-          <img loading="lazy" decoding="async" src="assets/asset-005.webp" alt="Craig briefing a student beside a red gyroplane at Blue Skies Gyros" />
+          <img loading="lazy" decoding="async" src="assets/asset-006.webp" alt="Craig briefing a student beside a red gyroplane at Blue Skies Gyros" />
           <span class="card-price">Intro flight <span>$110</span></span>
         </div>
         <div class="card-body">
@@ -330,13 +476,13 @@
             <li>$150/hr in your own aircraft</li>
             <li>First-time pilots: plan on 20–25 hours</li>
           </ul>
-          <div class="card-link"><a href="#training">See training &amp; pricing →</a></div>
+          <div class="card-link"><a href="#/training">See training &amp; pricing →</a></div>
         </div>
       </article>
 
       <article class="card" id="build-card">
         <div class="card-img">
-          <img loading="lazy" decoding="async" src="assets/asset-006.webp" alt="Builder assist at Blue Skies Gyros — gyroplane kit assembly with a technician" />
+          <img loading="lazy" decoding="async" src="assets/asset-007.webp" alt="Builder assist at Blue Skies Gyros — gyroplane kit assembly with a technician" />
           <span class="card-price">Builder assist <span>$3,000–$5,000</span></span>
         </div>
         <div class="card-body">
@@ -348,13 +494,13 @@
             <li>Kits from ~12 weeks, factory schedule permitting</li>
             <li>2,000+ AutoGyro aircraft flying worldwide</li>
           </ul>
-          <div class="card-link"><a href="#services">How builder assist works →</a></div>
+          <div class="card-link"><a href="#/services">How builder assist works →</a></div>
         </div>
       </article>
 
       <article class="card" id="maintain-card">
         <div class="card-img">
-          <img loading="lazy" decoding="async" src="assets/asset-007.webp" alt="Repairs and maintenance work at the Blue Skies Gyros shop" />
+          <img loading="lazy" decoding="async" src="assets/asset-008.webp" alt="Repairs and maintenance work at the Blue Skies Gyros shop" />
           <span class="card-price">Storage <span>&amp; service on site</span></span>
         </div>
         <div class="card-body">
@@ -366,18 +512,43 @@
             <li>Rotax engine services</li>
             <li>Hangar storage — short &amp; long term</li>
           </ul>
-          <div class="card-link"><a href="#maintain">Request service →</a></div>
+          <div class="card-link"><a href="#/services">Request service →</a></div>
         </div>
       </article>
     </div>
   </div>
 </section>
 
+<!-- EXPLORE — category tiles (home) -->
+<section data-page="home" style="padding-top:0">
+  <div class="wrap">
+    <p class="kicker">Explore</p>
+    <h2>Where to<br>next?</h2>
+    <div class="tiles">
+      <a class="tile" href="#/about"><h3>About <span>Us</span></h3><p>Craig's story, his credentials, and his own private airport in Blum, Texas.</p><span class="go">Meet Craig →</span></a>
+      <a class="tile" href="#/sales-autogyro"><h3>AutoGyro <span>Models</span></h3><p>Cavalon, Calidus and MTO Sport — full specs on the gyros we sell.</p><span class="go">See the models →</span></a>
+      <a class="tile" href="#/sales-info"><h3>Gyroplane <span>Info</span></h3><p>How a gyroplane flies, why it can't stall, and what buyers should know.</p><span class="go">Learn the basics →</span></a>
+      <a class="tile" href="#/gallery"><h3>The <span>Gallery</span></h3><p>Life at 87TX — the field, the machines and the people who fly them.</p><span class="go">See photos →</span></a>
+      <a class="tile" href="#/stay"><h3>Stay <span>With Us</span></h3><p>Bunkhouse from $45 a night, a furnished apartment, and RV hookups.</p><span class="go">Accommodations →</span></a>
+      <a class="tile" href="#/financing"><h3>Financing <span>&amp; Insurance</span></h3><p>LightStream financing and Aviation West insurance for your purchase.</p><span class="go">How buying works →</span></a>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT — page hero -->
+<div class="page-hero" data-page="about">
+  <img class="ph-bg" loading="lazy" decoding="async" src="assets/asset-009.webp" alt="" />
+  <div class="wrap page-hero-inner">
+    <p class="kicker">About Us</p>
+    <h2>Meet the team<br>behind the gyros.</h2>
+  </div>
+</div>
+
 <!-- 4 · FACILITY -->
-<section class="alt" id="facility">
+<section class="alt" id="facility" data-page="about">
   <div class="wrap split-grid">
     <figure class="split-photo">
-      <img loading="lazy" decoding="async" src="assets/asset-001.webp" alt="A red AutoGyro Calidus and a green gyroplane on the grass at Fainting Goat Airport, pilots preparing to fly" />
+      <img loading="lazy" decoding="async" src="assets/asset-002.webp" alt="A red AutoGyro Calidus and a green gyroplane on the grass at Fainting Goat Airport, pilots preparing to fly" />
       <figcaption>Fainting Goat Airport (87TX) <span>· Blum, Texas</span></figcaption>
     </figure>
     <div>
@@ -389,14 +560,14 @@
         <li><span><b>Private runway (87TX):</b> no traffic, just flying.</span></li>
         <li><span><b>Full-service shop:</b> expert maintenance and repairs.</span></li>
         <li><span><b>Hangar storage:</b> keep your gyro safe and secure.</span></li>
-        <li><span><b>Stay on site:</b> bunkhouse from $45/night and RV hookups — see <a href="#stay" style="color:var(--amber2);font-weight:700">Stay With Us</a>.</span></li>
+        <li><span><b>Stay on site:</b> bunkhouse from $45/night and RV hookups — see <a href="#/stay" style="color:var(--amber2);font-weight:700">Stay With Us</a>.</span></li>
       </ul>
     </div>
   </div>
 </section>
 
 <!-- 5 · MEET CRAIG — full story from the About Us page -->
-<section id="craig">
+<section id="craig" data-page="about">
   <div class="wrap split-grid">
     <div>
       <p class="kicker">Meet Craig</p>
@@ -415,7 +586,7 @@
     </div>
     <div>
       <figure class="split-photo">
-        <img loading="lazy" decoding="async" src="assets/asset-008.webp" alt="Craig McPherson (left) with a member of the Blue Skies Gyros team in the shop at Fainting Goat Airport" style="aspect-ratio:3/3.4" />
+        <img loading="lazy" decoding="async" src="assets/asset-009.webp" alt="Craig McPherson (left) with a member of the Blue Skies Gyros team in the shop at Fainting Goat Airport" style="aspect-ratio:3/3.4" />
         <figcaption>Craig &amp; the team <span>· “We treat every customer like family. Your safety and enjoyment are our top priorities.”</span></figcaption>
       </figure>
       <figure class="split-photo" style="margin-top:14px">
@@ -431,10 +602,18 @@
   </div>
 </section>
 
+<!-- TRAINING — page hero -->
+<div class="page-hero" data-page="training">
+  <img class="ph-bg" loading="lazy" decoding="async" src="assets/asset-010.webp" alt="" />
+  <div class="wrap page-hero-inner">
+    <p class="kicker">Training</p>
+    <h2>Learn to fly<br>with Craig.</h2>
+  </div>
+</div>
+
 <!-- 6 · TRAINING — full detail from the Training page -->
-<section class="alt" id="training">
+<section class="alt" id="training" data-page="training">
   <div class="wrap">
-    <figure class="banner-strip" style="margin-bottom:44px"><img loading="lazy" decoding="async" src="assets/asset-009.webp" srcset="assets/asset-009.webp 1162w, assets/asset-010.webp 2324w" sizes="(min-width:1280px) 1240px, calc(100vw - 40px)" alt="A student and instructor in a red gyroplane on the grass at Fainting Goat Airport, ready for a training flight" /></figure>
     <p class="kicker">Flight training</p>
     <h2>Experience matters.</h2>
     <p class="section-lede">Craig has more than 5,000 hours of flying and instructing, with 3,000+ in gyros alone. First-time pilots should plan on 20–25 hours of instruction; transitioning pilots average 10–15 hours of CFI training plus a proficiency checkride with a different CFI.</p>
@@ -493,16 +672,25 @@
   </div>
 </section>
 
+<!-- SALES · AUTOGYRO — page hero -->
+<div class="page-hero" data-page="sales-autogyro">
+  <img class="ph-bg" loading="lazy" decoding="async" src="assets/asset-013.webp" alt="" />
+  <div class="wrap page-hero-inner">
+    <p class="kicker">Sales — AutoGyro</p>
+    <h2>The AutoGyro<br>range.</h2>
+  </div>
+</div>
+
 <!-- 7 · MODELS — AutoGyro range with the site's real specs -->
-<section id="models">
+<section id="models" data-page="sales-autogyro">
   <div class="wrap">
     <p class="kicker">AutoGyro models</p>
     <h2>Best in class<br>gyroplanes.</h2>
-    <p class="section-lede">From single seaters to two seaters, we're dedicated to selling the best in class gyros — the best mix of safety, performance, and aesthetics. Also known as gyrocopters, autogyros or rotaplanes, a gyroplane uses an unpowered rotor in autorotation for lift and an engine-driven propeller for thrust. It will not stall or spin — and in an engine failure, the pilot glides down and lands gently, under full control. While similar to a helicopter rotor in appearance, the gyroplane's rotor must have air flowing through the rotor disc to generate rotation.</p>
+    <p class="section-lede">From single seaters to two seaters, we're dedicated to selling the best in class gyros — the best mix of safety, performance, and aesthetics.</p>
 
     <div class="cards">
       <article class="model">
-        <div class="model-img"><img loading="lazy" decoding="async" src="assets/asset-013.webp" alt="AutoGyro Cavalon — enclosed side-by-side gyroplane" /></div>
+        <div class="model-img"><img loading="lazy" decoding="async" src="assets/asset-014.webp" alt="AutoGyro Cavalon — enclosed side-by-side gyroplane" /></div>
         <div class="model-body">
           <h3>Cavalon</h3>
           <div class="spec-list">
@@ -519,7 +707,7 @@
       </article>
 
       <article class="model">
-        <div class="model-img"><img loading="lazy" decoding="async" src="assets/asset-014.webp" alt="AutoGyro Calidus — enclosed tandem gyroplane" /></div>
+        <div class="model-img"><img loading="lazy" decoding="async" src="assets/asset-015.webp" alt="AutoGyro Calidus — enclosed tandem gyroplane" /></div>
         <div class="model-body">
           <h3>Calidus</h3>
           <div class="spec-list">
@@ -536,7 +724,7 @@
       </article>
 
       <article class="model">
-        <div class="model-img"><img loading="lazy" decoding="async" src="assets/asset-015.webp" alt="AutoGyro MTO Sport — open-cockpit tandem gyroplane" /></div>
+        <div class="model-img"><img loading="lazy" decoding="async" src="assets/asset-016.webp" alt="AutoGyro MTO Sport — open-cockpit tandem gyroplane" /></div>
         <div class="model-body">
           <h3>MTO Sport <span style="font-size:19px;color:var(--muted)">(2019 / Classic)</span></h3>
           <div class="spec-list">
@@ -552,6 +740,24 @@
         </div>
       </article>
     </div>
+  </div>
+</section>
+
+<!-- SALES · INFORMATION — page hero -->
+<div class="page-hero" data-page="sales-info">
+  <img class="ph-bg" loading="lazy" decoding="async" src="assets/asset-017.webp" alt="" />
+  <div class="wrap page-hero-inner">
+    <p class="kicker">Sales — Information</p>
+    <h2>Know before<br>you buy.</h2>
+  </div>
+</div>
+
+<!-- 7b · GYROPLANE INFORMATION — facts, safety, performance & iFly -->
+<section id="gyro-info" data-page="sales-info">
+  <div class="wrap">
+    <p class="kicker">Gyroplane information</p>
+    <h2>What is a<br>gyroplane?</h2>
+    <p class="section-lede">Also known as gyrocopters, autogyros or rotaplanes, a gyroplane uses an unpowered rotor in autorotation for lift and an engine-driven propeller for thrust. It will not stall or spin — and in an engine failure, the pilot glides down and lands gently, under full control. While similar to a helicopter rotor in appearance, the gyroplane's rotor must have air flowing through the rotor disc to generate rotation.</p>
 
     <h3 class="subhead" style="margin-top:48px">Gyroplane facts</h3>
     <ul class="checklist">
@@ -569,18 +775,30 @@
       <div class="fact"><h4>Performance</h4><p>Minimal takeoff distances (typically 30–300 ft) and very short landings (0–30 ft), with a wide speed range including safe very slow flight. A gyroplane costs about 10% of a helicopter to own, yet can do about 90% of what a helicopter can — it just can't hover or take off vertically.</p></div>
       <div class="fact"><h4>Aesthetics</h4><p>Appearances make a huge impression, so we focus on gyroplanes with eye-catching designs that do not sacrifice the safety of the aircraft. Cost-to-power is a problem for any plane — we provide an array of options to suit your needs and performance output.</p></div>
     </div>
+    <h3 class="subhead" style="margin-top:48px">iFly EFB — plan &amp; navigate</h3>
+    <p class="body" style="max-width:760px"><strong>iFly EFB</strong> — an excellent, intuitive alternative to ForeFlight: the complete flight planning and navigation solution for Android, Apple, and Windows devices, offering advanced features pilots want in an easy-to-use application. <strong>AutoGyro USA</strong> is the official U.S. representative for AutoGyro GmbH, serving the United States, Mexico, and South America, backed by the most established gyroplane dealer and instructor network in the U.S., providing local access to training, sales, and support.</p>
+    <p class="body" style="max-width:760px;margin-top:14px"><strong style="color:#fff">Get iFly EFB:</strong> <a href="https://apps.apple.com/us/app/ifly-efb/id655202847" target="_blank" rel="noopener" style="color:var(--amber2);font-weight:700;text-decoration:none">App Store →</a> &nbsp;·&nbsp; <a href="https://play.google.com/store/apps/details?id=iFly.GPS" target="_blank" rel="noopener" style="color:var(--amber2);font-weight:700;text-decoration:none">Google Play →</a> &nbsp;·&nbsp; <a href="https://www.iflyefb.com/" target="_blank" rel="noopener" style="color:var(--amber2);font-weight:700;text-decoration:none">Windows / Web →</a></p>
+    <div class="partners" style="margin-top:28px;max-width:440px"><a class="partner" href="https://www.iflyefb.com/" target="_blank" rel="noopener" aria-label="iFly EFB"><img loading="lazy" decoding="async" src="assets/asset-018.webp" alt="iFly EFB logo" /></a></div>
   </div>
 </section>
 
+<!-- SERVICES — page hero -->
+<div class="page-hero" data-page="services">
+  <img class="ph-bg" loading="lazy" decoding="async" src="assets/asset-019.webp" alt="" />
+  <div class="wrap page-hero-inner">
+    <p class="kicker">Services</p>
+    <h2>We keep gyros<br>flying.</h2>
+  </div>
+</div>
+
 <!-- 8 · SERVICES + BOOKING FORM -->
-<section class="alt" id="services">
+<section class="alt" id="services" data-page="services">
   <div class="wrap">
-    <figure class="banner-strip" style="margin-bottom:44px"><img loading="lazy" decoding="async" src="assets/asset-016.webp" srcset="assets/asset-016.webp 1162w, assets/asset-017.webp 2324w" sizes="(min-width:1280px) 1240px, calc(100vw - 40px)" alt="Close-up of a gyroplane cockpit and its EXPERIMENTAL airframe lettering at Blue Skies Gyros" /></figure>
     <p class="kicker">Our services</p>
     <h2>Build · Store ·<br>Repair &amp; maintain.</h2>
     <div class="cards">
       <article class="card">
-        <div class="card-img"><img loading="lazy" decoding="async" src="assets/asset-006.webp" alt="Builder assist — assembling a gyroplane kit with a Blue Skies technician" /></div>
+        <div class="card-img"><img loading="lazy" decoding="async" src="assets/asset-007.webp" alt="Builder assist — assembling a gyroplane kit with a Blue Skies technician" /></div>
         <div class="card-body">
           <h3><small>Builder assist</small>Build with us</h3>
           <p>Complete your aircraft with one of our technicians and have confidence in its construction. Craig is certified, with shop space and tools to make your assembly enjoyable and rewarding.</p>
@@ -592,7 +810,7 @@
         </div>
       </article>
       <article class="card">
-        <div class="card-img"><img loading="lazy" decoding="async" src="assets/asset-018.webp" alt="Aircraft storage — gyroplanes hangared at Fainting Goat Airport" /></div>
+        <div class="card-img"><img loading="lazy" decoding="async" src="assets/asset-020.webp" alt="Aircraft storage — gyroplanes hangared at Fainting Goat Airport" /></div>
         <div class="card-body">
           <h3><small>Aircraft storage</small>Hangar it here</h3>
           <p>Need to store your aircraft? We have hangar storage at the field and can provide short and long term storage options — fly in, and your gyro stays safe and secure.</p>
@@ -604,7 +822,7 @@
         </div>
       </article>
       <article class="card">
-        <div class="card-img"><img loading="lazy" decoding="async" src="assets/asset-007.webp" alt="Repairs and maintenance at the Blue Skies Gyros shop" /></div>
+        <div class="card-img"><img loading="lazy" decoding="async" src="assets/asset-008.webp" alt="Repairs and maintenance at the Blue Skies Gyros shop" /></div>
         <div class="card-body">
           <h3><small>Repairs &amp; maintenance</small>Full service</h3>
           <p>We support everything from annuals to structural repairs, and can assist with Rotax-related engine services — a complete range of FAA and LSA certified service for your light sport aircraft.</p>
@@ -631,7 +849,7 @@
   </div>
 </section>
 
-<section id="maintain">
+<section id="maintain" data-page="services">
   <div class="wrap maint-grid">
     <div>
       <p class="kicker">Maintenance &amp; service</p>
@@ -645,7 +863,7 @@
         <div class="spec"><b>Builder assist</b><span>$3,000–$5,000 · 2–4 weeks</span></div>
         <div class="spec"><b>Hangar storage</b><span>Short &amp; long term</span></div>
       </div>
-      <div class="maint-img"><img loading="lazy" decoding="async" src="assets/asset-019.webp" alt="Gyroplane in the shop at Blue Skies Gyros during maintenance" /></div>
+      <div class="maint-img"><img loading="lazy" decoding="async" src="assets/asset-021.webp" alt="Gyroplane in the shop at Blue Skies Gyros during maintenance" /></div>
     </div>
 
     <form id="serviceForm" novalidate>
@@ -678,8 +896,17 @@
   </div>
 </section>
 
+<!-- ACCOMMODATIONS — page hero -->
+<div class="page-hero" data-page="stay">
+  <img class="ph-bg" loading="lazy" decoding="async" src="assets/asset-022.webp" alt="" />
+  <div class="wrap page-hero-inner">
+    <p class="kicker">More — Accommodations</p>
+    <h2>Sleep at<br>the airport.</h2>
+  </div>
+</div>
+
 <!-- 9 · STAY WITH US -->
-<section class="alt" id="stay">
+<section class="alt" id="stay" data-page="stay">
   <div class="wrap split-grid">
     <div>
       <p class="kicker">Accommodations</p>
@@ -695,16 +922,25 @@
       <p class="body">Call <a href="tel:+18175173283" style="color:var(--amber2);font-weight:700">(817) 517-3283</a> to book your stay with your training.</p>
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
-      <img loading="lazy" decoding="async" src="assets/asset-020.webp" alt="Bunkhouse accommodation at Blue Skies Gyros, Blum TX" style="border-radius:14px;width:100%;aspect-ratio:3/4;object-fit:cover" />
-      <img loading="lazy" decoding="async" src="assets/asset-021.webp" alt="Furnished apartment bedroom at Blue Skies Gyros" style="border-radius:14px;width:100%;aspect-ratio:3/4;object-fit:cover" />
+      <img loading="lazy" decoding="async" src="assets/asset-023.webp" alt="Bunkhouse accommodation at Blue Skies Gyros, Blum TX" style="border-radius:14px;width:100%;aspect-ratio:3/4;object-fit:cover" />
+      <img loading="lazy" decoding="async" src="assets/asset-024.webp" alt="Furnished apartment bedroom at Blue Skies Gyros" style="border-radius:14px;width:100%;aspect-ratio:3/4;object-fit:cover" />
       <img loading="lazy" decoding="async" src="assets/asset-022.webp" alt="Kitchenette and living area of the on-site apartment" style="border-radius:14px;width:100%;aspect-ratio:3/4;object-fit:cover" />
-      <img loading="lazy" decoding="async" src="assets/asset-023.webp" alt="Second bedroom of the on-site apartment at Fainting Goat Airport" style="border-radius:14px;width:100%;aspect-ratio:3/4;object-fit:cover" />
+      <img loading="lazy" decoding="async" src="assets/asset-025.webp" alt="Second bedroom of the on-site apartment at Fainting Goat Airport" style="border-radius:14px;width:100%;aspect-ratio:3/4;object-fit:cover" />
     </div>
   </div>
 </section>
 
+<!-- FINANCING — page hero -->
+<div class="page-hero" data-page="financing">
+  <img class="ph-bg" loading="lazy" decoding="async" src="assets/asset-026.webp" alt="" />
+  <div class="wrap page-hero-inner">
+    <p class="kicker">More — Financing</p>
+    <h2>Own your<br>gyro.</h2>
+  </div>
+</div>
+
 <!-- 10 · FINANCING & INSURANCE -->
-<section id="financing">
+<section id="financing" data-page="financing">
   <div class="wrap">
     <p class="kicker">Financing &amp; insurance</p>
     <h2>Buying? Here's<br>how it works.</h2>
@@ -723,37 +959,53 @@
   </div>
 </section>
 
+<!-- GALLERY — page hero -->
+<div class="page-hero" data-page="gallery">
+  <img class="ph-bg" loading="lazy" decoding="async" src="assets/asset-027.webp" alt="" />
+  <div class="wrap page-hero-inner">
+    <p class="kicker">More — Gallery</p>
+    <h2>From the<br>field.</h2>
+  </div>
+</div>
+
 <!-- 11 · GALLERY — the site's real gallery photos -->
-<section class="alt" id="gallery" style="padding-bottom:96px">
+<section class="alt" id="gallery" style="padding-bottom:96px" data-page="gallery">
   <div class="wrap">
     <p class="kicker">Gallery</p>
     <h2>Life at 87TX</h2>
     <p class="section-lede">Straight from the Blue Skies Gyros gallery — the field, the machines and the people who fly them.</p>
     <div class="gallery">
-      <figure><img loading="lazy" decoding="async" src="assets/asset-001.webp" alt="Red AutoGyro Calidus and green gyroplane on the grass at Fainting Goat Airport" /><figcaption>Calidus &amp; MTO on the grass at 87TX</figcaption></figure>
-      <figure><img loading="lazy" decoding="async" src="assets/asset-024.webp" alt="Red gyroplane with two helmeted pilots on the field, a powered parachute flying overhead" /><figcaption>Ready to fly — PPC overhead</figcaption></figure>
-      <figure><img loading="lazy" decoding="async" src="assets/asset-025.webp" alt="Gyroplanes flying and parked at Blue Skies Gyros, Blum Texas" /><figcaption>From the Blue Skies gallery</figcaption></figure>
+      <figure><img loading="lazy" decoding="async" src="assets/asset-002.webp" alt="Red AutoGyro Calidus and green gyroplane on the grass at Fainting Goat Airport" /><figcaption>Calidus &amp; MTO on the grass at 87TX</figcaption></figure>
+      <figure><img loading="lazy" decoding="async" src="assets/asset-028.webp" alt="Red gyroplane with two helmeted pilots on the field, a powered parachute flying overhead" /><figcaption>Ready to fly — PPC overhead</figcaption></figure>
+      <figure><img loading="lazy" decoding="async" src="assets/asset-013.webp" alt="Gyroplanes flying and parked at Blue Skies Gyros, Blum Texas" /><figcaption>From the Blue Skies gallery</figcaption></figure>
       <figure><img loading="lazy" decoding="async" src="assets/asset-026.webp" alt="Gyroplane at Fainting Goat Airport" /><figcaption>From the Blue Skies gallery</figcaption></figure>
-      <figure><img loading="lazy" decoding="async" src="assets/asset-019.webp" alt="Gyroplane in the shop at Blue Skies Gyros" /><figcaption>In the shop</figcaption></figure>
+      <figure><img loading="lazy" decoding="async" src="assets/asset-021.webp" alt="Gyroplane in the shop at Blue Skies Gyros" /><figcaption>In the shop</figcaption></figure>
       <figure><img loading="lazy" decoding="async" src="assets/asset-027.webp" alt="Gyroplanes at Blue Skies Gyros, Texas" /><figcaption>From the Blue Skies gallery</figcaption></figure>
-      <figure><img loading="lazy" decoding="async" src="assets/asset-028.webp" alt="Pilot and gyroplane at Fainting Goat Airport" /><figcaption>From the Blue Skies gallery</figcaption></figure>
-      <figure><img loading="lazy" decoding="async" src="assets/asset-029.webp" alt="Gyroplane flying over the Texas countryside" /><figcaption>Over the farm country</figcaption></figure>
+      <figure><img loading="lazy" decoding="async" src="assets/asset-029.webp" alt="Pilot and gyroplane at Fainting Goat Airport" /><figcaption>From the Blue Skies gallery</figcaption></figure>
+      <figure><img loading="lazy" decoding="async" src="assets/asset-017.webp" alt="Gyroplane flying over the Texas countryside" /><figcaption>Over the farm country</figcaption></figure>
       <figure><img loading="lazy" decoding="async" src="assets/asset-030.webp" alt="Gyroplane detail at Blue Skies Gyros" /><figcaption>From the Blue Skies gallery</figcaption></figure>
     </div>
   </div>
 </section>
 
+<!-- LINKS — page hero -->
+<div class="page-hero" data-page="links">
+  <img class="ph-bg" loading="lazy" decoding="async" src="assets/asset-029.webp" alt="" />
+  <div class="wrap page-hero-inner">
+    <p class="kicker">More — Links</p>
+    <h2>Partners &amp;<br>pilot links.</h2>
+  </div>
+</div>
+
 <!-- 12 · PARTNERS & PILOT LINKS -->
-<section id="partners">
+<section id="partners" data-page="links">
   <div class="wrap">
     <p class="kicker">Premium partners</p>
     <h2>Who we fly with</h2>
     <div class="partners">
       <a class="partner" href="https://autogyrousa.com/" target="_blank" rel="noopener" aria-label="AutoGyro USA"><img loading="lazy" decoding="async" src="assets/asset-031.webp" alt="AutoGyro logo" /></a>
-      <a class="partner" href="https://www.iflyefb.com/" target="_blank" rel="noopener" aria-label="iFly EFB"><img loading="lazy" decoding="async" src="assets/asset-032.webp" alt="iFly EFB logo" /></a>
+      <a class="partner" href="https://www.iflyefb.com/" target="_blank" rel="noopener" aria-label="iFly EFB"><img loading="lazy" decoding="async" src="assets/asset-018.webp" alt="iFly EFB logo" /></a>
     </div>
-    <p class="body" style="max-width:760px"><strong>iFly EFB</strong> — an excellent, intuitive alternative to ForeFlight: the complete flight planning and navigation solution for Android, Apple, and Windows devices, offering advanced features pilots want in an easy-to-use application. <strong>AutoGyro USA</strong> is the official U.S. representative for AutoGyro GmbH, serving the United States, Mexico, and South America, backed by the most established gyroplane dealer and instructor network in the U.S., providing local access to training, sales, and support.</p>
-    <p class="body" style="max-width:760px;margin-top:14px"><strong style="color:#fff">Get iFly EFB:</strong> <a href="https://apps.apple.com/us/app/ifly-efb/id655202847" target="_blank" rel="noopener" style="color:var(--amber2);font-weight:700;text-decoration:none">App Store →</a> &nbsp;·&nbsp; <a href="https://play.google.com/store/apps/details?id=iFly.GPS" target="_blank" rel="noopener" style="color:var(--amber2);font-weight:700;text-decoration:none">Google Play →</a> &nbsp;·&nbsp; <a href="https://www.iflyefb.com/" target="_blank" rel="noopener" style="color:var(--amber2);font-weight:700;text-decoration:none">Windows / Web →</a></p>
     <div class="link-cols">
       <div class="link-col">
         <h4>Organizations</h4>
@@ -782,7 +1034,7 @@
 </section>
 
 <!-- 13 · REVIEWS -->
-<section class="alt" id="reviews">
+<section class="alt" id="reviews" data-page="home">
   <div class="wrap">
     <p class="kicker">Reviews</p>
     <div class="rating-hero">
@@ -813,6 +1065,50 @@
   </div>
 </section>
 
+<!-- CONTACT — page hero -->
+<div class="page-hero" data-page="contact">
+  <img class="ph-bg" loading="lazy" decoding="async" src="assets/asset-028.webp" alt="" />
+  <div class="wrap page-hero-inner">
+    <p class="kicker">Contact</p>
+    <h2>Talk to<br>Craig.</h2>
+  </div>
+</div>
+
+<!-- CONTACT — details, hours, chart -->
+<section data-page="contact">
+  <div class="wrap">
+    <p class="kicker">Get in touch</p>
+    <h2>Come fly<br>with Craig.</h2>
+    <div class="foot-grid">
+      <div>
+        <a class="foot-phone" href="tel:+18175173283">(817) 517-3283</a><br>
+        <a class="foot-mail" href="mailto:info@blueskies.flights">info@blueskies.flights</a>
+        <div class="foot-ctas">
+          <a class="btn btn-amber" href="tel:+18175173283">☎ Call Craig</a>
+          <a class="btn btn-ghost" href="#/services">Book Service →</a>
+        </div>
+      </div>
+      <div class="foot-block">
+        <h4>Visit</h4>
+        <p><b>Blue Skies Gyros</b><br>Fainting Goat Airport (87TX)<br>468 FM 3049<br>Blum, Texas 76627<br>United States</p>
+        <p style="margin-top:12px"><a href="https://www.google.com/maps/search/?api=1&query=Fainting+Goat+Airport+87TX+Blum+TX" target="_blank" rel="noopener">Get directions →</a><br><a href="https://skyvector.com/" target="_blank" rel="noopener" style="display:inline-block;margin-top:6px">87TX on SkyVector →</a></p>
+        <img loading="lazy" decoding="async" class="foot-logo" src="assets/asset-001.webp" alt="Fainting Goat Airport logo" />
+      </div>
+      <div class="foot-block">
+        <h4>Hours</h4>
+        <p><b>Monday – Saturday</b><br>9:00am – 5:00pm</p>
+        <p style="margin-top:12px"><b>Sunday</b><br>1:00pm – 5:00pm</p>
+        <h4 style="margin-top:26px">Dealer</h4>
+        <p>Authorized <b>AutoGyro</b> &amp; <b>Powrachute</b> dealer — intro flights, training, sales &amp; service, by appointment.</p>
+      </div>
+    </div>
+    <figure class="foot-map">
+      <img loading="lazy" decoding="async" src="assets/asset-032.webp" alt="Sectional chart showing Fainting Goat Airport (87TX) near Blum, Texas" />
+      <figcaption>Find us on the chart — Fainting Goat (87TX), just south of Blum on the Brazos River.</figcaption>
+    </figure>
+  </div>
+</section>
+
 <!-- 14 · CONTACT FOOTER -->
 <footer id="contact">
   <div class="wrap">
@@ -824,14 +1120,14 @@
         <a class="foot-mail" href="mailto:info@blueskies.flights">info@blueskies.flights</a>
         <div class="foot-ctas">
           <a class="btn btn-amber" href="tel:+18175173283">☎ Call Craig</a>
-          <a class="btn btn-ghost" href="#maintain">Book Service →</a>
+          <a class="btn btn-ghost" href="#/services">Book Service →</a>
         </div>
       </div>
       <div class="foot-block">
         <h4>Visit</h4>
         <p><b>Blue Skies Gyros</b><br>Fainting Goat Airport (87TX)<br>468 FM 3049<br>Blum, Texas 76627<br>United States</p>
         <p style="margin-top:12px"><a href="https://www.google.com/maps/search/?api=1&query=Fainting+Goat+Airport+87TX+Blum+TX" target="_blank" rel="noopener">Get directions →</a><br><a href="https://skyvector.com/" target="_blank" rel="noopener" style="display:inline-block;margin-top:6px">87TX on SkyVector →</a></p>
-        <img loading="lazy" decoding="async" class="foot-logo" src="assets/asset-033.webp" alt="Fainting Goat Airport logo" />
+        <img loading="lazy" decoding="async" class="foot-logo" src="assets/asset-001.webp" alt="Fainting Goat Airport logo" />
       </div>
       <div class="foot-block">
         <h4>Hours</h4>
@@ -842,7 +1138,7 @@
       </div>
     </div>
     <figure class="foot-map">
-      <img loading="lazy" decoding="async" src="assets/asset-034.webp" alt="Sectional chart showing Fainting Goat Airport (87TX) near Blum, Texas" />
+      <img loading="lazy" decoding="async" src="assets/asset-032.webp" alt="Sectional chart showing Fainting Goat Airport (87TX) near Blum, Texas" />
       <figcaption>Find us on the chart — Fainting Goat (87TX), just south of Blum on the Brazos River.</figcaption>
     </figure>
     <div class="foot-bottom">
@@ -857,10 +1153,93 @@
   window.addEventListener('scroll', onScroll, { passive: true });
   onScroll();
 
+  /* Glass Drop menu (mobile) */
+  var menuBtn = document.getElementById('menuBtn');
+  var glassMenu = document.getElementById('glassMenu');
+  function setMenu(open){
+    glassMenu.classList.toggle('open', open);
+    document.body.classList.toggle('menu-open', open);
+    menuBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    menuBtn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+    glassMenu.setAttribute('aria-hidden', open ? 'false' : 'true');
+    if (!open) {
+      var groups = glassMenu.querySelectorAll('.gm-group.expanded');
+      for (var i = 0; i < groups.length; i++) {
+        groups[i].classList.remove('expanded');
+        groups[i].querySelector('.gm-toggle').setAttribute('aria-expanded', 'false');
+      }
+    }
+  }
+  menuBtn.addEventListener('click', function(){
+    setMenu(!glassMenu.classList.contains('open'));
+  });
+  document.addEventListener('keydown', function(e){
+    if (e.key === 'Escape' && glassMenu.classList.contains('open')) setMenu(false);
+  });
+  var toggles = glassMenu.querySelectorAll('.gm-toggle');
+  for (var t = 0; t < toggles.length; t++) {
+    toggles[t].addEventListener('click', function(){
+      var group = this.parentElement;
+      var nowOpen = group.classList.toggle('expanded');
+      this.setAttribute('aria-expanded', nowOpen ? 'true' : 'false');
+    });
+  }
+  var menuLinks = glassMenu.querySelectorAll('.gm-link');
+  for (var l = 0; l < menuLinks.length; l++) {
+    menuLinks[l].addEventListener('click', function(){ setMenu(false); });
+  }
+
   document.getElementById('serviceForm').addEventListener('submit', function(e){
     e.preventDefault();
     document.getElementById('formNote').classList.add('show');
   });
+
+  /* ---------- Category page routing (#/page) ---------- */
+  var PAGE_TITLES = {
+    'home': 'Blue Skies Gyros — Homepage Mockup',
+    'about': 'About Us — Blue Skies Gyros',
+    'sales-info': 'Sales · Information — Blue Skies Gyros',
+    'sales-autogyro': 'Sales · AutoGyro Models — Blue Skies Gyros',
+    'services': 'Services — Blue Skies Gyros',
+    'training': 'Training — Blue Skies Gyros',
+    'contact': 'Contact — Blue Skies Gyros',
+    'gallery': 'Gallery — Blue Skies Gyros',
+    'stay': 'Accommodations — Blue Skies Gyros',
+    'financing': 'Financing & Insurance — Blue Skies Gyros',
+    'links': 'Links — Blue Skies Gyros'
+  };
+  function routePage(){
+    var h = window.location.hash.replace(/^#\/?/, '');
+    if (!Object.prototype.hasOwnProperty.call(PAGE_TITLES, h)) h = 'home';
+    var els = document.querySelectorAll('[data-page]');
+    for (var i = 0; i < els.length; i++) {
+      els[i].classList.toggle('page-on', els[i].getAttribute('data-page') === h);
+    }
+    var navs = document.querySelectorAll('[data-nav]');
+    for (var n = 0; n < navs.length; n++) {
+      var key = navs[n].getAttribute('data-nav');
+      var on = key === h ||
+        (key === 'sales' && (h === 'sales-info' || h === 'sales-autogyro')) ||
+        (key === 'more' && (h === 'gallery' || h === 'stay' || h === 'financing' || h === 'links'));
+      navs[n].classList.toggle('active', on);
+    }
+    var drops = document.querySelectorAll('.navdrop.open');
+    for (var d = 0; d < drops.length; d++) drops[d].classList.remove('open');
+    document.title = PAGE_TITLES[h];
+    try { window.scrollTo({ top: 0, behavior: 'instant' }); } catch (e) { window.scrollTo(0, 0); }
+  }
+  window.addEventListener('hashchange', routePage);
+  routePage();
+
+  /* Desktop nav dropdowns (click support alongside hover) */
+  var dropBtns = document.querySelectorAll('.navdrop-btn');
+  for (var b = 0; b < dropBtns.length; b++) {
+    dropBtns[b].addEventListener('click', function(){
+      var drop = this.parentElement;
+      var nowOpen = drop.classList.toggle('open');
+      this.setAttribute('aria-expanded', nowOpen ? 'true' : 'false');
+    });
+  }
 </script>
 </body>
 </html>
