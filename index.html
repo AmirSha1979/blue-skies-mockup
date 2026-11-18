@@ -579,12 +579,16 @@
   .foot-map figcaption{margin:0;background:var(--panel);padding:12px 16px;font-size:14px;color:var(--muted);text-align:left}
   .foot-bottom{margin-top:52px;padding-top:24px;border-top:1px solid var(--line);display:flex;flex-wrap:wrap;gap:8px 28px;justify-content:space-between;color:var(--muted2);font-size:14px;text-align:left}
   .mock-note{max-width:640px}
-  /* ---------- SLIM FOOTER (every view except Contact) ---------- */
+  /* ---------- SLIM FOOTER (every view, all pages) ---------- */
   .slim-footer{padding:12px 0 10px;background:var(--bg2);border-top:1px solid var(--line)}
   .slim-footer.hide-foot{display:none !important}
+  /* Contact view: the slim footer block (address, phone, Hours, logo)
+     stays out — only the lone © bottom line shows, by itself. */
+  .slim-footer.contact-only .slim-grid{display:none !important}
+  .slim-footer.contact-only .slim-bottom{margin-top:0;padding-top:0;border-top:none}
   .slim-grid{display:grid;gap:28px 36px;align-items:start}
   @media(min-width:900px){.slim-grid{grid-template-columns:1.15fr 1fr 1fr auto;align-items:center}}
-  .slim-brand{font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:26px;letter-spacing:.06em;text-transform:uppercase;color:#fff;line-height:1.05}
+  .slim-brand{font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:26px;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);line-height:1.05}
   .slim-text{margin:8px 0 0;color:var(--muted);font-size:16.5px;line-height:1.5}
   .slim-phone{display:inline-block;font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:34px;line-height:1.05;color:var(--accent);text-decoration:none}
   .slim-phone:hover{color:var(--accent2)}
@@ -593,7 +597,8 @@
   .slim-label{color:var(--accent);font-weight:700;letter-spacing:.28em;text-transform:uppercase;font-size:13px;margin:0}
   .slim-logo-wrap{display:flex;align-items:center}
   .slim-logo{width:150px;height:104px;object-fit:contain;border-radius:12px;display:block}
-  .slim-bottom{margin-top:12px;padding-top:9px;border-top:1px solid var(--line);color:var(--muted2);font-size:13.5px}
+  .slim-bottom{margin-top:12px;padding-top:9px;border-top:1px solid var(--line);color:var(--muted2);font-size:13.5px;text-align:center}
+  .slim-bottom .slim-name{color:var(--accent);font-weight:600}
   @media (prefers-reduced-motion: reduce){
     html{scroll-behavior:auto}
     *{transition:none !important}
@@ -1651,7 +1656,7 @@ Stacy leading in the air, Tim leading on the ground and on the radio.</p><a clas
   </div>
 </section>
 
-<!-- SLIM FOOTER — every view except Contact (hidden on Contact via routePage) -->
+<!-- SLIM FOOTER — every view (Contact: only the © bottom line shows) -->
 <footer id="siteFooter" class="slim-footer">
   <div class="wrap">
     <div class="slim-grid">
@@ -1671,7 +1676,7 @@ Stacy leading in the air, Tim leading on the ground and on the radio.</p><a clas
         <img loading="lazy" decoding="async" class="slim-logo" src="assets/site/fainting-goat-logo.webp" alt="Fainting Goat Airport logo" />
       </div>
     </div>
-    <div class="slim-bottom">© 2026 Blue Skies Gyros · Blum, Texas</div>
+    <div class="slim-bottom">© 2026 <span class="slim-name">Blue Skies Gyros</span> · Blum, Texas</div>
   </div>
 </footer>
 
@@ -1786,11 +1791,15 @@ Stacy leading in the air, Tim leading on the ground and on the radio.</p><a clas
     for (var i = 0; i < els.length; i++) {
       els[i].classList.toggle('page-on', els[i].getAttribute('data-page') === h);
     }
-    /* Slim footer strip shows on every view EXCEPT Contact — the Contact
-       view ends at its own full contact section and map, with nothing
-       below it (no band — the band is data-page="home" — and no footer). */
+    /* Slim footer shows in full on every view except Contact. On Contact
+       the block (address, phone, Hours, logo) stays out — the page already
+       carries the big contact details — and only the lone centered
+       © 2026 bottom line appears by itself below the map. */
     var foot = document.getElementById('siteFooter');
-    if (foot) foot.classList.toggle('hide-foot', h === 'contact');
+    if (foot) {
+      foot.classList.remove('hide-foot');
+      foot.classList.toggle('contact-only', h === 'contact');
+    }
     var navs = document.querySelectorAll('[data-nav]');
     for (var n = 0; n < navs.length; n++) {
       var key = navs[n].getAttribute('data-nav');
