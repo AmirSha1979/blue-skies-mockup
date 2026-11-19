@@ -118,6 +118,18 @@
     .navcall{padding:11px 14px;font-size:15px}
     .nav{padding:10px 0;gap:10px}
   }
+  /* ---------- SERVICES VIEW — inverted header brand (phone only) ----------
+     While the Services view is active (body.page-services, set by the
+     router), the header brand inverts on the phone: "Blue Skies" renders
+     in the site's sky blue (#38BDF8) and "Gyros" in white — the inverse
+     of the usual treatment. Scoped to ≤640px and to the Services view
+     only; every other view and all desktop widths keep the current
+     header treatment, and the header's layout and behavior are
+     unchanged. The small "Blum · Texas" line keeps its own muted color. */
+  @media(max-width:640px){
+    body.page-services .brand-text{color:var(--sky)}
+    body.page-services .brand .accent{color:#fff}
+  }
   @media(max-width:380px){
     .brand{font-size:19px;gap:8px}
     .brand-logo{width:44px;height:44px}
@@ -2206,6 +2218,10 @@ Stacy leading in the air, Tim leading on the ground and on the radio.</p><a clas
       foot.classList.remove('hide-foot');
       foot.classList.toggle('contact-only', h === 'contact');
     }
+    /* Services view: flag the body so the phone header brand can invert
+       its colors (see the page-services CSS above). No other view sets
+       it, and it changes nothing but those two colors. */
+    document.body.classList.toggle('page-services', h === 'services');
     var navs = document.querySelectorAll('[data-nav]');
     for (var n = 0; n < navs.length; n++) {
       var key = navs[n].getAttribute('data-nav');
