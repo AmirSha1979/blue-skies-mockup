@@ -408,6 +408,22 @@
     #serviceForm .svc-send{display:inline-flex;width:100%}
   }
 
+  /* ---------- INTRO FLIGHT CTAs — phone routes to the Contact form ----------
+     The Training page's own contact form was removed, so on the phone
+     (≤640px) the intro-flight CTAs (Home hero button, Training price
+     block) go straight to the Contact page's message form instead of
+     landing on a Training page with nothing to act on; the router puts
+     that form in intro-flight mode (see data-intro-flight in the script
+     below). The desktop hero button keeps pointing at Training and the
+     Training price block gains no button — desktop is unchanged. The
+     .intro-cta-mob anchors are display:none above 640px; the hero's
+     original .intro-cta-desk anchor is display:none at ≤640px. */
+  .intro-cta-mob{display:none}
+  @media(max-width:640px){
+    .intro-cta-desk{display:none}
+    .intro-cta-mob{display:inline-flex}
+  }
+
   /* ---------- GALLERY ---------- */
   .gallery{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:40px}
   @media(min-width:900px){.gallery{grid-template-columns:repeat(3,1fr)}}
@@ -856,7 +872,7 @@
     </ul>
   </div>
   <div class="gm-foot">
-    <a class="gm-cta gm-link" href="#/training">Book an Intro Flight — $110</a>
+    <a class="gm-cta gm-link" href="#/contact" data-intro-flight="1">Book an Intro Flight — $110</a>
     <a class="gm-call" href="tel:+18175173283">or call Craig · <b>(817) 517-3283</b></a>
   </div>
 </div>
@@ -874,7 +890,8 @@
     <h1>Experience the<br><span class="thin">Freedom of Flight</span></h1>
     <p class="hero-tag">Texas' premier gyroplane training &amp; sales center with private airport access — train, buy and service your gyro with <strong>Craig McPherson</strong> at Fainting Goat Airport.</p>
     <div class="hero-ctas">
-      <a class="btn btn-amber" href="#/training">Start Training — Intro Flight $110</a>
+      <a class="btn btn-amber intro-cta-desk" href="#/training">Start Training — Intro Flight $110</a>
+      <a class="btn btn-amber intro-cta-mob" href="#/contact" data-intro-flight="1">Start Training — Intro Flight $110</a>
       <a class="btn btn-ghost" href="#/sales-autogyro">Buy a Gyro →</a>
       <a class="btn btn-ghost" href="tel:+18175173283">Call Craig · (817) 517-3283</a>
     </div>
@@ -1083,6 +1100,8 @@
       <div class="price-card"><div class="amt">$250<em>/hr</em></div><div class="per">In the instructor's aircraft</div></div>
       <div class="price-card"><div class="amt">$150<em>/hr</em></div><div class="per">In the trainee's own aircraft</div></div>
     </div>
+
+    <a class="btn btn-amber intro-cta-mob" href="#/contact" data-intro-flight="1" style="margin-top:26px">Book your Intro Flight — $110 →</a>
 
     <div class="two-col">
       <div>
@@ -2104,6 +2123,29 @@ Stacy leading in the air, Tim leading on the ground and on the radio.</p><a clas
       }
     }
     syncSmsHref();
+    /* Intro-flight mode: arriving from an intro-flight CTA (anything
+       with data-intro-flight — the Home hero button, the mobile menu's
+       Book an Intro Flight CTA, the Training price block button) puts
+       the booking line in the Message field, editable and extendable,
+       so the composed text reads "Hi Craig, I'd like to book the Intro
+       flight ($110). … — Name". Arriving at Contact any other way
+       restores the form's blank default: an untouched intro line is
+       cleared again, while anything the visitor actually typed or
+       added is left exactly as they left it. The router's click
+       handler calls this after every in-site navigation. */
+    var INTRO_FLIGHT_MSG = "I'd like to book the Intro flight ($110).";
+    window.__setContactIntro = function(on){
+      var msg = document.getElementById('c-message');
+      if (!msg) return;
+      var v = msg.value.replace(/^\s+|\s+$/g, '');
+      if (on) {
+        if (!v) msg.value = INTRO_FLIGHT_MSG;
+        else if (v.indexOf('Intro flight') === -1) msg.value = INTRO_FLIGHT_MSG + ' ' + msg.value;
+      } else if (v === INTRO_FLIGHT_MSG) {
+        msg.value = '';
+      }
+      syncSmsHref();
+    };
     /* Recompose at tap time too, but let the tap through: this handler
        only refreshes the href and shows the confirmation note — the
        browser's default anchor navigation to the sms: URL proceeds. */
@@ -2215,6 +2257,11 @@ Stacy leading in the air, Tim leading on the ground and on the radio.</p><a clas
     var key = href.replace(/^#\/?/, '');
     e.preventDefault();
     routePage(key === '' ? 'home' : key);
+    /* Intro-flight CTAs land on the Contact form in intro-flight mode;
+       every other navigation restores the form's blank default. */
+    if (window.__setContactIntro) {
+      window.__setContactIntro(!!(a.hasAttribute && a.hasAttribute('data-intro-flight')));
+    }
     try {
       if (window.location.hash !== href) window.location.hash = href;
     } catch (err) { /* opaque origin: routing already done above */ }
