@@ -408,14 +408,15 @@
     #serviceForm .svc-send{display:inline-flex;width:100%}
   }
 
-  /* ---------- INTRO FLIGHT CTAs — phone routes to the Contact form ----------
-     The Training page's own contact form was removed, so on the phone
-     (≤640px) the intro-flight CTAs (Home hero button, Training price
-     block) go straight to the Contact page's message form instead of
-     landing on a Training page with nothing to act on; the router puts
-     that form in intro-flight mode (see data-intro-flight in the script
-     below). The desktop hero button keeps pointing at Training and the
-     Training price block gains no button — desktop is unchanged. The
+  /* ---------- INTRO FLIGHT CTAs — phone: direct text-message links ----------
+     On the phone (≤640px) the intro-flight CTAs (Home hero button,
+     mobile menu CTA, Training price block button) are direct sms:
+     links to Craig with the booking text already written — "Hi Craig,
+     I'd like to book the Intro flight ($110)." The button itself says
+     what the flight is, so there is no form and no navigation: the
+     tap hands off to the visitor's Messages app, ready to send. The
+     desktop hero button keeps pointing at Training and the Training
+     price block gains no button — desktop is unchanged. The
      .intro-cta-mob anchors are display:none above 640px; the hero's
      original .intro-cta-desk anchor is display:none at ≤640px. */
   .intro-cta-mob{display:none}
@@ -872,7 +873,7 @@
     </ul>
   </div>
   <div class="gm-foot">
-    <a class="gm-cta gm-link" href="#/contact" data-intro-flight="1">Book an Intro Flight — $110</a>
+    <a class="gm-cta gm-link" href="sms:+18175173283?&body=Hi%20Craig%2C%20I'd%20like%20to%20book%20the%20Intro%20flight%20(%24110).">Book an Intro Flight — $110</a>
     <a class="gm-call" href="tel:+18175173283">or call Craig · <b>(817) 517-3283</b></a>
   </div>
 </div>
@@ -891,7 +892,7 @@
     <p class="hero-tag">Texas' premier gyroplane training &amp; sales center with private airport access — train, buy and service your gyro with <strong>Craig McPherson</strong> at Fainting Goat Airport.</p>
     <div class="hero-ctas">
       <a class="btn btn-amber intro-cta-desk" href="#/training">Start Training — Intro Flight $110</a>
-      <a class="btn btn-amber intro-cta-mob" href="#/contact" data-intro-flight="1">Start Training — Intro Flight $110</a>
+      <a class="btn btn-amber intro-cta-mob" href="sms:+18175173283?&body=Hi%20Craig%2C%20I'd%20like%20to%20book%20the%20Intro%20flight%20(%24110).">Start Training — Intro Flight $110</a>
       <a class="btn btn-ghost" href="#/sales-autogyro">Buy a Gyro →</a>
       <a class="btn btn-ghost" href="tel:+18175173283">Call Craig · (817) 517-3283</a>
     </div>
@@ -1101,7 +1102,7 @@
       <div class="price-card"><div class="amt">$150<em>/hr</em></div><div class="per">In the trainee's own aircraft</div></div>
     </div>
 
-    <a class="btn btn-amber intro-cta-mob" href="#/contact" data-intro-flight="1" style="margin-top:26px">Book your Intro Flight — $110 →</a>
+    <a class="btn btn-amber intro-cta-mob" href="sms:+18175173283?&body=Hi%20Craig%2C%20I'd%20like%20to%20book%20the%20Intro%20flight%20(%24110)." style="margin-top:26px">Book your Intro Flight — $110 →</a>
 
     <div class="two-col">
       <div>
@@ -2257,8 +2258,9 @@ Stacy leading in the air, Tim leading on the ground and on the radio.</p><a clas
     var key = href.replace(/^#\/?/, '');
     e.preventDefault();
     routePage(key === '' ? 'home' : key);
-    /* Intro-flight CTAs land on the Contact form in intro-flight mode;
-       every other navigation restores the form's blank default. */
+    /* Navigations keep the Contact form's existing arrival behavior
+       exactly as it was. (The intro-flight CTAs are direct sms: links
+       now — they never route, so they never reach this handler.) */
     if (window.__setContactIntro) {
       window.__setContactIntro(!!(a.hasAttribute && a.hasAttribute('data-intro-flight')));
     }
@@ -2267,6 +2269,17 @@ Stacy leading in the air, Tim leading on the ground and on the radio.</p><a clas
     } catch (err) { /* opaque origin: routing already done above */ }
   });
   window.addEventListener('popstate', routePage);
+
+  /* The mobile menu's intro-flight CTA is a direct sms: link, not a
+     page route, so the router above ignores it. Close the menu as the
+     tap hands off to the Messages app — the same end state as every
+     other menu link — via a delegated handler (the menu's per-link
+     listeners can fail in the preview frame). The tap itself is
+     never intercepted: no preventDefault, the sms: hand-off proceeds. */
+  document.addEventListener('click', function(e){
+    var a = e.target && e.target.closest ? e.target.closest('a.gm-cta[href^="sms:"]') : null;
+    if (a && glassMenu.classList.contains('open')) setMenu(false);
+  });
 
   /* Desktop nav dropdowns (click support alongside hover).
      Selecting an item must CLOSE the menu: routePage() drops .open, but
