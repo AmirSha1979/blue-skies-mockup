@@ -44,8 +44,8 @@
   .nav{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:14px 0}
   .brand{display:flex;align-items:center;gap:13px;flex:none;white-space:nowrap;font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:37px;letter-spacing:.06em;text-transform:uppercase;text-decoration:none;line-height:1}
   .brand-logo{width:72px;height:72px;flex:none;object-fit:cover;border-radius:14px;border:1px solid rgba(255,255,255,.20);background:#000}
-  .brand-text{display:block;line-height:1;white-space:nowrap}
-  .brand .accent{color:var(--accent)}
+  .brand-text{display:block;line-height:1;white-space:nowrap;color:var(--accent)}
+  .brand .accent{color:#fff}
   .brand small{display:block;font-size:15px;letter-spacing:.30em;color:var(--muted);font-weight:600;margin-top:5px;white-space:nowrap}
   .navlinks{display:none;gap:9px;flex-wrap:nowrap;align-items:center;min-width:0}
   .navlinks a{text-decoration:none;font-weight:600;font-size:15px;letter-spacing:.04em;text-transform:uppercase;color:#dbe5ee;padding:10px 1px;white-space:nowrap;flex:none}
@@ -117,18 +117,6 @@
     .brand small{font-size:10px;letter-spacing:.20em}
     .navcall{padding:11px 14px;font-size:15px}
     .nav{padding:10px 0;gap:10px}
-  }
-  /* ---------- SERVICES VIEW — inverted header brand (phone only) ----------
-     While the Services view is active (body.page-services, set by the
-     router), the header brand inverts on the phone: "Blue Skies" renders
-     in the site's sky blue (#38BDF8) and "Gyros" in white — the inverse
-     of the usual treatment. Scoped to ≤640px and to the Services view
-     only; every other view and all desktop widths keep the current
-     header treatment, and the header's layout and behavior are
-     unchanged. The small "Blum · Texas" line keeps its own muted color. */
-  @media(max-width:640px){
-    body.page-services .brand-text{color:var(--sky)}
-    body.page-services .brand .accent{color:#fff}
   }
   @media(max-width:380px){
     .brand{font-size:19px;gap:8px}
@@ -837,6 +825,7 @@
   .slim-grid{display:grid;gap:28px 36px;align-items:start}
   @media(min-width:900px){.slim-grid{grid-template-columns:1.15fr 1fr 1fr auto;align-items:center}}
   .slim-brand{font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:26px;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);line-height:1.05}
+  .slim-brand .w{color:#fff}
   .slim-text{margin:8px 0 0;color:var(--muted);font-size:16.5px;line-height:1.5}
   .slim-phone{display:inline-block;font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:34px;line-height:1.05;color:var(--accent);text-decoration:none}
   .slim-phone:hover{color:var(--accent2)}
@@ -2095,7 +2084,7 @@ Stacy leading in the air, Tim leading on the ground and on the radio.</p><a clas
   <div class="wrap">
     <div class="slim-grid">
       <div class="slim-col">
-        <div class="slim-brand">Blue Skies Gyros</div>
+        <div class="slim-brand">Blue Skies <span class="w">Gyros</span></div>
         <p class="slim-text slim-addr">Fainting Goat Airport (87TX)<br>468 FM 3049, Blum, TX 76627</p>
       </div>
       <div class="slim-col">
@@ -2831,10 +2820,6 @@ Stacy leading in the air, Tim leading on the ground and on the radio.</p><a clas
       foot.classList.remove('hide-foot');
       foot.classList.toggle('contact-only', h === 'contact');
     }
-    /* Services view: flag the body so the phone header brand can invert
-       its colors (see the page-services CSS above). No other view sets
-       it, and it changes nothing but those two colors. */
-    document.body.classList.toggle('page-services', h === 'services');
     var navs = document.querySelectorAll('[data-nav]');
     for (var n = 0; n < navs.length; n++) {
       var key = navs[n].getAttribute('data-nav');
