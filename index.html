@@ -518,6 +518,34 @@
     #stay .stay-book-card .form-row{grid-template-columns:1fr}
   }
 
+  /* ---------- ACCOMMODATIONS — phone booking button + popup (≤640px only) ----------
+     Phone only: a sky-blue "Book Your Accommodation" button fills
+     the empty space to the right of the "Stay with us" heading —
+     the .stay-head row becomes a flex line and the button stretches
+     to the heading block's height and takes all the width the
+     heading doesn't use, so it reads as a substantial booking
+     button, not a small pill. Tapping it opens a small phone-sized
+     popup (same modal pattern as the desktop intro popup) with a
+     Name + Date form whose Send is a real sms: anchor to Craig —
+     the same working pattern as the phone Contact/Services forms.
+     Desktop (>640px) is untouched: the button and the popup stay
+     display:none, .stay-head is a plain block, and the desktop
+     email form card above keeps the right side of the section. */
+  .stay-book-btn-mob{display:none}
+  .stay-modal{display:none}
+  @media(max-width:640px){
+    #stay .stay-head-row{display:flex;align-items:stretch;gap:16px}
+    #stay .stay-head-row h2{flex:1 1 auto;min-width:0}
+    #stay .stay-book-btn-mob{display:inline-flex;flex:0 0 44%;min-width:0;min-height:0;height:auto;padding:12px 10px;font-size:17px;line-height:1.25;text-align:center;border-radius:14px}
+    .stay-modal{display:flex;align-items:center;justify-content:center;position:fixed;inset:0;z-index:220;padding:16px;background:rgba(5,8,12,.8);opacity:0;visibility:hidden;transition:opacity .28s ease,visibility 0s linear .28s}
+    .stay-modal.open{opacity:1;visibility:visible;transition:opacity .28s ease}
+    .stay-card{position:relative;width:min(400px,100%)}
+    .stay-card form{box-shadow:0 30px 80px rgba(0,0,0,.55)}
+    .stay-card input[type="date"]{color-scheme:dark}
+    .stay-card .btn{width:100%}
+    .stay-x{position:absolute;top:12px;right:12px;z-index:2;width:40px;height:40px;border-radius:50%;border:1px solid rgba(255,255,255,.35);background:rgba(10,14,19,.55);color:#fff;font-size:18px;line-height:1;display:flex;align-items:center;justify-content:center;cursor:pointer;font-family:inherit;padding:0}
+  }
+
   /* ---------- GALLERY ---------- */
   .gallery{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:40px}
   @media(min-width:900px){.gallery{grid-template-columns:repeat(3,1fr)}}
@@ -1395,7 +1423,10 @@
     <h3 class="subhead" style="margin-top:48px">iFly EFB — plan &amp; navigate</h3>
     <p class="body" style="max-width:760px"><strong>iFly EFB</strong> — an excellent, intuitive alternative to ForeFlight: the complete flight planning and navigation solution for Android, Apple, and Windows devices, offering advanced features pilots want in an easy-to-use application. <strong>AutoGyro USA</strong> is the official U.S. representative for AutoGyro GmbH, serving the United States, Mexico, and South America, backed by the most established gyroplane dealer and instructor network in the U.S., providing local access to training, sales, and support.</p>
     <div class="partners ifly-logo-block"><a class="partner" href="https://www.iflyefb.com/" target="_blank" rel="noopener" aria-label="iFly EFB"><img loading="lazy" decoding="async" src="assets/a022.webp" alt="iFly EFB logo" /></a></div>
-    <p class="body" style="max-width:760px;margin-top:22px"><strong style="color:#fff">Get iFly EFB:</strong></p>
+    <!-- No "Get iFly EFB:" label (removed at the user's direction,
+         both versions) — the three store badges sit directly under
+         the big logo, separated only by .store-badges' own 12px
+         top margin. -->
     <div class="store-badges">
       <a href="https://apps.apple.com/us/app/ifly-efb/id655202847" target="_blank" rel="noopener" aria-label="Download iFly EFB on the App Store"><img loading="lazy" decoding="async" src="assets/a023.png" alt="Download on the App Store" /></a>
       <a href="https://play.google.com/store/apps/details?id=iFly.GPS" target="_blank" rel="noopener" aria-label="Get iFly EFB on Google Play"><img loading="lazy" decoding="async" src="assets/a024.png" alt="Get it on Google Play" /></a>
@@ -1538,7 +1569,15 @@
     <div class="stay-text">
       <div class="stay-head">
         <p class="kicker">Accommodations</p>
-        <h2>Stay with us.</h2>
+        <div class="stay-head-row">
+          <h2>Stay with us.</h2>
+          <!-- Phone only (≤640px): sky-blue booking button filling
+               the empty space right of the heading; opens the phone
+               popup below (see .stay-book-btn-mob CSS). Display:none
+               on desktop, where the email form card serves this
+               spot. -->
+          <button class="btn btn-amber stay-book-btn-mob" type="button" data-stay-book-open>Book Your Accommodation</button>
+        </div>
       </div>
       <p class="body">Training away from home? Our rustic bunkhouse starts as low as <strong>$45 per night</strong>, and RV parking with full hookups is also available.</p>
       <div class="stay-list">
@@ -2110,6 +2149,27 @@ Stacy leading in the air, Tim leading on the ground and on the radio.</p><a clas
   </div>
 </div>
 
+<!-- ACCOMMODATIONS BOOKING POPUP — phone only (≤640px); on desktop
+     this stays display:none and the section's email form card serves
+     bookings (see the CSS). Opened from the "Book Your
+     Accommodation" button beside the "Stay with us" heading via the
+     delegated click handler in the script below. Send is a real
+     sms: anchor to Craig, composed live from the Name + Date fields
+     — the same pattern as the phone Contact/Services forms. -->
+<div class="stay-modal" id="stayModal" aria-hidden="true">
+  <div class="stay-card">
+    <button class="stay-x" type="button" data-stay-close aria-label="Close">✕</button>
+    <form id="stayMobForm" novalidate>
+      <h3>Book Your Accommodation</h3>
+      <p class="sub">Tell Craig your name and the date you'd like to stay — he'll get back to you to confirm.</p>
+      <div class="field"><label for="a-name">Name</label><input id="a-name" type="text" placeholder="e.g. John Smith" autocomplete="name"></div>
+      <div class="field"><label for="a-date">Date</label><input id="a-date" type="date"></div>
+      <a class="btn btn-amber stay-send" id="stayMobSend" href="sms:+18175173283?&body=Hi%20Craig%2C%20accommodation%20request">Send Request →</a>
+      <div class="form-note" id="stayMobSmsNote">Opening your Messages app — tap send there to reach Craig. If nothing opened, call him at <a href="tel:+18175173283" style="font-weight:700">(817) 517-3283</a>.</div>
+    </form>
+  </div>
+</div>
+
 <script>
   /* Page switches always land at the top — never restore a previous
      scroll position for an in-site (#/page) navigation. */
@@ -2595,6 +2655,108 @@ Stacy leading in the air, Tim leading on the ground and on the radio.</p><a clas
       restoreBtn();
     });
   });
+
+  /* ---------- Accommodations booking popup (phone only, ≤640px) ----------
+     The "Book Your Accommodation" button beside the "Stay with us"
+     heading (display:none above 640px, as is this popup) opens a
+     small Name + Date form. Send is a REAL sms: anchor to Craig's
+     number whose href is composed live from the fields — the same
+     hand-off as the phone Contact and Services forms: the visitor
+     taps send in their own Messages app, and Craig sees their
+     number as the sender. Composed text format, filled parts only:
+       "Hi Craig, accommodation request for <date> — <name>"
+     The date joins with " for " only when picked; the trailing
+     name appears only when given. The href is kept composed as the
+     visitor types (and recomposed on focus/click so it is never
+     stale), and nothing calls preventDefault on the send tap — the
+     browser's default anchor navigation to the sms: URL proceeds.
+     Open/close runs through a delegated document click handler
+     (the intro popup's lesson: per-element listeners bound at load
+     can fail in this preview's sandbox); opening never navigates,
+     so the visitor's scroll position is untouched. Desktop is
+     unaffected — the button and popup never render there. */
+  var stayModal = document.getElementById('stayModal');
+  var stayMobForm = document.getElementById('stayMobForm');
+  var stayMobSend = document.getElementById('stayMobSend');
+  function openStayModal(){
+    if (!stayModal) return;
+    var note = document.getElementById('stayMobSmsNote');
+    if (note) note.classList.remove('show');
+    stayModal.classList.add('open');
+    stayModal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+    var nameEl = document.getElementById('a-name');
+    if (nameEl && nameEl.focus) nameEl.focus();
+  }
+  function closeStayModal(){
+    if (!stayModal) return;
+    stayModal.classList.remove('open');
+    stayModal.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+  }
+  document.addEventListener('click', function(e){
+    var t = e.target;
+    if (!t || !t.closest) return;
+    if (t.closest('[data-stay-book-open]')) {
+      if (window.matchMedia && window.matchMedia('(max-width: 640px)').matches) {
+        e.preventDefault();
+        openStayModal();
+      }
+      return;
+    }
+    if (!stayModal || !stayModal.classList.contains('open')) return;
+    if (t.closest('[data-stay-close]') || t === stayModal) closeStayModal();
+  });
+  document.addEventListener('keydown', function(e){
+    if (e.key === 'Escape' && stayModal && stayModal.classList.contains('open')) closeStayModal();
+  });
+  if (stayMobForm && stayMobSend) {
+    var stayMobTrim = function(id){
+      var el = document.getElementById(id);
+      return el ? el.value.replace(/^\s+|\s+$/g, '') : '';
+    };
+    var composeStaySmsUrl = function(){
+      var text = 'Hi Craig, accommodation request';
+      var date = stayMobTrim('a-date');
+      if (date) text += ' for ' + date;
+      var name = stayMobTrim('a-name');
+      if (name) text += ' — ' + name;
+      return 'sms:+18175173283?&body=' + encodeURIComponent(text);
+    };
+    var syncStaySmsHref = function(){
+      var smsUrl = composeStaySmsUrl();
+      stayMobSend.setAttribute('href', smsUrl);
+      stayMobForm.setAttribute('data-sms-url', smsUrl);
+      window.__lastStaySmsUrl = smsUrl;
+      return smsUrl;
+    };
+    var stayMobFields = ['a-name', 'a-date'];
+    for (var m = 0; m < stayMobFields.length; m++) {
+      var stayMobField = document.getElementById(stayMobFields[m]);
+      if (stayMobField) {
+        stayMobField.addEventListener('input', syncStaySmsHref);
+        stayMobField.addEventListener('change', syncStaySmsHref);
+      }
+    }
+    syncStaySmsHref();
+    /* Recompose at tap time too, but let the tap through: this
+       handler only refreshes the href and shows the helper note —
+       the browser's default anchor navigation to the sms: URL
+       proceeds. */
+    stayMobSend.addEventListener('focus', syncStaySmsHref);
+    stayMobSend.addEventListener('click', function(){
+      syncStaySmsHref();
+      document.getElementById('stayMobSmsNote').classList.add('show');
+    });
+    /* The form's send is the anchor above, not a submit button; if
+       a keyboard Enter ever submits the form, just refresh the link
+       and show the note in place instead of reloading the page. */
+    stayMobForm.addEventListener('submit', function(e){
+      e.preventDefault();
+      syncStaySmsHref();
+      document.getElementById('stayMobSmsNote').classList.add('show');
+    });
+  }
 
   /* ---------- Category page routing (#/page) ---------- */
   var PAGE_TITLES = {
