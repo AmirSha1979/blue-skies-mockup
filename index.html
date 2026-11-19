@@ -455,6 +455,25 @@
     #introForm #introSendBtn:disabled{opacity:.55;cursor:wait}
   }
 
+  /* ---------- TRAINING HERO — desktop intro CTA (top-right) ----------
+     The Training page hero carries the same desktop intro button as
+     the Home hero (.btn .btn-amber .intro-cta-desk) in its blank
+     top-right. It is absolutely positioned inside .page-hero-inner
+     so the hero's height, padding, background image, kicker and
+     heading position are all unchanged, and nothing else on the
+     page shifts. right:0 aligns it with the wrap's right edge;
+     top:calc(50% + 52px) with translateY(-50%) centres it on the
+     heading block — the +52px corrects for the hero inner's
+     asymmetric padding (158px top / 54px bottom), so 50% of the
+     padded box becomes the centre of the content between them.
+     Because it carries .intro-cta-desk, the existing delegated
+     handler opens the same intro popup, and the existing
+     ≤640px rule hides it on the phone (mobile Training keeps its
+     SMS booking button below the price cards). */
+  @media(min-width:641px){
+    .page-hero[data-page="training"] .intro-cta-desk{position:absolute;right:0;top:calc(50% + 52px);transform:translateY(-50%);z-index:3}
+  }
+
   /* ---------- GALLERY ---------- */
   .gallery{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:40px}
   @media(min-width:900px){.gallery{grid-template-columns:repeat(3,1fr)}}
@@ -1116,6 +1135,7 @@
   <div class="wrap page-hero-inner">
     <p class="kicker">Training</p>
     <h2>Learn to fly<br>with Craig.</h2>
+    <a class="btn btn-amber intro-cta-desk" href="#/training">Start Training — Intro Flight $110</a>
   </div>
 </div>
 
