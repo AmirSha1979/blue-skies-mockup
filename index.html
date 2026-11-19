@@ -521,10 +521,12 @@
   /* ---------- ACCOMMODATIONS — phone booking button + popup (≤640px only) ----------
      Phone only: a sky-blue "Book Your Accommodation" button fills
      the empty space to the right of the "Stay with us" heading —
-     the .stay-head row becomes a flex line and the button stretches
-     to the heading block's height and takes all the width the
+     the .stay-head row becomes a flex line and the button nearly
+     fills the heading block's height and most of the width the
      heading doesn't use, so it reads as a substantial booking
-     button, not a small pill. Tapping it opens a small phone-sized
+     button, not a small pill. It sits a notch smaller than the
+     full strip (40% wide, pulled up 6px and ending 12px short of
+     the row's bottom edge). Tapping it opens a small phone-sized
      popup (same modal pattern as the desktop intro popup) with a
      Name + Date form whose Send is a real sms: anchor to Craig —
      the same working pattern as the phone Contact/Services forms.
@@ -536,7 +538,7 @@
   @media(max-width:640px){
     #stay .stay-head-row{display:flex;align-items:stretch;gap:16px}
     #stay .stay-head-row h2{flex:1 1 auto;min-width:0}
-    #stay .stay-book-btn-mob{display:inline-flex;flex:0 0 44%;min-width:0;min-height:0;height:auto;padding:12px 10px;font-size:17px;line-height:1.25;text-align:center;border-radius:14px}
+    #stay .stay-book-btn-mob{display:inline-flex;flex:0 0 40%;min-width:0;min-height:0;height:auto;margin:-6px 0 12px;padding:12px 10px;font-size:17px;line-height:1.25;text-align:center;border-radius:14px}
     .stay-modal{display:flex;align-items:center;justify-content:center;position:fixed;inset:0;z-index:220;padding:16px;background:rgba(5,8,12,.8);opacity:0;visibility:hidden;transition:opacity .28s ease,visibility 0s linear .28s}
     .stay-modal.open{opacity:1;visibility:visible;transition:opacity .28s ease}
     .stay-card{position:relative;width:min(400px,100%)}
@@ -683,13 +685,15 @@
   }
   /* Store badges (Gyroplane Info — iFly EFB): the official App Store
      and Google Play badges plus a matching Windows/Web badge, in a
-     single row UNDER the big iFly logo, spread across the full width
-     of the block (space-between, not clustered). Applies at every
-     width (the one phone exception in this batch). */
+     single row UNDER the big iFly logo. On the phone (≤640px) they
+     spread across the full width of the block (space-between, not
+     clustered). On desktop (>640px) they group together on the LEFT
+     under the logo — a tight left-aligned row with small gaps. */
   .store-badges{display:flex;flex-wrap:nowrap;justify-content:space-between;align-items:center;gap:12px;margin-top:12px;width:100%;max-width:760px}
   .store-badges a{display:inline-flex;border-radius:7px;line-height:0;flex:none;min-width:0}
   .store-badges a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
   .store-badges img{height:38px;width:auto;max-width:100%}
+  @media(min-width:641px){.store-badges{justify-content:flex-start;gap:14px}}
   @media(max-width:640px){.store-badges{gap:8px}.store-badges img{height:32px}}
   .link-cols{display:grid;gap:34px;margin-top:40px}
   @media(min-width:900px){.link-cols{grid-template-columns:repeat(3,1fr)}}
