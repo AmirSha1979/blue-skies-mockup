@@ -474,6 +474,47 @@
     .page-hero[data-page="training"] .intro-cta-desk{position:absolute;right:0;top:calc(50% + 52px);transform:translateY(-50%);z-index:3}
   }
 
+  /* ---------- ACCOMMODATIONS HERO — embedded booking form (desktop only) ----------
+     The Accommodations page hero carries its booking form directly in
+     the hero's blank right side — no popup, no button-first step. The
+     card is absolutely positioned inside .page-hero-inner (right:0,
+     centred on the heading block exactly like the Training hero CTA:
+     top:calc(50% + 52px) corrects for the inner's 158px / 54px
+     asymmetric padding), so the hero's height, background image,
+     kicker and heading position are all unchanged and nothing else
+     on the page shifts. The card reuses the site's own form styling
+     (dark panel, sky-blue accents) in a wide, low fit — Name and
+     Email share one row, Date and the Send button the next — so it
+     sits inside the hero's existing height, with room for the
+     success / error note that appears in the card after sending.
+     Desktop only (>640px): below that the card stays display:none
+     and the phone Accommodations page is exactly as before. */
+  .stay-book-card{display:none}
+  @media(min-width:641px){
+    .page-hero[data-page="stay"] .stay-book-card{display:block;position:absolute;right:0;top:calc(50% + 52px);transform:translateY(-50%);width:min(560px,calc(100% - 400px));z-index:3}
+    .stay-book-card form{padding:18px 20px 16px;background:rgba(19,28,38,.97);box-shadow:0 24px 60px rgba(0,0,0,.45)}
+    .stay-book-card form h3{font-size:25px;line-height:1.05;margin:0 0 10px}
+    .stay-book-card label{font-size:12px;margin:0 0 4px}
+    .stay-book-card input{min-height:42px;padding:10px 12px;font-size:15px}
+    .stay-book-card input[type="date"]{color-scheme:dark}
+    .stay-book-card .field{margin-bottom:10px}
+    .stay-book-card .stay-actions{align-items:end}
+    .stay-book-card .btn{min-height:42px;padding:10px 20px;font-size:16px;width:100%}
+    .stay-book-card .form-note{margin-top:10px;padding:9px 12px;font-size:13.5px;line-height:1.45}
+    #stayForm #staySendBtn:disabled{opacity:.55;cursor:wait}
+  }
+  @media(min-width:641px) and (max-width:1100px){
+    .stay-book-card .form-note{padding:8px 10px;font-size:13px}
+  }
+  @media(min-width:641px) and (max-width:860px){
+    .page-hero[data-page="stay"] .stay-book-card{width:min(440px,calc(100% - 260px));top:calc(50% + 40px)}
+    .stay-book-card form{padding:14px 16px 12px}
+    .stay-book-card form h3{font-size:23px}
+    .stay-book-card input{min-height:40px;padding:9px 10px;font-size:14.5px}
+    .stay-book-card .field{margin-bottom:8px}
+    .stay-book-card .btn{min-height:40px}
+  }
+
   /* ---------- GALLERY ---------- */
   .gallery{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:40px}
   @media(min-width:900px){.gallery{grid-template-columns:repeat(3,1fr)}}
@@ -1456,6 +1497,25 @@
   <div class="wrap page-hero-inner">
     <p class="kicker">More — Accommodations</p>
     <h2>Sleep at<br>the airport.</h2>
+    <!-- Embedded booking form — desktop only (>640px), sitting in the
+         hero's blank right side (see the .stay-book-card CSS). Send
+         posts directly to the FormSubmit AJAX endpoint, same system
+         as the Services and Intro Flight forms. -->
+    <div class="stay-book-card">
+      <form id="stayForm" novalidate>
+        <h3>Book your accommodation</h3>
+        <div class="form-row">
+          <div class="field"><label for="s-name">Name</label><input id="s-name" type="text" placeholder="e.g. John Smith" autocomplete="name"></div>
+          <div class="field"><label for="s-email">Email</label><input id="s-email" type="email" placeholder="you@example.com" autocomplete="email"></div>
+        </div>
+        <div class="form-row stay-actions">
+          <div class="field"><label for="s-date">Date</label><input id="s-date" type="date"></div>
+          <div class="field"><button class="btn btn-amber" id="staySendBtn" type="submit">Send Request →</button></div>
+        </div>
+        <div class="form-note" id="staySentNote">Request sent — Craig will get back to you shortly.</div>
+        <div class="form-note" id="stayErrorNote">Sorry — your request couldn't be sent just now. Please call Craig at <a href="tel:+18175173283" style="font-weight:700">(817) 517-3283</a>.</div>
+      </form>
+    </div>
   </div>
 </div>
 
@@ -2369,6 +2429,61 @@ Stacy leading in the air, Tim leading on the ground and on the radio.</p><a clas
         'Message': 'I would like to book the Intro flight $110.',
         '_replyto': visitorEmail,
         '_subject': 'Intro flight $110',
+        '_template': 'table'
+      })
+    }).then(function(res){
+      if (!res.ok) throw new Error('FormSubmit request failed');
+      sentNote.classList.add('show');
+      restoreBtn();
+    }).catch(function(){
+      errorNote.classList.add('show');
+      restoreBtn();
+    });
+  });
+
+  /* ---------- Accommodations booking form (desktop only, >640px) ----------
+     The form card embedded in the Accommodations hero (it stays
+     display:none at ≤640px, so this handler never fires on the
+     phone). Send posts directly from the page to the same
+     FormSubmit AJAX endpoint the Services and Intro Flight forms
+     use (currently pointed at adpresswaco@gmail.com for checking;
+     switch to Craig's address when the site goes live) — no
+     navigation away and no email app opens. The visitor's email
+     goes in as _replyto so Craig can simply hit reply, _subject
+     carries the chosen date, and _template "table" keeps the email
+     tidy. Success shows #staySentNote; any failure shows
+     #stayErrorNote with the phone number to call instead. The
+     button is disabled while the request is in flight. */
+  document.getElementById('stayForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    var stayForm = document.getElementById('stayForm');
+    var stayBtn = document.getElementById('staySendBtn');
+    var sentNote = document.getElementById('staySentNote');
+    var errorNote = document.getElementById('stayErrorNote');
+    var stayVal = function(id){
+      var el = document.getElementById(id);
+      return el ? el.value.replace(/^\s+|\s+$/g, '') : '';
+    };
+    var visitorEmail = stayVal('s-email');
+    var chosenDate = stayVal('s-date');
+    sentNote.classList.remove('show');
+    errorNote.classList.remove('show');
+    stayBtn.disabled = true;
+    var btnLabel = stayBtn.textContent;
+    stayBtn.textContent = 'Sending…';
+    var restoreBtn = function(){
+      stayBtn.disabled = false;
+      stayBtn.textContent = btnLabel;
+    };
+    fetch('https://formsubmit.co/ajax/adpresswaco@gmail.com', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
+      body: JSON.stringify({
+        'Name': stayVal('s-name'),
+        'Email': visitorEmail,
+        'Date': chosenDate,
+        '_replyto': visitorEmail,
+        '_subject': 'Accommodation request — ' + chosenDate,
         '_template': 'table'
       })
     }).then(function(res){
