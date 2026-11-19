@@ -396,6 +396,18 @@
   @media(min-width:560px){.form-row{grid-template-columns:1fr 1fr}}
   .form-note{display:none;margin-top:16px;background:rgba(56,189,248,.12);border:1px solid rgba(56,189,248,.45);color:#bae6fd;border-radius:10px;padding:13px 16px;font-size:15px}
   .form-note.show{display:block}
+  /* ---------- FORM VALIDATION — required-field checks (all forms) ----------
+     A missing or invalid required field gets a clear red edge
+     (.field-invalid, one treatment shared by every form on the
+     site) that clears as soon as the visitor types/selects into
+     the field, and one red line (.form-error) appears by the send
+     button: "Please fill in the highlighted fields." — or "Please
+     enter a valid email address." when the email is malformed.
+     See validateFields() in the script below. */
+  .field-invalid{border-color:#f87171 !important;box-shadow:0 0 0 1px #f87171}
+  .field-invalid:focus{outline-color:#f87171}
+  .form-error{display:none;margin-top:16px;background:rgba(248,113,113,.12);border:1px solid rgba(248,113,113,.55);color:#fecaca;border-radius:10px;padding:13px 16px;font-size:15px}
+  .form-error.show{display:block}
   /* ---------- SERVICES BOOKING — phone SMS hand-off / desktop direct send ----------
      Phone (≤640px): the visitor's email field is hidden (the phone flow
      doesn't need it — when they send the text, Craig sees their number
@@ -498,6 +510,7 @@
     .stay-book-card .stay-actions{align-items:end}
     .stay-book-card .btn{min-height:42px;padding:10px 20px;font-size:16px;width:100%}
     .stay-book-card .form-note{margin-top:10px;padding:9px 12px;font-size:13.5px;line-height:1.45}
+    .stay-book-card .form-error{margin-top:10px;padding:9px 12px;font-size:13.5px;line-height:1.45}
     #stayForm #staySendBtn:disabled{opacity:.55;cursor:wait}
   }
   @media(min-width:1021px){
@@ -838,6 +851,7 @@
   .slim-logo{width:150px;height:104px;object-fit:contain;border-radius:12px;display:block}
   .slim-bottom{margin-top:12px;padding-top:9px;border-top:1px solid var(--line);color:var(--muted2);font-size:13.5px;text-align:center}
   .slim-bottom .slim-name{color:var(--accent);font-weight:600}
+  .slim-bottom .slim-name-w{color:#fff;font-weight:600}
   .foot-links{display:none}
   /* ---------- PHONE FOOTER — two-column layout (≤640px only; the desktop
      footer above is untouched). The brand and phone .slim-col wrappers
@@ -1540,6 +1554,7 @@
       <div class="field"><label for="f-notes">Anything we should know?</label><textarea id="f-notes" placeholder="Symptoms, recent work, deadlines…"></textarea></div>
       <button class="btn btn-amber svc-desktop-submit" type="submit" style="width:100%">Request Service →</button>
       <a class="btn btn-amber svc-send" id="serviceSend" href="sms:+18175173283?&body=Hi%20Craig%2C%20service%20booking%20request%20%E2%80%94%20100-hour%20condition%20inspection">Request Service →</a>
+      <div class="form-error" id="serviceValNote" role="alert">Please fill in the highlighted fields.</div>
       <div class="form-note" id="serviceSmsNote">Opening your Messages app — tap send there to reach Craig. If nothing opened, call him at <a href="tel:+18175173283" style="font-weight:700">(817) 517-3283</a>.</div>
       <div class="form-note" id="serviceSentNote">Request sent — Craig will get back to you shortly.</div>
       <div class="form-note" id="serviceErrorNote">Sorry — your request couldn't be sent just now. Please call Craig at <a href="tel:+18175173283" style="font-weight:700">(817) 517-3283</a> and he'll get you booked in.</div>
@@ -1602,6 +1617,7 @@
           <div class="field"><label for="s-date">Date</label><input id="s-date" type="date"></div>
           <div class="field"><button class="btn btn-amber" id="staySendBtn" type="submit">Send Request →</button></div>
         </div>
+        <div class="form-error" id="stayValNote" role="alert">Please fill in the highlighted fields.</div>
         <div class="form-note" id="staySentNote">Request sent — Craig will get back to you shortly.</div>
         <div class="form-note" id="stayErrorNote">Sorry — your request couldn't be sent just now. Please call Craig at <a href="tel:+18175173283" style="font-weight:700">(817) 517-3283</a>.</div>
         <div class="form-note" id="stayTimeoutNote">This is taking longer than usual — your request may still come through. If you don't hear back, call Craig at <a href="tel:+18175173283" style="font-weight:700">(817) 517-3283</a>.</div>
@@ -2035,6 +2051,7 @@ Stacy leading in the air, Tim leading on the ground and on the radio.</p><a clas
         <div class="field"><label for="c-name">Name</label><input id="c-name" type="text" placeholder="Your name" autocomplete="name"></div>
         <div class="field"><label for="c-message">Message</label><textarea id="c-message" placeholder="How can Craig help?"></textarea></div>
         <a class="btn cm-send" id="contactSend" href="sms:+18175173283?&body=Hi%20Craig%2C">Send Message →</a>
+        <div class="form-error" id="contactValNote" role="alert">Please fill in the highlighted fields.</div>
         <div class="form-note" id="contactFormNote">Opening your Messages app — tap send there to reach Craig. If nothing opened, call him at <a href="tel:+18175173283" style="font-weight:700">(817) 517-3283</a>.</div>
       </form>
     </div>
@@ -2109,7 +2126,7 @@ Stacy leading in the air, Tim leading on the ground and on the radio.</p><a clas
         <a href="#/about" data-nav="about">About Us</a>
       </nav>
     </div>
-    <div class="slim-bottom">© 2026 <span class="slim-name">Blue Skies Gyros</span> · Blum, Texas</div>
+    <div class="slim-bottom">© 2026 <span class="slim-name">Blue Skies</span> <span class="slim-name-w">Gyros</span> · Blum, Texas</div>
   </div>
 </footer>
 
@@ -2137,6 +2154,7 @@ Stacy leading in the air, Tim leading on the ground and on the radio.</p><a clas
       <div class="field"><label for="i-name">Your name</label><input id="i-name" type="text" placeholder="e.g. John Smith" autocomplete="name"></div>
       <div class="field"><label for="i-email">Email</label><input id="i-email" type="email" placeholder="you@example.com" autocomplete="email"></div>
       <button class="btn btn-amber" id="introSendBtn" type="submit" style="width:100%">Send Request →</button>
+      <div class="form-error" id="introValNote" role="alert">Please fill in the highlighted fields.</div>
       <div class="form-note" id="introSentNote">Request sent — Craig will get back to you shortly.</div>
       <div class="form-note" id="introErrorNote">Sorry — your request couldn't be sent just now. Please call Craig at <a href="tel:+18175173283" style="font-weight:700">(817) 517-3283</a>.</div>
       <div class="form-note" id="introTimeoutNote">This is taking longer than usual — your request may still come through. If you don't hear back, call Craig at <a href="tel:+18175173283" style="font-weight:700">(817) 517-3283</a>.</div>
@@ -2160,6 +2178,7 @@ Stacy leading in the air, Tim leading on the ground and on the radio.</p><a clas
       <div class="field"><label for="a-name">Name</label><input id="a-name" type="text" placeholder="e.g. John Smith" autocomplete="name"></div>
       <div class="field"><label for="a-date">Date</label><input id="a-date" type="date"></div>
       <a class="btn btn-amber stay-send" id="stayMobSend" href="sms:+18175173283?&body=Hi%20Craig%2C%20accommodation%20request">Send Request →</a>
+      <div class="form-error" id="stayMobValNote" role="alert">Please fill in the highlighted fields.</div>
       <div class="form-note" id="stayMobSmsNote">Opening your Messages app — tap send there to reach Craig. If nothing opened, call him at <a href="tel:+18175173283" style="font-weight:700">(817) 517-3283</a>.</div>
     </form>
   </div>
@@ -2228,6 +2247,55 @@ Stacy leading in the air, Tim leading on the ground and on the radio.</p><a clas
     menuLinks[l].addEventListener('click', function(){ setMenu(false); });
   }
 
+  /* ---------- Form validation — required fields (all six forms) ----------
+     Every form checks its required basics before a send can happen:
+     a desktop FormSubmit POST fires only with the required fields
+     filled (and a plausible email wherever an Email field exists),
+     and a phone sms: anchor navigates only when its required fields
+     are filled — its click handler calls preventDefault() ONLY when
+     invalid, so a valid tap still navigates natively (the proven
+     rule for sms: hand-offs on this site). A missing/invalid field
+     gets the shared red edge (.field-invalid), which clears as soon
+     as the visitor types/selects into the field, and one line by
+     the send button (.form-error) reads "Please fill in the
+     highlighted fields." — or "Please enter a valid email address."
+     when a filled-in email is malformed. Notes fields stay optional
+     everywhere, exactly as approved. */
+  var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  function validateFields(ids){
+    var bad = [], emailBad = false;
+    for (var vi = 0; vi < ids.length; vi++) {
+      var vel = document.getElementById(ids[vi]);
+      if (!vel) continue;
+      var vv = vel.value.replace(/^\s+|\s+$/g, '');
+      var isEmail = (vel.type === 'email');
+      var fieldBad = !vv || (isEmail && !EMAIL_RE.test(vv));
+      vel.classList.toggle('field-invalid', fieldBad);
+      if (fieldBad) {
+        bad.push(vel);
+        if (isEmail && vv) emailBad = true;
+      }
+    }
+    return { bad: bad, emailBad: emailBad };
+  }
+  function showValError(noteEl, result){
+    if (!noteEl) return;
+    if (result.bad.length) {
+      noteEl.textContent = result.emailBad ? 'Please enter a valid email address.' : 'Please fill in the highlighted fields.';
+      noteEl.classList.add('show');
+    } else {
+      noteEl.classList.remove('show');
+    }
+  }
+  /* The red edge clears from a field as soon as the visitor
+     types/selects into it (delegated, so it covers every form). */
+  document.addEventListener('input', function(e){
+    if (e.target && e.target.classList) e.target.classList.remove('field-invalid');
+  });
+  document.addEventListener('change', function(e){
+    if (e.target && e.target.classList) e.target.classList.remove('field-invalid');
+  });
+
   document.getElementById('serviceForm').addEventListener('submit', function(e){
     e.preventDefault();
     /* Phone (≤640px): the real send is the sms: anchor below, so an
@@ -2242,8 +2310,14 @@ Stacy leading in the air, Tim leading on the ground and on the radio.</p><a clas
        #serviceErrorNote with the phone number to call instead. The
        button is disabled while the request is in flight. */
     if (window.matchMedia && window.matchMedia('(max-width: 640px)').matches) {
-      var svcNote = document.getElementById('serviceSmsNote');
-      if (svcNote) svcNote.classList.add('show');
+      /* Phone required fields: Name + Preferred Date (the email
+         field is hidden in this flow; Notes stays optional). */
+      var svcMobCheck = validateFields(['f-name', 'f-date']);
+      showValError(document.getElementById('serviceValNote'), svcMobCheck);
+      if (!svcMobCheck.bad.length) {
+        var svcNote = document.getElementById('serviceSmsNote');
+        if (svcNote) svcNote.classList.add('show');
+      }
       return;
     }
     var svcForm = document.getElementById('serviceForm');
@@ -2257,6 +2331,12 @@ Stacy leading in the air, Tim leading on the ground and on the radio.</p><a clas
     };
     var visitorEmail = fieldVal('f-email');
     var chosenService = fieldVal('f-service');
+    /* Required-field check (desktop): Name, a plausible Email and
+       Preferred Date must be filled before the send fires —
+       Aircraft is optional and Notes stays optional. */
+    var svcCheck = validateFields(['f-name', 'f-email', 'f-date']);
+    showValError(document.getElementById('serviceValNote'), svcCheck);
+    if (svcCheck.bad.length) return;
     sentNote.classList.remove('show');
     errorNote.classList.remove('show');
     timeoutNote.classList.remove('show');
@@ -2370,8 +2450,16 @@ Stacy leading in the air, Tim leading on the ground and on the radio.</p><a clas
        only refreshes the href and shows the confirmation note — the
        browser's default anchor navigation to the sms: URL proceeds. */
     serviceSend.addEventListener('focus', syncServiceSmsHref);
-    serviceSend.addEventListener('click', function(){
+    serviceSend.addEventListener('click', function(e){
       syncServiceSmsHref();
+      /* Required-field check (phone): Name and Preferred Date must
+         be filled before Messages may open (Notes stays optional).
+         Invalid → highlight + note, and preventDefault() stops the
+         sms: navigation; valid → the tap proceeds natively,
+         untouched, exactly as before. */
+      var svcTapCheck = validateFields(['f-name', 'f-date']);
+      showValError(document.getElementById('serviceValNote'), svcTapCheck);
+      if (svcTapCheck.bad.length) { e.preventDefault(); return; }
       document.getElementById('serviceSmsNote').classList.add('show');
     });
   }
@@ -2443,8 +2531,15 @@ Stacy leading in the air, Tim leading on the ground and on the radio.</p><a clas
        only refreshes the href and shows the confirmation note — the
        browser's default anchor navigation to the sms: URL proceeds. */
     contactSend.addEventListener('focus', syncSmsHref);
-    contactSend.addEventListener('click', function(){
+    contactSend.addEventListener('click', function(e){
       syncSmsHref();
+      /* Required-field check: Name and Message must be filled
+         before Messages may open. Invalid → highlight + note, and
+         preventDefault() stops the sms: navigation; valid → the
+         tap proceeds natively, untouched, exactly as before. */
+      var cmTapCheck = validateFields(['c-name', 'c-message']);
+      showValError(document.getElementById('contactValNote'), cmTapCheck);
+      if (cmTapCheck.bad.length) { e.preventDefault(); return; }
       document.getElementById('contactFormNote').classList.add('show');
     });
     /* The form no longer has a submit button; if a keyboard Enter ever
@@ -2453,7 +2548,11 @@ Stacy leading in the air, Tim leading on the ground and on the radio.</p><a clas
     contactForm.addEventListener('submit', function(e){
       e.preventDefault();
       syncSmsHref();
-      document.getElementById('contactFormNote').classList.add('show');
+      var cmSubCheck = validateFields(['c-name', 'c-message']);
+      showValError(document.getElementById('contactValNote'), cmSubCheck);
+      if (!cmSubCheck.bad.length) {
+        document.getElementById('contactFormNote').classList.add('show');
+      }
     });
   }
 
@@ -2486,6 +2585,8 @@ Stacy leading in the air, Tim leading on the ground and on the radio.</p><a clas
     if (sentN) sentN.classList.remove('show');
     if (errN) errN.classList.remove('show');
     if (toN) toN.classList.remove('show');
+    var valN = document.getElementById('introValNote');
+    if (valN) valN.classList.remove('show');
     introModal.classList.add('open');
     introModal.setAttribute('aria-hidden', 'false');
     document.body.style.overflow = 'hidden';
@@ -2518,6 +2619,11 @@ Stacy leading in the air, Tim leading on the ground and on the radio.</p><a clas
   document.addEventListener('submit', function(e){
     if (!introFormEl || e.target !== introFormEl) return;
     e.preventDefault();
+    /* Required-field check: Name and a plausible Email must be
+       filled before the send fires. */
+    var introCheck = validateFields(['i-name', 'i-email']);
+    showValError(document.getElementById('introValNote'), introCheck);
+    if (introCheck.bad.length) return;
     var sentNote = document.getElementById('introSentNote');
     var errorNote = document.getElementById('introErrorNote');
     var timeoutNote = document.getElementById('introTimeoutNote');
@@ -2591,6 +2697,11 @@ Stacy leading in the air, Tim leading on the ground and on the radio.</p><a clas
      button is disabled while the request is in flight. */
   document.getElementById('stayForm').addEventListener('submit', function(e){
     e.preventDefault();
+    /* Required-field check: Name, a plausible Email and the Date
+       must be filled before the send fires. */
+    var stayCheck = validateFields(['s-name', 's-email', 's-date']);
+    showValError(document.getElementById('stayValNote'), stayCheck);
+    if (stayCheck.bad.length) return;
     var stayForm = document.getElementById('stayForm');
     var stayBtn = document.getElementById('staySendBtn');
     var sentNote = document.getElementById('staySentNote');
@@ -2677,6 +2788,8 @@ Stacy leading in the air, Tim leading on the ground and on the radio.</p><a clas
     if (!stayModal) return;
     var note = document.getElementById('stayMobSmsNote');
     if (note) note.classList.remove('show');
+    var valNote = document.getElementById('stayMobValNote');
+    if (valNote) valNote.classList.remove('show');
     stayModal.classList.add('open');
     stayModal.setAttribute('aria-hidden', 'false');
     document.body.style.overflow = 'hidden';
@@ -2739,8 +2852,15 @@ Stacy leading in the air, Tim leading on the ground and on the radio.</p><a clas
        the browser's default anchor navigation to the sms: URL
        proceeds. */
     stayMobSend.addEventListener('focus', syncStaySmsHref);
-    stayMobSend.addEventListener('click', function(){
+    stayMobSend.addEventListener('click', function(e){
       syncStaySmsHref();
+      /* Required-field check: Name and Date must be filled before
+         Messages may open. Invalid → highlight + note, and
+         preventDefault() stops the sms: navigation; valid → the
+         tap proceeds natively, untouched, exactly as before. */
+      var stayTapCheck = validateFields(['a-name', 'a-date']);
+      showValError(document.getElementById('stayMobValNote'), stayTapCheck);
+      if (stayTapCheck.bad.length) { e.preventDefault(); return; }
       document.getElementById('stayMobSmsNote').classList.add('show');
     });
     /* The form's send is the anchor above, not a submit button; if
@@ -2749,7 +2869,11 @@ Stacy leading in the air, Tim leading on the ground and on the radio.</p><a clas
     stayMobForm.addEventListener('submit', function(e){
       e.preventDefault();
       syncStaySmsHref();
-      document.getElementById('stayMobSmsNote').classList.add('show');
+      var staySubCheck = validateFields(['a-name', 'a-date']);
+      showValError(document.getElementById('stayMobValNote'), staySubCheck);
+      if (!staySubCheck.bad.length) {
+        document.getElementById('stayMobSmsNote').classList.add('show');
+      }
     });
   }
 
