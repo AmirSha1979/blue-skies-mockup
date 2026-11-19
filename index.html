@@ -403,19 +403,21 @@
   @media(min-width:560px){.form-row{grid-template-columns:1fr 1fr}}
   .form-note{display:none;margin-top:16px;background:rgba(56,189,248,.12);border:1px solid rgba(56,189,248,.45);color:#bae6fd;border-radius:10px;padding:13px 16px;font-size:15px}
   .form-note.show{display:block}
-  /* ---------- SERVICES BOOKING — phone SMS hand-off (≤640px only) ----------
-     Phone only: the visitor's phone-number field is hidden (when they
-     send the text, Craig sees their number automatically as the sender),
-     the desktop submit button is swapped for a real sms: anchor whose
-     href is composed live from the fields (see the script below), and
-     tapping it shows the phone confirmation note (#serviceSmsNote)
-     instead of the desktop mockup note. Above 640px the anchor stays
-     display:none, the phone field and the original submit button show,
-     and the form's markup and note-only submit behavior are exactly
-     as before — the desktop delivery route is parked for the real site. */
+  /* ---------- SERVICES BOOKING — phone SMS hand-off / desktop direct send ----------
+     Phone (≤640px): the visitor's email field is hidden (the phone flow
+     doesn't need it — when they send the text, Craig sees their number
+     automatically as the sender), the desktop submit button is swapped
+     for a real sms: anchor whose href is composed live from the fields
+     (see the script below), and tapping it shows the phone confirmation
+     note (#serviceSmsNote). Above 640px the anchor stays display:none,
+     the email field and the submit button show, and Request Service
+     sends the booking directly from the page to Craig's inbox via the
+     FormSubmit AJAX endpoint (see the submit handler below), showing
+     #serviceSentNote on success or #serviceErrorNote on failure. */
   .svc-send{display:none}
+  #serviceForm .svc-desktop-submit:disabled{opacity:.55;cursor:wait}
   @media(max-width:640px){
-    #serviceForm .svc-phone-field{display:none}
+    #serviceForm .svc-email-field{display:none}
     #serviceForm .svc-desktop-submit{display:none}
     #serviceForm .svc-send{display:inline-flex;width:100%}
   }
@@ -435,6 +437,22 @@
   @media(max-width:640px){
     .intro-cta-desk{display:none}
     .intro-cta-mob{display:inline-flex}
+  }
+
+  /* ---------- INTRO FLIGHT POPUP — desktop only (>640px) ----------
+     The popup the desktop Home hero button opens (Name + Email form,
+     direct email send — see the script block). It can only ever show
+     above 640px: below that it stays display:none and the intro CTAs
+     remain direct sms: links. The card reuses the site's own form
+     styling (dark panel, amber button, .form-note messages). */
+  .intro-modal{display:none}
+  @media(min-width:641px){
+    .intro-modal{display:flex;align-items:center;justify-content:center;position:fixed;inset:0;z-index:220;padding:20px;background:rgba(5,8,12,.8);opacity:0;visibility:hidden;transition:opacity .28s ease,visibility 0s linear .28s}
+    .intro-modal.open{opacity:1;visibility:visible;transition:opacity .28s ease}
+    .intro-card{position:relative;width:min(440px,100%)}
+    .intro-card form{box-shadow:0 30px 80px rgba(0,0,0,.55)}
+    .intro-x{position:absolute;top:12px;right:12px;z-index:2;width:40px;height:40px;border-radius:50%;border:1px solid rgba(255,255,255,.35);background:rgba(10,14,19,.55);color:#fff;font-size:18px;line-height:1;display:flex;align-items:center;justify-content:center;cursor:pointer;font-family:inherit;padding:0}
+    #introForm #introSendBtn:disabled{opacity:.55;cursor:wait}
   }
 
   /* ---------- GALLERY ---------- */
@@ -1384,7 +1402,7 @@
       <p class="sub">Fill this in and Craig's team will call you back to confirm your slot.</p>
       <div class="form-row">
         <div class="field"><label for="f-name">Your name</label><input id="f-name" type="text" placeholder="e.g. John Smith" autocomplete="name"></div>
-        <div class="field svc-phone-field"><label for="f-phone">Phone</label><input id="f-phone" type="tel" placeholder="(555) 000-0000" autocomplete="tel"></div>
+        <div class="field svc-email-field"><label for="f-email">Email</label><input id="f-email" type="email" placeholder="you@example.com" autocomplete="email"></div>
       </div>
       <div class="form-row">
         <div class="field"><label for="f-aircraft">Aircraft</label><input id="f-aircraft" type="text" placeholder="e.g. AutoGyro MTOsport, N…"></div>
@@ -1406,7 +1424,8 @@
       <button class="btn btn-amber svc-desktop-submit" type="submit" style="width:100%">Request Service →</button>
       <a class="btn btn-amber svc-send" id="serviceSend" href="sms:+18175173283?&body=Hi%20Craig%2C%20service%20booking%20request%20%E2%80%94%20100-hour%20condition%20inspection">Request Service →</a>
       <div class="form-note" id="serviceSmsNote">Opening your Messages app — tap send there to reach Craig. If nothing opened, call him at <a href="tel:+18175173283" style="font-weight:700">(817) 517-3283</a>.</div>
-      <div class="form-note" id="formNote">This is a design mockup, so the form doesn't send yet — on the live site this request goes straight to Craig. To book today, call <a href="tel:+18175173283" style="font-weight:700">(817) 517-3283</a> or email <a href="mailto:info@blueskies.flights" style="font-weight:700">info@blueskies.flights</a>.</div>
+      <div class="form-note" id="serviceSentNote">Request sent — Craig will get back to you shortly.</div>
+      <div class="form-note" id="serviceErrorNote">Sorry — your request couldn't be sent just now. Please call Craig at <a href="tel:+18175173283" style="font-weight:700">(817) 517-3283</a> and he'll get you booked in.</div>
     </form>
   </div>
 </section>
@@ -1955,6 +1974,25 @@ Stacy leading in the air, Tim leading on the ground and on the radio.</p><a clas
   <p class="lb-caption"><span id="lbCaption"></span><span class="lb-count" id="lbCount"></span></p>
 </div>
 
+<!-- INTRO FLIGHT POPUP — desktop only (>640px); on the phone the intro
+     CTAs stay the direct sms: links they already are and this stays
+     display:none (see the CSS). Opened from the Home hero button via
+     the delegated click handler in the script below. -->
+<div class="intro-modal" id="introModal" aria-hidden="true">
+  <div class="intro-card">
+    <button class="intro-x" type="button" data-intro-close aria-label="Close">✕</button>
+    <form id="introForm" novalidate>
+      <h3>Intro Flight — $110</h3>
+      <p class="sub">Tell Craig where to reach you and he'll get back to you to lock in your flight.</p>
+      <div class="field"><label for="i-name">Your name</label><input id="i-name" type="text" placeholder="e.g. John Smith" autocomplete="name"></div>
+      <div class="field"><label for="i-email">Email</label><input id="i-email" type="email" placeholder="you@example.com" autocomplete="email"></div>
+      <button class="btn btn-amber" id="introSendBtn" type="submit" style="width:100%">Send Request →</button>
+      <div class="form-note" id="introSentNote">Request sent — Craig will get back to you shortly.</div>
+      <div class="form-note" id="introErrorNote">Sorry — your request couldn't be sent just now. Please call Craig at <a href="tel:+18175173283" style="font-weight:700">(817) 517-3283</a>.</div>
+    </form>
+  </div>
+</div>
+
 <script>
   /* Page switches always land at the top — never restore a previous
      scroll position for an in-site (#/page) navigation. */
@@ -2020,25 +2058,73 @@ Stacy leading in the air, Tim leading on the ground and on the radio.</p><a clas
 
   document.getElementById('serviceForm').addEventListener('submit', function(e){
     e.preventDefault();
-    /* Desktop (>640px): the original mockup behavior — show the
-       #formNote note, nothing is sent. Phone (≤640px): the real send
-       is the sms: anchor below, so an Enter-key submit just shows
-       the phone confirmation note in place instead. */
+    /* Phone (≤640px): the real send is the sms: anchor below, so an
+       Enter-key submit just shows the phone confirmation note in
+       place instead — unchanged. Desktop (>640px): the booking is
+       sent directly from the page via the FormSubmit AJAX endpoint
+       (currently pointed at adpresswaco@gmail.com for checking;
+       switch to info@blueskies.flights when the site goes live) —
+       no navigation away and no email app opens. The visitor's email
+       goes in as _replyto so Craig can simply hit reply, _subject
+       names the chosen service, and _template "table" keeps the
+       email tidy. Success shows #serviceSentNote; any failure shows
+       #serviceErrorNote with the phone number to call instead. The
+       button is disabled while the request is in flight. */
     if (window.matchMedia && window.matchMedia('(max-width: 640px)').matches) {
       var svcNote = document.getElementById('serviceSmsNote');
       if (svcNote) svcNote.classList.add('show');
-    } else {
-      document.getElementById('formNote').classList.add('show');
+      return;
     }
+    var svcForm = document.getElementById('serviceForm');
+    var svcBtn = svcForm.querySelector('.svc-desktop-submit');
+    var sentNote = document.getElementById('serviceSentNote');
+    var errorNote = document.getElementById('serviceErrorNote');
+    var fieldVal = function(id){
+      var el = document.getElementById(id);
+      return el ? el.value.replace(/^\s+|\s+$/g, '') : '';
+    };
+    var visitorEmail = fieldVal('f-email');
+    var chosenService = fieldVal('f-service');
+    sentNote.classList.remove('show');
+    errorNote.classList.remove('show');
+    svcBtn.disabled = true;
+    var btnLabel = svcBtn.textContent;
+    svcBtn.textContent = 'Sending…';
+    var restoreBtn = function(){
+      svcBtn.disabled = false;
+      svcBtn.textContent = btnLabel;
+    };
+    fetch('https://formsubmit.co/ajax/adpresswaco@gmail.com', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
+      body: JSON.stringify({
+        'Name': fieldVal('f-name'),
+        'Email': visitorEmail,
+        'Aircraft': fieldVal('f-aircraft'),
+        'Service': chosenService,
+        'Preferred date': fieldVal('f-date'),
+        'Notes': fieldVal('f-notes'),
+        '_replyto': visitorEmail,
+        '_subject': 'Service Booking Request — ' + chosenService,
+        '_template': 'table'
+      })
+    }).then(function(res){
+      if (!res.ok) throw new Error('FormSubmit request failed');
+      sentNote.classList.add('show');
+      restoreBtn();
+    }).catch(function(){
+      errorNote.classList.add('show');
+      restoreBtn();
+    });
   });
 
   /* Services booking form — phone only (≤640px; the anchor itself is
-     display:none above 640px and the phone field is hidden below it):
+     display:none above 640px and the email field is hidden below it):
      same hand-off as the Contact form. Send is a REAL anchor whose
      href is the sms: link to Craig's number with the booking details
      pre-filled; the visitor taps send in their messaging app, and
      Craig sees their number as the sender — which is why the form's
-     phone field is not asked for (and never included) on phone.
+     email field is not asked for (and never included) on phone.
      Composed text format, filled fields only, in this order:
        "Hi Craig, service booking request — <service>, Preferred date:
         <date>, Aircraft: <aircraft>, <notes> — <name>"
@@ -2047,7 +2133,7 @@ Stacy leading in the air, Tim leading on the ground and on the radio.</p><a clas
      filled. The href is kept composed as the visitor types (and
      recomposed on focus/click so it is never stale), and tapping it
      is a native anchor navigation — nothing calls preventDefault on
-     the tap. The desktop submit above keeps its original behavior. */
+     the tap. The desktop submit above sends directly by email instead. */
   var serviceFormEl = document.getElementById('serviceForm');
   var serviceSend = document.getElementById('serviceSend');
   if (serviceFormEl && serviceSend) {
@@ -2108,7 +2194,8 @@ Stacy leading in the air, Tim leading on the ground and on the radio.</p><a clas
      preventDefault on the tap, because a JS-triggered sms: handoff
      (window.location on form submit, the previous implementation)
      is silently blocked inside embedded preview frames. The service
-     form above keeps its original mockup behavior. */
+     form above keeps its own behavior (SMS on phone, direct email
+     send on desktop). */
   var contactForm = document.getElementById('contactForm');
   var contactSend = document.getElementById('contactSend');
   if (contactForm && contactSend) {
@@ -2176,6 +2263,103 @@ Stacy leading in the air, Tim leading on the ground and on the radio.</p><a clas
       document.getElementById('contactFormNote').classList.add('show');
     });
   }
+
+  /* ---------- Intro flight popup (desktop only, >640px) ----------
+     On desktop the Home hero "Start Training — Intro Flight $110"
+     button (.intro-cta-desk) no longer routes to the Training page:
+     it opens this popup instead — a small Name + Email form, because
+     the booking goes by email and Craig needs an address to reply
+     to. Send posts directly to the same FormSubmit AJAX endpoint
+     the Services form uses (the checking address for now), with
+     _replyto set to the visitor's email, _subject "Intro flight
+     $110", and the booking line as the message. Success and failure
+     notes show inside the popup; the visitor never leaves the page
+     and their scroll position is untouched. Open/close is wired
+     through delegated document handlers — per-element listeners
+     bound at load can fail in this preview's sandbox (the lightbox
+     lesson) — and this block sits BEFORE the router's click handler
+     so the hero click is claimed (preventDefault +
+     stopImmediatePropagation) before the router can route it to
+     Training. On the phone none of this exists: the modal stays
+     display:none at ≤640px and the intro CTAs remain the direct
+     sms: links they already are. */
+  var introModal = document.getElementById('introModal');
+  var introFormEl = document.getElementById('introForm');
+  function openIntroModal(){
+    if (!introModal) return;
+    var sentN = document.getElementById('introSentNote');
+    var errN = document.getElementById('introErrorNote');
+    if (sentN) sentN.classList.remove('show');
+    if (errN) errN.classList.remove('show');
+    introModal.classList.add('open');
+    introModal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+    var nameEl = document.getElementById('i-name');
+    if (nameEl && nameEl.focus) nameEl.focus();
+  }
+  function closeIntroModal(){
+    if (!introModal) return;
+    introModal.classList.remove('open');
+    introModal.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+  }
+  document.addEventListener('click', function(e){
+    var t = e.target;
+    if (!t || !t.closest) return;
+    if (t.closest('a.intro-cta-desk')) {
+      if (window.matchMedia && window.matchMedia('(min-width: 641px)').matches) {
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        openIntroModal();
+      }
+      return;
+    }
+    if (!introModal || !introModal.classList.contains('open')) return;
+    if (t.closest('[data-intro-close]') || t === introModal) closeIntroModal();
+  });
+  document.addEventListener('keydown', function(e){
+    if (e.key === 'Escape' && introModal && introModal.classList.contains('open')) closeIntroModal();
+  });
+  document.addEventListener('submit', function(e){
+    if (!introFormEl || e.target !== introFormEl) return;
+    e.preventDefault();
+    var sentNote = document.getElementById('introSentNote');
+    var errorNote = document.getElementById('introErrorNote');
+    var btn = document.getElementById('introSendBtn');
+    var introVal = function(id){
+      var el = document.getElementById(id);
+      return el ? el.value.replace(/^\s+|\s+$/g, '') : '';
+    };
+    var visitorEmail = introVal('i-email');
+    sentNote.classList.remove('show');
+    errorNote.classList.remove('show');
+    btn.disabled = true;
+    var btnLabel = btn.textContent;
+    btn.textContent = 'Sending…';
+    var restoreBtn = function(){
+      btn.disabled = false;
+      btn.textContent = btnLabel;
+    };
+    fetch('https://formsubmit.co/ajax/adpresswaco@gmail.com', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
+      body: JSON.stringify({
+        'Name': introVal('i-name'),
+        'Email': visitorEmail,
+        'Message': 'I would like to book the Intro flight $110.',
+        '_replyto': visitorEmail,
+        '_subject': 'Intro flight $110',
+        '_template': 'table'
+      })
+    }).then(function(res){
+      if (!res.ok) throw new Error('FormSubmit request failed');
+      sentNote.classList.add('show');
+      restoreBtn();
+    }).catch(function(){
+      errorNote.classList.add('show');
+      restoreBtn();
+    });
+  });
 
   /* ---------- Category page routing (#/page) ---------- */
   var PAGE_TITLES = {
