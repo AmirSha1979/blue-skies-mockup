@@ -737,7 +737,7 @@
   /* ---------- CONTACT — phone layout (≤640px only) ----------
      Amir's approved mockup: staggered COME FLY / WITH US heading (no
      kicker), big sky-blue call pill, VISIT US card, tappable Google
-     map, EMAIL + HOURS card, then a Name / Phone / Message form.
+     map, EMAIL + HOURS card, then a Name / Message form.
      .contact-m is display:none on desktop, where the .foot-grid /
      .foot-map arrangement stays exactly as-is; on phone that desktop
      arrangement is hidden in its favour. The page hero above it and
@@ -1815,7 +1815,6 @@ Stacy leading in the air, Tim leading on the ground and on the radio.</p><a clas
       <form id="contactForm" class="cm-form" novalidate>
         <h3 class="cm-card-title">Send a Message</h3>
         <div class="field"><label for="c-name">Name</label><input id="c-name" type="text" placeholder="Your name" autocomplete="name"></div>
-        <div class="field"><label for="c-phone">Phone</label><input id="c-phone" type="tel" placeholder="(555) 000-0000" autocomplete="tel"></div>
         <div class="field"><label for="c-message">Message</label><textarea id="c-message" placeholder="How can Craig help?"></textarea></div>
         <a class="btn cm-send" id="contactSend" href="sms:+18175173283?&body=Hi%20Craig%2C">Send Message →</a>
         <div class="form-note" id="contactFormNote">Opening your Messages app — tap send there to reach Craig. If nothing opened, call him at <a href="tel:+18175173283" style="font-weight:700">(817) 517-3283</a>.</div>
@@ -1991,14 +1990,10 @@ Stacy leading in the air, Tim leading on the ground and on the radio.</p><a clas
   if (contactForm && contactSend) {
     var composeSmsUrl = function(){
       var name = document.getElementById('c-name').value.replace(/^\s+|\s+$/g, '');
-      var phone = document.getElementById('c-phone').value.replace(/^\s+|\s+$/g, '');
       var message = document.getElementById('c-message').value.replace(/^\s+|\s+$/g, '');
       var text = 'Hi Craig,';
       if (message) text += ' ' + message;
-      var from = [];
-      if (name) from.push(name);
-      if (phone) from.push(phone);
-      if (from.length) text += ' — ' + from.join(', ');
+      if (name) text += ' — ' + name;
       return 'sms:+18175173283?&body=' + encodeURIComponent(text);
     };
     var syncSmsHref = function(){
@@ -2008,7 +2003,7 @@ Stacy leading in the air, Tim leading on the ground and on the radio.</p><a clas
       window.__lastSmsUrl = smsUrl;
       return smsUrl;
     };
-    var cmFields = ['c-name', 'c-phone', 'c-message'];
+    var cmFields = ['c-name', 'c-message'];
     for (var f = 0; f < cmFields.length; f++) {
       var cmField = document.getElementById(cmFields[f]);
       if (cmField) {
