@@ -1055,8 +1055,16 @@
 <section class="hero" id="top" style="padding:0" data-page="home">
   <div class="hero-bg">
     <video id="heroVideo" autoplay muted loop playsinline preload="auto" poster="assets/a002.jpg" aria-label="David's first AutoGyro flight with Craig McPherson — gyroplanes flying over the Texas countryside">
-      <source src="assets/a003.webm" type="video/webm" />
-      <source src="assets/a004.mp4" type="video/mp4" />
+      <!-- MP4 (H.264) FIRST on purpose: it is the one format every
+           browser — Safari on Mac/iPhone included — can always
+           decode, so it is the source every browser selects for
+           autoplay. The WebM (VP9) stays as the second source;
+           when it was listed first, Safari selected it, could not
+           start it without a user tap, and never fell through to
+           the MP4 — the "video doesn't play unless I click it"
+           failure. Do not reorder these two sources. -->
+      <source src="assets/a003.mp4" type="video/mp4" />
+      <source src="assets/a004.webm" type="video/webm" />
     </video>
   </div>
   <div class="hero-shade"></div>
@@ -3411,12 +3419,37 @@ Stacy leading in the air, Tim leading on the ground and on the radio.</p><a clas
      final second ~1s after the expected wrap is rewound to 0 and
      played by hand) and an idle-proof watchdog whose on-screen
      check falls back to the layout box.
+     AUTOPLAY FIX (this build): the hero also failed to START at
+     all without a click on the video. Two causes addressed. (1)
+     Source order: the WebM was listed first, so Safari selected
+     the VP9 file — which it will not start without a user tap —
+     and never fell through to the MP4; the MP4 (H.264, playable
+     everywhere) is now the first <source> and the WebM second.
+     (2) A single play() at load can reject before the first frame
+     is ready and leave nothing to retry it, so an autoplay
+     bootstrap (end of this block) re-asserts the muted state and
+     keeps attempting play on every readiness signal and a short
+     timer until playback is verified, with a first-interaction-
+     anywhere unlock as the last-resort net.
      Other videos (Craig Story, Gallery intro) are untouched. */
   var heroVideo = document.getElementById('heroVideo');
   if (heroVideo) {
     heroVideo.loop = true;
+    /* Autoplay eligibility, set as PROPERTIES (not only markup
+       attributes) before any play() attempt: Safari and Chrome
+       grant no-click autoplay only to a video that is muted in
+       fact — defaultMuted + muted + volume 0 together — and
+       inline on iPhone. Setting them here, at supervisor start,
+       covers any browser that read the element before the
+       attributes were applied. */
+    try { heroVideo.defaultMuted = true; } catch (e) {}
     heroVideo.muted = true;
+    try { heroVideo.volume = 0; } catch (e) {}
+    try { heroVideo.playsInline = true; } catch (e) {}
+    try { heroVideo.autoplay = true; } catch (e) {}
+    heroVideo.setAttribute('muted', '');
     heroVideo.setAttribute('playsinline', '');
+    heroVideo.setAttribute('autoplay', '');
     var heroSection = heroVideo.closest ? heroVideo.closest('[data-page]') : null;
     var heroOnScreen = true;
     var heroResumeTimer = null;
@@ -3621,6 +3654,53 @@ Stacy leading in the air, Tim leading on the ground and on the radio.</p><a clas
       if (heroNow() - heroLastProgressAt > 3500 && heroVideo.readyState < 4) heroRecover();
       else if (heroNow() - heroLastProgressAt > 3500 && heroVideo.currentTime === heroLastTime) heroRecover();
     }, 1800);
+    /* ---------- AUTOPLAY BOOTSTRAP — play with NO click ----------
+       The failure this answers: on load the hero sat on its poster
+       until the visitor clicked the video itself. A single play()
+       at script start is not a guarantee — if it lands before the
+       first frame is decodable, or the browser's own autoplay
+       attempt races it, the promise rejects (AbortError /
+       NotAllowedError) and, the video already being loaded, none
+       of the supervisor's resume triggers (canplay, visibility,
+       observer) necessarily fire again. So for the first seconds
+       the bootstrap keeps asking, on every readiness signal and on
+       a short timer, until the video is verifiably playing; after
+       that the watchdog above owns it. The muted state is
+       re-asserted before every attempt, since muted-in-fact is
+       the condition browsers grant no-click autoplay under.
+       Last-resort net: if a browser still refuses every
+       programmatic attempt (its strictest autoplay setting), the
+       FIRST interaction anywhere on the page — a scroll tap, a nav
+       tap, any key — starts the hero; the visitor never has to
+       click the video itself. */
+    var heroStarted = false;
+    var heroKickCount = 0;
+    function heroKick(){
+      if (!heroIsActive()) return;
+      if (!heroVideo.paused && !heroVideo.ended) { heroStarted = true; return; }
+      try { heroVideo.defaultMuted = true; } catch (e) {}
+      heroVideo.muted = true;
+      try { heroVideo.volume = 0; } catch (e) {}
+      try { var kp = heroVideo.play(); if (kp && kp.catch) kp.catch(function(){}); } catch (e) {}
+    }
+    heroVideo.addEventListener('playing', function(){ heroStarted = true; });
+    heroVideo.addEventListener('loadedmetadata', heroKick);
+    heroVideo.addEventListener('canplay', heroKick);
+    var heroKickTimer = setInterval(function(){
+      heroKickCount++;
+      if (heroStarted || heroKickCount > 40) { clearInterval(heroKickTimer); return; }
+      heroKick();
+    }, 600);
+    function heroGestureUnlock(){
+      heroKick();
+      window.removeEventListener('pointerdown', heroGestureUnlock, true);
+      window.removeEventListener('touchstart', heroGestureUnlock, true);
+      window.removeEventListener('keydown', heroGestureUnlock, true);
+    }
+    window.addEventListener('pointerdown', heroGestureUnlock, true);
+    window.addEventListener('touchstart', heroGestureUnlock, true);
+    window.addEventListener('keydown', heroGestureUnlock, true);
+    heroKick();
     heroPlay();
   }
 
