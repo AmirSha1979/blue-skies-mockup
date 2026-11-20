@@ -3361,27 +3361,56 @@ Stacy leading in the air, Tim leading on the ground and on the radio.</p><a clas
      The homepage hero is a single <video id="heroVideo"> shared by the
      desktop and phone layouts (no separate mobile clip, no width check
      anywhere in this block), so this supervisor covers both versions.
-     The clip already carries autoplay + loop, but nothing restarted it
-     when the browser paused it: returning to Home from another in-site
-     page (the hero section is display:none while another data-page is
-     on, which pauses playback in some browsers), the app/tab going to
-     the background and coming back, or a stall at the end of the file
-     all left it frozen until a full reload. This block restarts it:
-       - 'ended'  → rewind to 0 and play again (manual loop, in case
-         the native loop is dropped after an interruption);
-       - 'pause'  → while Home is the active page, the document is
-         visible and the hero is on screen, resume after a short
-         debounce (the hero has no user pause control, so any pause
-         in that state is a browser interruption, not a choice);
-       - route return → a MutationObserver watches the hero section's
-         class: routePage() adds .page-on when Home becomes active,
-         which fires a restart on desktop and phone alike;
-       - visibilitychange / pageshow / window focus → restart when
-         the visitor comes back to the app or tab;
-       - IntersectionObserver → restart whenever the hero scrolls
-         back into view, and track on-screen state so the pause
-         resume never fights the browser while the hero is off-screen;
-       - 'stalled' / 'error' → reload the source once and play.
+     The clip already carries autoplay + loop, but browsers pause or
+     suspend it while it is off screen — most reliably when the visitor
+     scrolls down to Reviews and spends time scrolling inside the
+     reviews box (.reviews-box is its own scroll container, so the
+     hero stays off screen for a long stretch). The previous supervisor
+     missed that case three ways, and this version closes all three:
+       1. Its 'pause' handler was gated on the hero being ON screen,
+          so a pause that happened while the hero was off screen (the
+          reviews case) was ignored and never remembered;
+       2. Its resume timer dropped the restart if the hero was still
+          off screen when the timer fired — nothing was left pending
+          for the scroll back up;
+       3. It had no 'waiting' handler and heroPlay() was a no-op when
+          paused was false, so a frozen-but-not-paused stall (decoder
+          suspended, currentTime stopped, readyState low) was never
+          recovered even when the hero scrolled back into view, and
+          nothing ever checked that playback time was advancing.
+     This version therefore:
+       - remembers ANY interruption (pause / waiting / stalled /
+         ended / error) in heroNeedsResume, on or off screen;
+       - on return to view (IntersectionObserver), on route return,
+         and on visibility / pageshow / focus, plays again AND
+         verifies playback actually advances;
+       - runs a watchdog while the hero is on screen: if the video is
+         paused it restarts it; if it claims to be playing but
+         currentTime has not advanced for ~3.5s it recovers — first a
+         small seek nudge + play(), escalating to a source reload
+         (keeping the place where possible) if the nudge fails twice;
+       - handles 'waiting' as well as 'stalled', and 'ended' with a
+         manual rewind + play (in case the native loop is dropped).
+     While the hero is off screen the watchdog stays quiet (it does
+     not fight the browser's off-screen pause); the pending-resume
+     flag is what carries the restart to the scroll back up.
+     FILE FIX (same build): the freeze also happened fully IDLE and
+     always at the same point — the loop seam, after several clean
+     loops. Probing the old encodes found seam hazards in the files
+     themselves: the MP4's media header claimed 16.049s against a
+     16.016s movie with a 2-frame edit-list offset and negative
+     starting DTS (B-frame reorder a strict player must re-apply at
+     every wrap), and the WebM's final packet was a 62-byte invisible
+     alt-ref frame sitting exactly on the seam. Both clips were
+     therefore re-encoded fresh from the same footage (same 16.016s
+     / 480-frame cut, same poster): MP4 with no B-frames (DTS = PTS
+     from 0, edit offset 0, media duration exactly 16.016s,
+     faststart) and WebM VP9 with alt-ref disabled (final frame is a
+     real frame). This supervisor stays as the second layer, and now
+     also carries a seam guard (a playhead still sitting in the
+     final second ~1s after the expected wrap is rewound to 0 and
+     played by hand) and an idle-proof watchdog whose on-screen
+     check falls back to the layout box.
      Other videos (Craig Story, Gallery intro) are untouched. */
   var heroVideo = document.getElementById('heroVideo');
   if (heroVideo) {
@@ -3391,62 +3420,207 @@ Stacy leading in the air, Tim leading on the ground and on the radio.</p><a clas
     var heroSection = heroVideo.closest ? heroVideo.closest('[data-page]') : null;
     var heroOnScreen = true;
     var heroResumeTimer = null;
+    var heroNeedsResume = false;
+    var heroLastTime = -1;
+    var heroLastProgressAt = Date.now();
+    var heroRecoverAttempts = 0;
+    function heroNow(){ return Date.now(); }
     function heroIsActive(){
       var onPage = !heroSection || heroSection.classList.contains('page-on');
       var visible = !document.hidden &&
         (!document.visibilityState || document.visibilityState === 'visible');
       return onPage && visible;
     }
+    function heroMarkProgress(){
+      heroLastTime = heroVideo.currentTime;
+      heroLastProgressAt = heroNow();
+      heroRecoverAttempts = 0;
+      heroNeedsResume = false;
+    }
     function heroPlay(){
-      if (!heroIsActive()) return;
+      if (!heroIsActive()) { heroNeedsResume = true; return; }
       if (heroVideo.ended) { try { heroVideo.currentTime = 0; } catch (e) {} }
-      if (heroVideo.paused || heroVideo.ended) {
+      /* Play whenever paused/ended, and also when frozen in a
+         waiting/stall (paused is false there, which is exactly the
+         state the old supervisor could not recover). */
+      if (heroVideo.paused || heroVideo.ended || heroVideo.readyState < 3 || heroNeedsResume) {
         var p = heroVideo.play();
-        if (p && p.catch) p.catch(function(){});
+        if (p && p.catch) p.catch(function(){ heroNeedsResume = true; });
       }
     }
     function heroScheduleResume(){
+      heroNeedsResume = true;
       if (heroResumeTimer) return;
       heroResumeTimer = setTimeout(function(){
         heroResumeTimer = null;
-        if (heroOnScreen) heroPlay();
+        if (!heroIsActive()) return;
+        if (heroOnScreen) { heroPlay(); heroVerifySoon(); }
+        /* Off screen: do not drop it — heroNeedsResume stays set and
+           the IntersectionObserver restarts it on the scroll back. */
       }, 350);
     }
+    function heroRecover(){
+      if (!heroIsActive() || (!heroOnScreen && !heroRectVisible())) { heroNeedsResume = true; return; }
+      heroRecoverAttempts++;
+      if (heroRecoverAttempts >= 3) {
+        /* Seek nudges did not unstick it — reload the source once,
+           restoring the position, then play. */
+        var t = 0;
+        try { t = heroVideo.currentTime || 0; } catch (e) {}
+        try { heroVideo.load(); } catch (e) {}
+        try {
+          heroVideo.addEventListener('loadedmetadata', function onMeta(){
+            heroVideo.removeEventListener('loadedmetadata', onMeta);
+            try { if (t > 0 && isFinite(heroVideo.duration) && t < heroVideo.duration) heroVideo.currentTime = t; } catch (e) {}
+            heroLastProgressAt = heroNow();
+            heroPlay();
+          });
+        } catch (e) {}
+        heroRecoverAttempts = 0;
+        heroLastProgressAt = heroNow();
+        heroPlay();
+        return;
+      }
+      /* Nudge the playhead a fraction forward — a small seek is what
+         unsticks a suspended decoder in Safari/Chrome — then play. */
+      try {
+        if (isFinite(heroVideo.duration) && heroVideo.duration > 0) {
+          var nt = heroVideo.currentTime + 0.15;
+          heroVideo.currentTime = nt >= heroVideo.duration ? 0 : nt;
+        }
+      } catch (e) {}
+      heroLastProgressAt = heroNow();
+      heroPlay();
+      /* heroPlay above only calls play() when paused/readyState say
+         so; force a direct attempt for the frozen-not-paused case. */
+      try { var fp = heroVideo.play(); if (fp && fp.catch) fp.catch(function(){}); } catch (e) {}
+    }
+    function heroVerifySoon(){
+      /* After a (re)start, confirm time is actually advancing; if it
+         is not moving ~1.2s later, treat it as a stall and recover. */
+      var startTime = heroVideo.currentTime;
+      var startAt = heroNow();
+      setTimeout(function(){
+        if (!heroIsActive() || !heroOnScreen) return;
+        if (heroVideo.paused) { heroPlay(); return; }
+        if (heroVideo.currentTime === startTime && heroNow() - heroLastProgressAt > 1000) heroRecover();
+      }, 1200);
+    }
+    function heroResumeAndVerify(){
+      heroPlay();
+      heroVerifySoon();
+    }
+    function heroRectVisible(){
+      /* Fallback on-screen check for the watchdog: an occluded
+         preview iframe can leave the IntersectionObserver state
+         stale, so also trust the actual layout box. */
+      try {
+        var r = heroVideo.getBoundingClientRect();
+        return r.bottom > 0 && r.top < (window.innerHeight || 0) &&
+               r.right > 0 && r.left < (window.innerWidth || 0);
+      } catch (e) { return false; }
+    }
+    /* Seam guard: when playback enters the clip's last half-second,
+       arm a check just past the expected wrap. If the playhead is
+       still sitting in the final second then, the loop seam failed
+       (the reported failure: loops fine for several cycles, then
+       stops at the same seam point) — force the wrap by hand:
+       rewind to 0 and play. A healthy loop wraps on its own and the
+       check finds currentTime back near 0, so it does nothing. */
+    var heroSeamArmed = false;
+    function heroSeamCheck(){
+      heroVideo.addEventListener('timeupdate', function(){
+        if (heroSeamArmed) return;
+        var d = heroVideo.duration;
+        if (!isFinite(d) || d <= 0) return;
+        if (heroVideo.currentTime < d - 0.5) return;
+        heroSeamArmed = true;
+        var seamTime = heroVideo.currentTime;
+        setTimeout(function(){
+          heroSeamArmed = false;
+          if (!heroIsActive()) return;
+          if (!heroOnScreen && !heroRectVisible()) return;
+          /* Still in the final second and unmoved = seam stall. */
+          if ((heroVideo.currentTime >= d - 1 && heroVideo.currentTime === seamTime) || heroVideo.ended) {
+            try { heroVideo.currentTime = 0; } catch (e) {}
+            heroLastProgressAt = heroNow();
+            try { var sp = heroVideo.play(); if (sp && sp.catch) sp.catch(function(){ heroScheduleResume(); }); } catch (e) {}
+          }
+        }, 1100);
+      });
+    }
+    heroSeamCheck();
+    heroVideo.addEventListener('timeupdate', function(){
+      if (heroVideo.currentTime !== heroLastTime) heroMarkProgress();
+    });
+    heroVideo.addEventListener('playing', heroMarkProgress);
+    heroVideo.addEventListener('canplay', function(){
+      if (heroNeedsResume && heroOnScreen) heroResumeAndVerify();
+    });
     heroVideo.addEventListener('ended', function(){
       try { heroVideo.currentTime = 0; } catch (e) {}
-      heroPlay();
+      heroNeedsResume = true;
+      if (heroOnScreen) heroResumeAndVerify(); else heroScheduleResume();
     });
     heroVideo.addEventListener('pause', function(){
-      if (heroIsActive() && heroOnScreen) heroScheduleResume();
+      /* Remember it even when off screen (the reviews case) — the
+         old handler ignored exactly those pauses. */
+      if (heroIsActive()) heroScheduleResume();
+    });
+    heroVideo.addEventListener('waiting', function(){
+      if (heroIsActive()) heroScheduleResume();
     });
     heroVideo.addEventListener('stalled', function(){
       if (heroIsActive()) heroScheduleResume();
     });
     heroVideo.addEventListener('error', function(){
-      if (!heroIsActive()) return;
+      if (!heroIsActive()) { heroNeedsResume = true; return; }
       try { heroVideo.load(); } catch (e) {}
       heroScheduleResume();
     }, true);
     document.addEventListener('visibilitychange', function(){
-      if (!document.hidden) heroPlay();
+      if (!document.hidden) heroResumeAndVerify();
     });
-    window.addEventListener('pageshow', heroPlay);
-    window.addEventListener('focus', heroPlay);
+    window.addEventListener('pageshow', heroResumeAndVerify);
+    window.addEventListener('focus', heroResumeAndVerify);
     if ('IntersectionObserver' in window) {
       var heroObs = new IntersectionObserver(function(entries){
         for (var i = 0; i < entries.length; i++) {
           heroOnScreen = entries[i].isIntersecting;
-          if (entries[i].isIntersecting) heroPlay();
+          if (entries[i].isIntersecting) {
+            /* Grace period so a just-returned video is not instantly
+               judged stalled, then play + verify it is moving. */
+            heroLastProgressAt = heroNow();
+            heroResumeAndVerify();
+          }
         }
       }, { threshold: 0.05 });
       heroObs.observe(heroVideo);
+    } else {
+      heroOnScreen = true;
     }
     if (heroSection && 'MutationObserver' in window) {
       var heroRouteObs = new MutationObserver(function(){
-        if (heroSection.classList.contains('page-on')) heroPlay();
+        if (heroSection.classList.contains('page-on')) heroResumeAndVerify();
       });
       heroRouteObs.observe(heroSection, { attributes: true, attributeFilter: ['class'] });
     }
+    /* Watchdog — runs on a plain timer, independent of scroll,
+       clicks, page switches and visibility events, so it also covers
+       the IDLE freeze (page simply left open, no interaction at
+       all): while Home is active and the hero is on screen, restart
+       a pause, and recover a playhead that has stopped advancing —
+       including one frozen at the loop seam with readyState still
+       claiming everything is fine. On-screen is taken from the
+       IntersectionObserver OR the layout box, so a stale observer
+       state in an occluded preview frame cannot silence it. */
+    setInterval(function(){
+      if (!heroIsActive()) return;
+      if (!heroOnScreen && !heroRectVisible()) return;
+      if (heroVideo.paused || heroVideo.ended) { heroPlay(); return; }
+      if (heroNow() - heroLastProgressAt > 3500 && heroVideo.readyState < 4) heroRecover();
+      else if (heroNow() - heroLastProgressAt > 3500 && heroVideo.currentTime === heroLastTime) heroRecover();
+    }, 1800);
     heroPlay();
   }
 
