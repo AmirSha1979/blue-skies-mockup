@@ -747,7 +747,11 @@
   .reviews-box::-webkit-scrollbar-thumb:hover{background:rgba(255,255,255,.4)}
   .reviews-box:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
   .reviews-grid{display:grid;gap:20px}
-  @media(min-width:641px){.reviews-grid{grid-template-columns:1fr 1fr}}
+  /* Desktop two-column rows: cards stretch to the row's height so a
+     short review beside a tall one (e.g. C Luengas next to Ahmar
+     Shaikh's card with its owner-response block) leaves no gap below
+     it. Phone stays single-column with align-self:start, unchanged. */
+  @media(min-width:641px){.reviews-grid{grid-template-columns:1fr 1fr}.reviews-grid .greview{align-self:stretch}}
   @media(max-width:640px){.reviews-box{max-height:540px;padding:18px}}
   .greview{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:22px 24px;align-self:start}
   .greview-head{display:flex;align-items:center;gap:13px}
