@@ -886,9 +886,9 @@
      phone's extra top padding opens the name→phone gap that gives the
      badge its height, as in Amir's mock), with the HOURS block directly
      under it so the HOURS heading sits level with the email line
-     (compact one-line strings). Quick-links row and © bar below
-     unchanged. On the Contact view the whole grid — links included —
-     stays hidden; only the © line shows, as before. Phone/hours sizes
+     (compact one-line strings). The © bar below follows the grid
+     directly — no quick-links row on phone. On the Contact view the
+     whole grid stays hidden; only the © line shows, as before. Phone/hours sizes
      use small vw clamps so the nowrap lines fit their column from
      360px up. */
   @media(max-width:640px){
@@ -905,9 +905,7 @@
     .slim-hours-col .slim-text{font-size:clamp(13px,3.75vw,15px)}
     .slim-hours-col .hours-full{display:none}
     .slim-hours-col .hours-short{display:inline;white-space:nowrap}
-    .foot-links{display:flex;flex-wrap:wrap;gap:2px 20px;grid-column:1/-1;grid-row:5;margin-top:4px;padding-top:16px;border-top:1px solid var(--line)}
-    .foot-links a{display:inline-flex;align-items:center;min-height:44px;padding:8px 2px;color:#dbe5ee;font-size:16px;font-weight:600;text-decoration:none}
-    .foot-links a:hover,.foot-links a:active{color:var(--accent2)}
+    .foot-links{display:none}
   }
   /* ---------- PHONE VOID SWEEP 2 — hero junction + end-of-page voids
      (≤640px only; desktop untouched) ----------
@@ -2156,15 +2154,6 @@ Stacy leading in the air, Tim leading on the ground and on the radio.</p><a clas
       <div class="slim-logo-wrap">
         <img loading="lazy" decoding="async" class="slim-logo" src="assets/a001.webp" alt="Fainting Goat Airport logo" />
       </div>
-      <nav class="foot-links" aria-label="Quick links">
-        <a href="#/" data-nav="home">Home</a>
-        <a href="#/sales-autogyro" data-nav="sales">Sales</a>
-        <a href="#/services" data-nav="services">Services</a>
-        <a href="#/training" data-nav="training">Training</a>
-        <a href="#/gallery" data-nav="gallery">Gallery</a>
-        <a href="#/contact" data-nav="contact">Contact</a>
-        <a href="#/about" data-nav="about">About Us</a>
-      </nav>
     </div>
     <div class="slim-bottom">© 2026 <span class="slim-name">Blue Skies</span> <span class="slim-name-w">Gyros</span> · Blum, Texas</div>
   </div>
