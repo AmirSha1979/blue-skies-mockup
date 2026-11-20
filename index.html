@@ -80,11 +80,11 @@
   body.menu-open .menu-btn .mb-lines i:nth-child(1){top:7px;transform:rotate(45deg)}
   body.menu-open .menu-btn .mb-lines i:nth-child(2){opacity:0}
   body.menu-open .menu-btn .mb-lines i:nth-child(3){top:7px;transform:rotate(-45deg)}
-  body.menu-open{overflow:hidden}
+  body.menu-open{overflow:hidden;overscroll-behavior:none}
   body.menu-open header{background:rgba(9,14,20,.78);backdrop-filter:blur(20px) saturate(1.25);-webkit-backdrop-filter:blur(20px) saturate(1.25);border-bottom-color:transparent}
-  .glass-menu{position:fixed;inset:0;z-index:60;display:flex;flex-direction:column;background:rgba(9,14,20,.78);backdrop-filter:blur(20px) saturate(1.25);-webkit-backdrop-filter:blur(20px) saturate(1.25);transform:translateY(-103%);visibility:hidden;transition:transform .65s cubic-bezier(.22,.9,.28,1),visibility 0s linear .65s}
+  .glass-menu{position:fixed;inset:0;z-index:60;display:flex;flex-direction:column;background:rgba(9,14,20,.78);backdrop-filter:blur(20px) saturate(1.25);-webkit-backdrop-filter:blur(20px) saturate(1.25);transform:translateY(-103%);visibility:hidden;transition:transform .65s cubic-bezier(.22,.9,.28,1),visibility 0s linear .65s;overscroll-behavior:contain}
   .glass-menu.open{transform:translateY(0);visibility:visible;transition:transform .65s cubic-bezier(.22,.9,.28,1)}
-  .gm-scroll{flex:1;overflow-y:auto;padding:118px 28px 10px;-webkit-overflow-scrolling:touch}
+  .gm-scroll{flex:1;overflow-y:auto;padding:118px 28px 10px;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;touch-action:pan-y}
   .gm-list{list-style:none;margin:0;padding:0}
   .gm-item{opacity:0;transform:translateY(16px);transition:opacity .5s ease,transform .55s cubic-bezier(.22,.9,.28,1)}
   .glass-menu.open .gm-item{opacity:1;transform:translateY(0);transition-delay:var(--d,0s)}
@@ -96,7 +96,7 @@
   .gm-group.expanded .gm-sub{max-height:220px}
   .gm-sub a{display:block;padding:12px 2px 12px 33px;color:var(--muted);font-size:19px;font-weight:500;text-decoration:none;border-bottom:1px solid rgba(255,255,255,.06);min-height:48px}
   .gm-sub a:active,.gm-sub a:hover{color:#fff}
-  .gm-foot{flex:none;padding:18px 28px calc(26px + env(safe-area-inset-bottom));border-top:1px solid rgba(255,255,255,.12);background:rgba(9,14,20,.35);opacity:0;transform:translateY(12px);transition:opacity .5s ease .34s,transform .55s ease .34s}
+  .gm-foot{flex:none;padding:18px 28px calc(26px + env(safe-area-inset-bottom));border-top:1px solid rgba(255,255,255,.12);background:rgba(9,14,20,.35);opacity:0;transform:translateY(12px);transition:opacity .5s ease .34s,transform .55s ease .34s;overscroll-behavior:contain;touch-action:none}
   .glass-menu.open .gm-foot{opacity:1;transform:translateY(0)}
   .gm-cta{display:flex;align-items:center;justify-content:center;width:100%;min-height:58px;padding:15px 22px;border-radius:999px;background:var(--cta);color:var(--cta-text);font-weight:700;font-size:18px;text-decoration:none}
   .gm-cta:hover,.gm-cta:active{background:var(--cta-hover)}
@@ -2250,9 +2250,45 @@ Stacy leading in the air, Tim leading on the ground and on the radio.</p><a clas
   /* Glass Drop menu (mobile) */
   var menuBtn = document.getElementById('menuBtn');
   var glassMenu = document.getElementById('glassMenu');
+  var gmScroll = glassMenu.querySelector('.gm-scroll');
+  /* iPhone-proof background lock: body{overflow:hidden} alone does not
+     stop touch scrolling in iOS Safari, so while the menu is open the
+     body is pinned with position:fixed at the current scroll offset
+     and the page behind physically cannot move — no matter where on
+     the panel a swipe starts. On close the pin is removed and the
+     exact scroll spot is restored instantly (the options-bag
+     'instant' overrides the page's scroll-behavior:smooth, the same
+     trick jumpToTop() above relies on). */
+  var menuScrollY = 0;
+  var menuLocked = false;
+  function lockPageForMenu(){
+    if (menuLocked) return;
+    menuScrollY = window.scrollY || window.pageYOffset || 0;
+    var b = document.body;
+    b.style.position = 'fixed';
+    b.style.top = (-menuScrollY) + 'px';
+    b.style.left = '0';
+    b.style.right = '0';
+    b.style.width = '100%';
+    b.style.overflow = 'hidden';
+    menuLocked = true;
+  }
+  function unlockPageForMenu(){
+    if (!menuLocked) return;
+    var b = document.body;
+    b.style.position = '';
+    b.style.top = '';
+    b.style.left = '';
+    b.style.right = '';
+    b.style.width = '';
+    b.style.overflow = '';
+    menuLocked = false;
+    try { window.scrollTo({ top: menuScrollY, left: 0, behavior: 'instant' }); } catch (e) { window.scrollTo(0, menuScrollY); }
+  }
   function setMenu(open){
     glassMenu.classList.toggle('open', open);
     document.body.classList.toggle('menu-open', open);
+    if (open) lockPageForMenu(); else unlockPageForMenu();
     menuBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
     menuBtn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
     glassMenu.setAttribute('aria-hidden', open ? 'false' : 'true');
@@ -2282,6 +2318,38 @@ Stacy leading in the air, Tim leading on the ground and on the radio.</p><a clas
   for (var l = 0; l < menuLinks.length; l++) {
     menuLinks[l].addEventListener('click', function(){ setMenu(false); });
   }
+  /* Scroll from anywhere on the panel: only .gm-scroll natively
+     scrolls, so a swipe that starts on the pinned footer strip or
+     the glass outside the list used to fall through and drag the
+     page behind. Those gestures are now claimed here and forwarded
+     to the list by hand (touch delta / wheel delta applied to
+     gmScroll.scrollTop), and never reach the background — which is
+     also pinned by lockPageForMenu() for as long as the menu is
+     open. Swipes that start on the list itself keep their native
+     momentum scrolling; .gm-scroll's overscroll-behavior:contain
+     (the same setting the reviews box uses) stops them chaining. */
+  var gmLastTouchY = null;
+  glassMenu.addEventListener('touchstart', function(e){
+    gmLastTouchY = (e.touches && e.touches.length === 1) ? e.touches[0].clientY : null;
+  }, { passive: true });
+  glassMenu.addEventListener('touchmove', function(e){
+    var inScroll = e.target && e.target.closest && e.target.closest('.gm-scroll');
+    if (inScroll) return;
+    e.preventDefault();
+    if (gmLastTouchY !== null && e.touches && e.touches.length === 1) {
+      var y = e.touches[0].clientY;
+      gmScroll.scrollTop += (gmLastTouchY - y);
+      gmLastTouchY = y;
+    }
+  }, { passive: false });
+  glassMenu.addEventListener('touchend', function(){ gmLastTouchY = null; }, { passive: true });
+  glassMenu.addEventListener('touchcancel', function(){ gmLastTouchY = null; }, { passive: true });
+  glassMenu.addEventListener('wheel', function(e){
+    var inScroll = e.target && e.target.closest && e.target.closest('.gm-scroll');
+    if (inScroll) return;
+    e.preventDefault();
+    gmScroll.scrollTop += e.deltaY;
+  }, { passive: false });
 
   /* ---------- Form validation — required fields (all six forms) ----------
      Every form checks its required basics before a send can happen:
