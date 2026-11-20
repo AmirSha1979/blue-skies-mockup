@@ -231,7 +231,11 @@
   .split-photo.cap-below figcaption{position:static;background:none;border-radius:0;padding:0}
 
   /* ---------- CRAIG STORY — inline film in the portrait's place (About) ---------- */
-  .story-fig{margin:0}
+  /* Film + its caption block sized to the approved mock: 460px wide,
+     centered in the media column on desktop; 320px centered on phone.
+     The figure carries the width so frame and caption stay aligned. */
+  .story-fig{margin:0 auto;width:100%;max-width:460px}
+  @media(max-width:640px){.story-fig{max-width:320px}}
   .story-frame{border-radius:var(--radius);overflow:hidden;position:relative;background:#000}
   .story-frame video{width:100%;aspect-ratio:9/16;object-fit:cover;display:block;cursor:pointer}
   .story-hint{position:absolute;right:14px;bottom:14px;z-index:2;background:rgba(10,14,19,.85);border:1px solid rgba(56,189,248,.55);color:#eaf6fd;border-radius:999px;padding:7px 14px;font-size:13.5px;font-weight:600;pointer-events:none}
