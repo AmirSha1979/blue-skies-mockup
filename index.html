@@ -704,6 +704,25 @@
   .link-col a:hover{color:var(--accent2)}
   .link-col a b{color:#e8eef4}
 
+  /* ---------- GYROCARE PRO — featured app card (Partners & Pilot Links) ----------
+     Sits between the partner logo strip and the text link columns:
+     gyro illustration left, text block right on desktop; stacked with
+     the illustration centered on top at phone widths (≤640px). */
+  .gyrocare-card{background:var(--panel);border:1px solid rgba(255,255,255,.09);border-radius:16px;display:flex;align-items:center;gap:28px;padding:28px 30px;margin-top:28px}
+  .gyrocare-card img{width:215px;height:auto;flex:none}
+  .gyrocare-body{min-width:0}
+  .gyrocare-kicker{color:var(--sky);font-weight:700;letter-spacing:.28em;text-transform:uppercase;font-size:13px;margin:0 0 10px}
+  .gyrocare-title{font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:46px;line-height:1;margin:0;color:#fff}
+  .gyrocare-title .pro{color:#e8a838}
+  .gyrocare-desc{color:#c3d0db;font-size:17.5px;line-height:1.55;margin:12px 0 0;max-width:660px}
+  .gyrocare-desc .fg{color:var(--sky);font-weight:600}
+  .gyrocare-card .btn{margin-top:20px}
+  @media(max-width:640px){
+    .gyrocare-card{flex-direction:column;padding:22px 20px 24px;gap:18px}
+    .gyrocare-card img{width:205px;margin:0 auto}
+    .gyrocare-title{font-size:40px}
+  }
+
   /* ---------- REVIEWS ---------- */
   .google-proof{display:flex;flex-direction:column;align-items:center;text-align:center}
   .rating-big{font-family:"Barlow Condensed",sans-serif;font-size:96px;font-weight:700;line-height:1;color:var(--accent)}
@@ -1031,7 +1050,7 @@
 <!-- 1 · HERO — David's first AutoGyro flight with Craig (AutoGyro USA) -->
 <section class="hero" id="top" style="padding:0" data-page="home">
   <div class="hero-bg">
-    <video autoplay muted loop playsinline preload="auto" poster="assets/a002.jpg" aria-label="David's first AutoGyro flight with Craig McPherson — gyroplanes flying over the Texas countryside">
+    <video id="heroVideo" autoplay muted loop playsinline preload="auto" poster="assets/a002.jpg" aria-label="David's first AutoGyro flight with Craig McPherson — gyroplanes flying over the Texas countryside">
       <source src="assets/a003.webm" type="video/webm" />
       <source src="assets/a004.mp4" type="video/mp4" />
     </video>
@@ -1782,6 +1801,15 @@ Stacy leading in the air, Tim leading on the ground and on the radio.</p><a clas
     <div class="partners">
       <a class="partner" href="https://autogyrousa.com/" target="_blank" rel="noopener" aria-label="AutoGyro USA"><img loading="lazy" decoding="async" src="assets/a048.webp" alt="AutoGyro logo" /></a>
       <a class="partner" href="https://www.iflyefb.com/" target="_blank" rel="noopener" aria-label="iFly EFB"><img loading="lazy" decoding="async" src="assets/a022.webp" alt="iFly EFB logo" /></a>
+    </div>
+    <div class="gyrocare-card">
+      <img loading="eager" decoding="async" src="assets/a050.webp" alt="GyroCare Pro" />
+      <div class="gyrocare-body">
+        <p class="gyrocare-kicker">Pilot App</p>
+        <h3 class="gyrocare-title">GyroCare <span class="pro">Pro</span></h3>
+        <p class="gyrocare-desc">The gyroplane pilot&rsquo;s companion app — track maintenance, service bulletins, documents and flight readiness for your gyro, all in one place. Built by a pilot trained at <span class="fg">Fainting Goat</span>, <em>for pilots.</em></p>
+        <a class="btn btn-amber" href="https://gyrocarepro.app" target="_blank" rel="noopener">Get the App →</a>
+      </div>
     </div>
     <div class="link-cols">
       <div class="link-col">
@@ -3323,6 +3351,99 @@ Stacy leading in the air, Tim leading on the ground and on the radio.</p><a clas
         storyToggleSound();
       }
     });
+  }
+
+  /* ---------- HERO VIDEO — restart supervisor (Home, ALL widths) ----------
+     The homepage hero is a single <video id="heroVideo"> shared by the
+     desktop and phone layouts (no separate mobile clip, no width check
+     anywhere in this block), so this supervisor covers both versions.
+     The clip already carries autoplay + loop, but nothing restarted it
+     when the browser paused it: returning to Home from another in-site
+     page (the hero section is display:none while another data-page is
+     on, which pauses playback in some browsers), the app/tab going to
+     the background and coming back, or a stall at the end of the file
+     all left it frozen until a full reload. This block restarts it:
+       - 'ended'  → rewind to 0 and play again (manual loop, in case
+         the native loop is dropped after an interruption);
+       - 'pause'  → while Home is the active page, the document is
+         visible and the hero is on screen, resume after a short
+         debounce (the hero has no user pause control, so any pause
+         in that state is a browser interruption, not a choice);
+       - route return → a MutationObserver watches the hero section's
+         class: routePage() adds .page-on when Home becomes active,
+         which fires a restart on desktop and phone alike;
+       - visibilitychange / pageshow / window focus → restart when
+         the visitor comes back to the app or tab;
+       - IntersectionObserver → restart whenever the hero scrolls
+         back into view, and track on-screen state so the pause
+         resume never fights the browser while the hero is off-screen;
+       - 'stalled' / 'error' → reload the source once and play.
+     Other videos (Craig Story, Gallery intro) are untouched. */
+  var heroVideo = document.getElementById('heroVideo');
+  if (heroVideo) {
+    heroVideo.loop = true;
+    heroVideo.muted = true;
+    heroVideo.setAttribute('playsinline', '');
+    var heroSection = heroVideo.closest ? heroVideo.closest('[data-page]') : null;
+    var heroOnScreen = true;
+    var heroResumeTimer = null;
+    function heroIsActive(){
+      var onPage = !heroSection || heroSection.classList.contains('page-on');
+      var visible = !document.hidden &&
+        (!document.visibilityState || document.visibilityState === 'visible');
+      return onPage && visible;
+    }
+    function heroPlay(){
+      if (!heroIsActive()) return;
+      if (heroVideo.ended) { try { heroVideo.currentTime = 0; } catch (e) {} }
+      if (heroVideo.paused || heroVideo.ended) {
+        var p = heroVideo.play();
+        if (p && p.catch) p.catch(function(){});
+      }
+    }
+    function heroScheduleResume(){
+      if (heroResumeTimer) return;
+      heroResumeTimer = setTimeout(function(){
+        heroResumeTimer = null;
+        if (heroOnScreen) heroPlay();
+      }, 350);
+    }
+    heroVideo.addEventListener('ended', function(){
+      try { heroVideo.currentTime = 0; } catch (e) {}
+      heroPlay();
+    });
+    heroVideo.addEventListener('pause', function(){
+      if (heroIsActive() && heroOnScreen) heroScheduleResume();
+    });
+    heroVideo.addEventListener('stalled', function(){
+      if (heroIsActive()) heroScheduleResume();
+    });
+    heroVideo.addEventListener('error', function(){
+      if (!heroIsActive()) return;
+      try { heroVideo.load(); } catch (e) {}
+      heroScheduleResume();
+    }, true);
+    document.addEventListener('visibilitychange', function(){
+      if (!document.hidden) heroPlay();
+    });
+    window.addEventListener('pageshow', heroPlay);
+    window.addEventListener('focus', heroPlay);
+    if ('IntersectionObserver' in window) {
+      var heroObs = new IntersectionObserver(function(entries){
+        for (var i = 0; i < entries.length; i++) {
+          heroOnScreen = entries[i].isIntersecting;
+          if (entries[i].isIntersecting) heroPlay();
+        }
+      }, { threshold: 0.05 });
+      heroObs.observe(heroVideo);
+    }
+    if (heroSection && 'MutationObserver' in window) {
+      var heroRouteObs = new MutationObserver(function(){
+        if (heroSection.classList.contains('page-on')) heroPlay();
+      });
+      heroRouteObs.observe(heroSection, { attributes: true, attributeFilter: ['class'] });
+    }
+    heroPlay();
   }
 
   /* ---------- REVIEWS — Google-style More / Less on the two long reviews ---------- */
