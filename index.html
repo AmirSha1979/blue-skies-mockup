@@ -624,7 +624,7 @@
   .ig-play svg{width:20px;height:20px;margin-left:3px;fill:#fff}
   .ig-src{position:absolute;top:10px;right:10px;z-index:2;display:flex;align-items:center;justify-content:center;filter:drop-shadow(0 1px 4px rgba(0,0,0,.45))}
   .ig-src svg{display:block}
-  .yt-src{position:absolute;top:10px;right:10px;z-index:2;display:flex;align-items:center;justify-content:center;filter:drop-shadow(0 1px 4px rgba(0,0,0,.45))}
+  .yt-src{position:absolute;top:10px;right:10px;z-index:2;pointer-events:none;display:flex;align-items:center;justify-content:center;filter:drop-shadow(0 1px 4px rgba(0,0,0,.45))}
   .yt-src svg{display:block}
   .ig-body{display:flex;flex-direction:column;gap:5px;padding:16px 18px 18px;flex:1}
   .ig-title{font-family:"Barlow Condensed",sans-serif;font-size:23px;font-weight:600;text-transform:uppercase;line-height:1.12;color:#fff}
@@ -650,7 +650,14 @@
   .yt-thumb img{width:100%;aspect-ratio:16/9;object-fit:cover;transition:transform .6s ease}
   .yt-card:hover .yt-thumb img{transform:scale(1.04)}
   .yt-thumb::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,14,19,0) 60%,rgba(10,14,19,.4) 100%);pointer-events:none}
-  .yt-play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:2;width:72px;height:72px;border-radius:50%;background:rgba(10,14,19,.72);border:2px solid rgba(255,255,255,.9);display:flex;align-items:center;justify-content:center;backdrop-filter:blur(3px)}
+  /* pointer-events:none on the play badge and source badge: they are pure
+     decoration sitting above the card's link layer (z-index 2 over the
+     z-index 1 stretch link / card anchor). Without it they swallow the
+     click at dead centre of the thumbnail — the Hillsboro dead spot.
+     Click-through makes them behave like the David card, where the badge
+     sits inside the one big anchor. The brand link keeps its own clicks:
+     it is a real anchor, not one of these decorative spans. */
+  .yt-play{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:2;pointer-events:none;width:72px;height:72px;border-radius:50%;background:rgba(10,14,19,.72);border:2px solid rgba(255,255,255,.9);display:flex;align-items:center;justify-content:center;backdrop-filter:blur(3px)}
   .yt-play svg{width:27px;height:27px;margin-left:4px;fill:#fff}
   .yt-body{display:flex;flex-direction:column;gap:6px;padding:20px 22px 22px}
   .yt-title{font-family:"Barlow Condensed",sans-serif;font-size:28px;font-weight:600;text-transform:uppercase;line-height:1.12;color:#fff}
