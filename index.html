@@ -222,6 +222,11 @@
   #craig .split-grid{align-items:start}
   .split-photo{border-radius:var(--radius);overflow:hidden;position:relative;margin:0}
   .split-photo img{width:100%;height:100%;object-fit:cover;aspect-ratio:4/3}
+  /* Facility photo is device-split via <picture> (phone shows the workshop
+     interior, desktop the red gyro): the wrapper must fill the figure
+     exactly like the bare <img> did, so layout and crop are unchanged
+     at every width. */
+  #facility .split-photo picture{display:block;height:100%}
   .split-photo figcaption{position:absolute;left:16px;bottom:16px;background:rgba(10,14,19,.82);border-radius:10px;padding:10px 16px;font-size:14px;font-weight:600}
   .split-photo figcaption span{color:var(--accent2)}
   /* Meet Craig shop photo — caption sits BELOW the photo (story-cap style)
@@ -1130,7 +1135,7 @@
     <div class="cards">
       <article class="card" id="train-card">
         <div class="card-img">
-          <img loading="lazy" decoding="async" src="assets/a007.webp" alt="Craig briefing a student beside a red gyroplane at Blue Skies Gyros" />
+          <img loading="lazy" decoding="async" src="assets/a007.webp" alt="David in the front seat of a blue gyroplane with his headset on, Craig McPherson instructing from the seat behind him" style="object-position:42% center" />
           <span class="card-price">Intro flight <span>$110</span></span>
         </div>
         <div class="card-body">
@@ -1252,10 +1257,10 @@
         </figcaption>
       </figure>
       <figure class="split-photo cap-below" style="margin-top:64px">
-        <img loading="lazy" decoding="async" src="assets/a010.webp" alt="Craig McPherson (left) with a member of the Blue Skies Gyros team in the shop at Fainting Goat Airport" style="aspect-ratio:3/2.34;object-position:top" />
+        <img loading="lazy" decoding="async" src="assets/a013.webp" alt="Inside Craig's workshop at Fainting Goat — workbenches, tool wall and a white gyro shell mid-build" style="aspect-ratio:3/2.34;object-position:top" />
         <figcaption class="story-cap">
-          <span class="story-title">Craig &amp; the team</span>
-          <span class="story-sub">“We treat every customer like family. Your safety and enjoyment are our top priorities.”</span>
+          <span class="story-title">Inside the workshop at Fainting Goat</span>
+          <span class="story-sub">Craig's private shop — workbenches, tool wall and a gyro shell mid-build.</span>
         </figcaption>
       </figure>
     </div>
@@ -1266,7 +1271,10 @@
 <section class="alt" id="facility" data-page="about">
   <div class="wrap split-grid">
     <figure class="split-photo">
-      <img loading="lazy" decoding="async" src="assets/a013.webp" alt="A red AutoGyro Calidus and a green gyroplane on the grass at Fainting Goat Airport, pilots preparing to fly" />
+      <picture>
+        <source media="(max-width:640px)" srcset="assets/a013.webp" />
+        <img loading="lazy" decoding="async" src="assets/a014.webp" alt="A red enclosed gyroplane, tail N656BM, inside the shop bay at Fainting Goat Airport" />
+      </picture>
       <figcaption>Fainting Goat Airport (87TX) <span>· Blum, Texas</span></figcaption>
     </figure>
     <div>
@@ -1286,7 +1294,7 @@
 
 <!-- TRAINING — page hero -->
 <div class="page-hero" data-page="training">
-  <img class="ph-bg" loading="lazy" decoding="async" src="assets/a014.webp" alt="" />
+  <img class="ph-bg" loading="lazy" decoding="async" src="assets/a015.webp" alt="" />
   <div class="wrap page-hero-inner">
     <p class="kicker">Training</p>
     <h2>Learn to fly<br>with <span class="thin">Craig.</span></h2>
@@ -1332,7 +1340,7 @@
           <div class="spec"><b>Takeoffs &amp; landings to a full stop</b><span>10 — each landing involving a flight in the traffic pattern, at an airport</span></div>
         </div>
         <div style="margin-top:28px;display:grid;grid-template-columns:1fr 1fr;gap:14px">
-          <img loading="lazy" decoding="async" src="assets/a015.webp" alt="Flight training at Blue Skies Gyros — student and instructor with a gyroplane" style="border-radius:14px;width:100%;aspect-ratio:4/3;object-fit:cover" />
+          <img loading="lazy" decoding="async" src="assets/a007.webp" alt="David in the front seat of a blue gyroplane with his headset on, Craig McPherson instructing from the seat behind him" style="border-radius:14px;width:100%;aspect-ratio:4/3;object-fit:cover;object-position:38% center" />
           <img loading="lazy" decoding="async" src="assets/a016.webp" alt="Gyroplane flight training over the Texas countryside near Blum" style="border-radius:14px;width:100%;aspect-ratio:4/3;object-fit:cover" />
         </div>
       </div>
@@ -1810,22 +1818,22 @@ Stacy leading in the air, Tim leading on the ground and on the radio.</p><a clas
     <p class="section-lede">Straight from the Blue Skies Gyros gallery — the field, the machines and the people who fly them.</p>
     <div class="gallery">
       <figure class="gallery-video"><video id="galleryIntroVideo" controls playsinline preload="metadata" poster="assets/a052.jpg" aria-label="Blue Skies Gyros intro video — gyroplanes at Fainting Goat Airport. Click to play or pause."><source src="assets/a053.mp4" type="video/mp4" /><source src="assets/a054.webm" type="video/webm" /></video><button type="button" class="gv-play" id="galleryIntroPlay" aria-label="Play the intro film — flying at 87TX"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 5.14v13.72c0 .8.87 1.3 1.56.88l10.5-6.86a1.03 1.03 0 0 0 0-1.76L9.56 4.26A1.03 1.03 0 0 0 8 5.14z"/></svg></button><figcaption>Our intro film — flying at 87TX</figcaption></figure>
-      <figure tabindex="0" role="button" aria-label="Enlarge photo"><img loading="lazy" decoding="async" src="assets/a013.webp" alt="Red AutoGyro Calidus and green gyroplane on the grass at Fainting Goat Airport" /><figcaption>Calidus &amp; MTO on the grass at 87TX</figcaption></figure>
-      <figure tabindex="0" role="button" aria-label="Enlarge photo"><img loading="lazy" decoding="async" src="assets/a055.webp" alt="Red gyroplane with two helmeted pilots on the field, a powered parachute flying overhead" /><figcaption>Ready to fly — PPC overhead</figcaption></figure>
+      <figure tabindex="0" role="button" aria-label="Enlarge photo"><img loading="lazy" decoding="async" src="assets/a055.webp" alt="Red AutoGyro Calidus and green gyroplane on the grass at Fainting Goat Airport" /><figcaption>Calidus &amp; MTO on the grass at 87TX</figcaption></figure>
+      <figure tabindex="0" role="button" aria-label="Enlarge photo"><img loading="lazy" decoding="async" src="assets/a056.webp" alt="Red gyroplane with two helmeted pilots on the field, a powered parachute flying overhead" /><figcaption>Ready to fly — PPC overhead</figcaption></figure>
       <figure tabindex="0" role="button" aria-label="Enlarge photo"><img loading="lazy" decoding="async" src="assets/a017.webp" alt="Gyroplanes flying and parked at Blue Skies Gyros, Blum Texas" /><figcaption>From the Blue Skies gallery</figcaption></figure>
       <figure tabindex="0" role="button" aria-label="Enlarge photo"><img loading="lazy" decoding="async" src="assets/a033.webp" alt="Gyroplane at Fainting Goat Airport" /><figcaption>From the Blue Skies gallery</figcaption></figure>
       <figure tabindex="0" role="button" aria-label="Enlarge photo"><img loading="lazy" decoding="async" src="assets/a028.webp" alt="Gyroplane in the shop at Blue Skies Gyros" /><figcaption>In the shop</figcaption></figure>
       <figure tabindex="0" role="button" aria-label="Enlarge photo"><img loading="lazy" decoding="async" src="assets/a034.webp" alt="Gyroplanes at Blue Skies Gyros, Texas" /><figcaption>From the Blue Skies gallery</figcaption></figure>
-      <figure tabindex="0" role="button" aria-label="Enlarge photo"><img loading="lazy" decoding="async" src="assets/a056.webp" alt="Pilot and gyroplane at Fainting Goat Airport" /><figcaption>From the Blue Skies gallery</figcaption></figure>
+      <figure tabindex="0" role="button" aria-label="Enlarge photo"><img loading="lazy" decoding="async" src="assets/a057.webp" alt="Pilot and gyroplane at Fainting Goat Airport" /><figcaption>From the Blue Skies gallery</figcaption></figure>
       <figure tabindex="0" role="button" aria-label="Enlarge photo"><img loading="lazy" decoding="async" src="assets/a021.webp" alt="Gyroplane flying over the Texas countryside" /><figcaption>Over the farm country</figcaption></figure>
-      <figure tabindex="0" role="button" aria-label="Enlarge photo"><img loading="lazy" decoding="async" src="assets/a057.webp" alt="Gyroplane detail at Blue Skies Gyros" /><figcaption>From the Blue Skies gallery</figcaption></figure>
+      <figure tabindex="0" role="button" aria-label="Enlarge photo"><img loading="lazy" decoding="async" src="assets/a058.webp" alt="Gyroplane detail at Blue Skies Gyros" /><figcaption>From the Blue Skies gallery</figcaption></figure>
     </div>
   </div>
 </section>
 
 <!-- LINKS — page hero -->
 <div class="page-hero" data-page="links">
-  <img class="ph-bg" loading="lazy" decoding="async" src="assets/a056.webp" alt="" />
+  <img class="ph-bg" loading="lazy" decoding="async" src="assets/a057.webp" alt="" />
   <div class="wrap page-hero-inner">
     <p class="kicker">More — Partners</p>
     <h2>Partners &amp;<br><span class="thin">pilot links.</span></h2>
@@ -2078,7 +2086,7 @@ Stacy leading in the air, Tim leading on the ground and on the radio.</p><a clas
 
 <!-- CONTACT — page hero -->
 <div class="page-hero" data-page="contact">
-  <img class="ph-bg" loading="lazy" decoding="async" src="assets/a055.webp" alt="" />
+  <img class="ph-bg" loading="lazy" decoding="async" src="assets/a056.webp" alt="" />
   <div class="wrap page-hero-inner">
     <p class="kicker">Contact</p>
     <h2>Talk to<br><span class="thin">Craig.</span></h2>
@@ -2103,7 +2111,7 @@ Stacy leading in the air, Tim leading on the ground and on the radio.</p><a clas
         <a class="cm-dir" href="https://www.google.com/maps/dir/?api=1&destination=Blue+Skies+Gyros,+468+FM+3049,+Blum,+TX+76627" target="_blank" rel="noopener">Get Directions →</a>
       </div>
       <a class="cm-map" href="https://www.google.com/maps/search/?api=1&query=Blue+Skies+Gyros,+468+FM+3049,+Blum,+TX+76627" target="_blank" rel="noopener" aria-label="Map of Fainting Goat Airport (87TX) — tap to open in Google Maps">
-        <img loading="lazy" decoding="async" src="assets/a058.webp" alt="Sectional chart showing Fainting Goat Airport (87TX) near Blum, Texas" />
+        <img loading="lazy" decoding="async" src="assets/a059.webp" alt="Sectional chart showing Fainting Goat Airport (87TX) near Blum, Texas" />
         <span class="cm-map-label">Fainting Goat Airport (87TX)</span>
         <span class="cm-map-open"><span>Open in Google Maps ↗</span></span>
       </a>
@@ -2148,7 +2156,7 @@ Stacy leading in the air, Tim leading on the ground and on the radio.</p><a clas
       </div>
     </div>
     <figure class="foot-map">
-      <img loading="lazy" decoding="async" src="assets/a058.webp" alt="Sectional chart showing Fainting Goat Airport (87TX) near Blum, Texas" />
+      <img loading="lazy" decoding="async" src="assets/a059.webp" alt="Sectional chart showing Fainting Goat Airport (87TX) near Blum, Texas" />
       <figcaption>Find us on the chart — Fainting Goat (87TX), just south of Blum on the Brazos River.</figcaption>
     </figure>
   </div>
