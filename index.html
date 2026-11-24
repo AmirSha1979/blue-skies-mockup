@@ -139,8 +139,10 @@
      (charcoal-black #131417) running edge to edge. Small off-white
      sprocket holes — perfect squares (13×13 desktop / 10×10 phone,
      2px radius) — run
-     along the top and bottom edges on a tight 30px pitch — the
-     reference's small, dense perforations, not big slots. The
+     along the top and bottom edges, spaced to the sample: the
+     dark gap between holes is ~1.8× the hole's width (desktop
+     36px pitch = 13 hole + 23 gap ≈ 1.77×; phone 28px pitch =
+     10 hole + 18 gap = 1.8×). The
      photos sit INSET between the hole rows on the black stock,
      separated by slim 10px black frame gaps, with a slight 3px
      corner radius. Under each photo's right edge, real film
@@ -149,12 +151,13 @@
      The hole bands are the ::before/::after of each .banner-set,
      so they live INSIDE the moving track and scroll in sync with
      the photos; the frame numbers are inside each .banner-frame,
-     locked to their photo. Seam maths: one set is 6×460 + 5×10
-     gap + 10 padding = 2820px desktop and 6×280 + 50 + 10 =
-     1740px phone, and 30 divides BOTH (2820 = 94×30, 1740 =
-     58×30), so each set holds a whole number of hole tiles, the
-     pattern restarts in phase at every set boundary, and the
-     -50% loop seam shows no jump. EDGE FADES — a horizontal mask
+     locked to their photo. Seam maths: frame widths nudged so
+     one set stays a whole number of hole pitches — desktop one
+     set is 6×458 + 5×10 gap + 10 padding = 2808px = 78×36, and
+     phone 6×284 + 50 + 10 = 1764px = 63×28 — so each set holds
+     a whole number of hole tiles, the pattern restarts in phase
+     at every set boundary, and the -50% loop seam shows no jump.
+     EDGE FADES — a horizontal mask
      on the stationary strip melts the film into the page
      background at the left/right edges (transparent at 0%/100%,
      fully opaque 6%–94%), like the reference's soft fades. */
@@ -162,10 +165,10 @@
   .banner-track{display:flex;width:max-content;height:100%;animation:bannerMarquee 60s linear infinite;will-change:transform}
   .banner-strip:hover .banner-track{animation-play-state:paused}
   .banner-set{display:flex;gap:10px;padding-right:10px;height:100%;flex:none;position:relative;align-items:center;background:#131417}
-  .banner-set::before,.banner-set::after{content:"";position:absolute;left:0;right:0;height:30px;z-index:4;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='30' height='30' viewBox='0 0 30 30'%3E%3Crect x='8.5' y='8.5' width='13' height='13' rx='2' fill='%23d8d8d8'/%3E%3C/svg%3E");background-repeat:repeat-x;background-size:30px 30px;background-position:0 0}
+  .banner-set::before,.banner-set::after{content:"";position:absolute;left:0;right:0;height:30px;z-index:4;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='36' height='30' viewBox='0 0 36 30'%3E%3Crect x='11.5' y='8.5' width='13' height='13' rx='2' fill='%23d8d8d8'/%3E%3C/svg%3E");background-repeat:repeat-x;background-size:36px 30px;background-position:0 0}
   .banner-set::before{top:0}
   .banner-set::after{bottom:0}
-  .banner-frame{display:flex;flex-direction:column;width:460px;flex:none;position:relative}
+  .banner-frame{display:flex;flex-direction:column;width:458px;flex:none;position:relative}
   .banner-frame img{width:100%;height:196px;object-fit:cover;object-position:center;display:block;border-radius:3px}
   .banner-frame img.banner-img-selfie{object-position:68% center}
   .banner-frame img.banner-img-flying{object-position:center 32%}
@@ -173,10 +176,10 @@
   @keyframes bannerMarquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
   @media(max-width:640px){
     .banner-strip{height:190px}
-    .banner-frame{width:280px}
+    .banner-frame{width:284px}
     .banner-frame img{height:106px}
     .banner-num{font-size:8.5px;padding-top:4px;letter-spacing:.14em}
-    .banner-set::before,.banner-set::after{height:22px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='30' height='22' viewBox='0 0 30 22'%3E%3Crect x='10' y='6' width='10' height='10' rx='2' fill='%23d8d8d8'/%3E%3C/svg%3E");background-size:30px 22px}
+    .banner-set::before,.banner-set::after{height:22px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='22' viewBox='0 0 28 22'%3E%3Crect x='9' y='6' width='10' height='10' rx='2' fill='%23d8d8d8'/%3E%3C/svg%3E");background-size:28px 22px}
   }
   @media(prefers-reduced-motion:reduce){
     .banner-track{animation:none}
