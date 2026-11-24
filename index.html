@@ -126,24 +126,56 @@
   }
   .star-half{background:linear-gradient(90deg,var(--gold) 50%,#4a5866 50%);-webkit-background-clip:text;background-clip:text;color:transparent}
   /* ---------- HOME BANNER — auto-scrolling photo strip ----------
-     Replaces the static blue-duotone Cavalon banner in the same slot:
-     same outer height (300px desktop / 190px phone), same rounded
-     corners, border and neighbours — nothing else shifts. Six full-
-     colour photos drift right-to-left in a seamless loop (the set is
-     duplicated, track translates -50%). ~46s per full set. Hover
-     pauses on desktop; reduced-motion shows it static. Decorative
-     only — no links, overlays or controls. */
-  .banner-strip{margin:0;border-radius:var(--radius);overflow:hidden;border:1px solid var(--line);position:relative;isolation:isolate;background:#0f1822;height:300px}
-  .banner-track{display:flex;width:max-content;height:100%;animation:bannerMarquee 46s linear infinite;will-change:transform}
+     Same outer slot as before (300px desktop / 190px phone, same
+     rounded corners, border and neighbours — nothing else shifts).
+     Six full-colour photos drift right-to-left in a seamless loop
+     (the set is duplicated, track translates -50%) at a calm 60s
+     per full loop. Hover pauses on desktop; reduced-motion shows
+     it fully static. Decorative only — no links or controls.
+     The photos themselves NEVER zoom or scale (scale stays 1.0);
+     the strip simply moves.
+     FINER UI "FILM STRIP" MATCH (option 1, finerui.com/elements/
+     film-strip): the strip is a length of dark 35mm film stock
+     (charcoal-black #131417) running edge to edge. Small off-white
+     sprocket holes (12×16 desktop / 8×12 phone, 2.5px radius) run
+     along the top and bottom edges on a tight 30px pitch — the
+     reference's small, dense perforations, not big slots. The
+     photos sit INSET between the hole rows on the black stock,
+     separated by slim 10px black frame gaps, with a slight 3px
+     corner radius. Under each photo's right edge, real film
+     edge print: the frame number in small amber type
+     ("1 · 1A" … "6 · 6A", #c9a15c), travelling with the strip.
+     The hole bands are the ::before/::after of each .banner-set,
+     so they live INSIDE the moving track and scroll in sync with
+     the photos; the frame numbers are inside each .banner-frame,
+     locked to their photo. Seam maths: one set is 6×460 + 5×10
+     gap + 10 padding = 2820px desktop and 6×280 + 50 + 10 =
+     1740px phone, and 30 divides BOTH (2820 = 94×30, 1740 =
+     58×30), so each set holds a whole number of hole tiles, the
+     pattern restarts in phase at every set boundary, and the
+     -50% loop seam shows no jump. EDGE FADES — a horizontal mask
+     on the stationary strip melts the film into the page
+     background at the left/right edges (transparent at 0%/100%,
+     fully opaque 6%–94%), like the reference's soft fades. */
+  .banner-strip{margin:0;border-radius:var(--radius);overflow:hidden;border:1px solid var(--line);position:relative;isolation:isolate;background:#131417;height:300px;-webkit-mask-image:linear-gradient(to right,transparent 0,#000 6%,#000 94%,transparent 100%);mask-image:linear-gradient(to right,transparent 0,#000 6%,#000 94%,transparent 100%)}
+  .banner-track{display:flex;width:max-content;height:100%;animation:bannerMarquee 60s linear infinite;will-change:transform}
   .banner-strip:hover .banner-track{animation-play-state:paused}
-  .banner-set{display:flex;gap:10px;padding-right:10px;height:100%;flex:none}
-  .banner-set img{width:460px;height:100%;object-fit:cover;object-position:center;flex:none}
-  .banner-set img.banner-img-selfie{object-position:68% center}
-  .banner-set img.banner-img-flying{object-position:center 32%}
+  .banner-set{display:flex;gap:10px;padding-right:10px;height:100%;flex:none;position:relative;align-items:center;background:#131417}
+  .banner-set::before,.banner-set::after{content:"";position:absolute;left:0;right:0;height:30px;z-index:4;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='30' height='30' viewBox='0 0 30 30'%3E%3Crect x='9' y='7' width='12' height='16' rx='2.5' fill='%23d8d8d8'/%3E%3C/svg%3E");background-repeat:repeat-x;background-size:30px 30px;background-position:0 0}
+  .banner-set::before{top:0}
+  .banner-set::after{bottom:0}
+  .banner-frame{display:flex;flex-direction:column;width:460px;flex:none;position:relative}
+  .banner-frame img{width:100%;height:196px;object-fit:cover;object-position:center;display:block;border-radius:3px}
+  .banner-frame img.banner-img-selfie{object-position:68% center}
+  .banner-frame img.banner-img-flying{object-position:center 32%}
+  .banner-num{display:block;text-align:right;padding:5px 2px 0 0;font-size:11px;font-weight:600;line-height:1;letter-spacing:.18em;color:#c9a15c;font-variant-numeric:tabular-nums;white-space:nowrap}
   @keyframes bannerMarquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
   @media(max-width:640px){
     .banner-strip{height:190px}
-    .banner-set img{width:280px}
+    .banner-frame{width:280px}
+    .banner-frame img{height:106px}
+    .banner-num{font-size:8.5px;padding-top:4px;letter-spacing:.14em}
+    .banner-set::before,.banner-set::after{height:22px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='30' height='22' viewBox='0 0 30 22'%3E%3Crect x='11' y='5' width='8' height='12' rx='2' fill='%23d8d8d8'/%3E%3C/svg%3E");background-size:30px 22px}
   }
   @media(prefers-reduced-motion:reduce){
     .banner-track{animation:none}
@@ -1136,7 +1168,7 @@
 </div>
 
 <div class="wrap" style="padding-top:48px" data-page="home">
-  <figure class="banner-strip" aria-hidden="true"><div class="banner-track"><div class="banner-set"><img loading="eager" decoding="async" src="assets/a005.webp" alt="" /><img loading="eager" decoding="async" class="banner-img-selfie" src="assets/a006.webp" alt="" /><img loading="eager" decoding="async" src="assets/a007.webp" alt="" /><img loading="eager" decoding="async" src="assets/a008.webp" alt="" /><img loading="eager" decoding="async" src="assets/a009.webp" alt="" /><img loading="eager" decoding="async" src="assets/a010.webp" alt="" /></div><div class="banner-set" aria-hidden="true"><img loading="eager" decoding="async" src="assets/a005.webp" alt="" /><img loading="eager" decoding="async" class="banner-img-selfie" src="assets/a006.webp" alt="" /><img loading="eager" decoding="async" src="assets/a007.webp" alt="" /><img loading="eager" decoding="async" src="assets/a008.webp" alt="" /><img loading="eager" decoding="async" src="assets/a009.webp" alt="" /><img loading="eager" decoding="async" src="assets/a010.webp" alt="" /></div></div></figure>
+  <figure class="banner-strip" aria-hidden="true"><div class="banner-track"><div class="banner-set"><span class="banner-frame"><img loading="eager" decoding="async" src="assets/a005.webp" alt="" /><span class="banner-num">1 · 1A</span></span><span class="banner-frame"><img loading="eager" decoding="async" class="banner-img-selfie" src="assets/a006.webp" alt="" /><span class="banner-num">2 · 2A</span></span><span class="banner-frame"><img loading="eager" decoding="async" src="assets/a007.webp" alt="" /><span class="banner-num">3 · 3A</span></span><span class="banner-frame"><img loading="eager" decoding="async" src="assets/a008.webp" alt="" /><span class="banner-num">4 · 4A</span></span><span class="banner-frame"><img loading="eager" decoding="async" src="assets/a009.webp" alt="" /><span class="banner-num">5 · 5A</span></span><span class="banner-frame"><img loading="eager" decoding="async" src="assets/a010.webp" alt="" /><span class="banner-num">6 · 6A</span></span></div><div class="banner-set" aria-hidden="true"><span class="banner-frame"><img loading="eager" decoding="async" src="assets/a005.webp" alt="" /><span class="banner-num">1 · 1A</span></span><span class="banner-frame"><img loading="eager" decoding="async" class="banner-img-selfie" src="assets/a006.webp" alt="" /><span class="banner-num">2 · 2A</span></span><span class="banner-frame"><img loading="eager" decoding="async" src="assets/a007.webp" alt="" /><span class="banner-num">3 · 3A</span></span><span class="banner-frame"><img loading="eager" decoding="async" src="assets/a008.webp" alt="" /><span class="banner-num">4 · 4A</span></span><span class="banner-frame"><img loading="eager" decoding="async" src="assets/a009.webp" alt="" /><span class="banner-num">5 · 5A</span></span><span class="banner-frame"><img loading="eager" decoding="async" src="assets/a010.webp" alt="" /><span class="banner-num">6 · 6A</span></span></div></div></figure>
 </div>
 
 <!-- 3 · OUR EXPERTISE — the site's own Build / Maintain / Train -->
